@@ -1,14 +1,17 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene format=3 uid="uid://baisnsavedux"]
 
-[ext_resource type="Script" path="res://scripts/ocean.gd" id="1_ocean"]
+[ext_resource type="Script" uid="uid://cholbe3r5b1l2" path="res://scripts/ocean.gd" id="1_ocean"]
 [ext_resource type="Material" path="res://shaders/ocean_material.tres" id="2_water"]
 [ext_resource type="PackedScene" path="res://scenes/boat.tscn" id="4_boat"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="5_player"]
-[ext_resource type="Shader" path="res://shaders/sky.gdshader" id="6_sky"]
-[ext_resource type="Shader" path="res://shaders/toon.gdshader" id="7_toon"]
-[ext_resource type="Script" path="res://scripts/terrain.gd" id="8_terrain"]
-[ext_resource type="Script" path="res://scripts/island_shape.gd" id="13_island_shape"]
-[ext_resource type="Script" path="res://scripts/scatter.gd" id="14_scatter"]
+[ext_resource type="Shader" uid="uid://dbloj66opedh6" path="res://shaders/sky.gdshader" id="6_sky"]
+[ext_resource type="Script" uid="uid://dmyct3oj0rjey" path="res://scripts/terrain.gd" id="8_terrain"]
+[ext_resource type="Material" path="res://shaders/sand_material.tres" id="9_sand"]
+[ext_resource type="PackedScene" path="res://scenes/items/coconut.tscn" id="10_coconut"]
+[ext_resource type="PackedScene" path="res://scenes/items/bottle.tscn" id="11_bottle"]
+[ext_resource type="PackedScene" path="res://scenes/items/plank.tscn" id="12_plank"]
+[ext_resource type="Script" uid="uid://1eawd26xlww6" path="res://scripts/island_shape.gd" id="13_island_shape"]
+[ext_resource type="Script" uid="uid://o1ug7e8wr72d" path="res://scripts/scatter.gd" id="14_scatter"]
 [ext_resource type="Material" path="res://shaders/terrain_material.tres" id="15_terrain_mat"]
 [ext_resource type="ArrayMesh" path="res://assets/tree/palm_mesh.res" id="16_palm"]
 [ext_resource type="ArrayMesh" path="res://assets/grass/grass_mesh.res" id="17_grass"]
@@ -16,68 +19,75 @@
 [ext_resource type="ArrayMesh" path="res://assets/stone/stone_03.res" id="19_stone_b"]
 [ext_resource type="ArrayMesh" path="res://assets/stone/stone_04.res" id="20_stone_c"]
 [ext_resource type="ArrayMesh" path="res://assets/stone/stone_08.res" id="21_stone_d"]
-[ext_resource type="Material" path="res://shaders/sand_material.tres" id="9_sand"]
-[ext_resource type="PackedScene" path="res://scenes/items/coconut.tscn" id="10_coconut"]
-[ext_resource type="PackedScene" path="res://scenes/items/bottle.tscn" id="11_bottle"]
-[ext_resource type="PackedScene" path="res://scenes/items/plank.tscn" id="12_plank"]
 [ext_resource type="PackedScene" path="res://scenes/items/rock.tscn" id="22_rock"]
 [ext_resource type="PackedScene" path="res://scenes/chest.tscn" id="23_chest"]
 [ext_resource type="Resource" path="res://loot/wooden.tres" id="24_loot_wooden"]
 [ext_resource type="Resource" path="res://loot/silver.tres" id="25_loot_silver"]
 [ext_resource type="Resource" path="res://loot/gold.tres" id="26_loot_gold"]
-[ext_resource type="Script" path="res://scripts/fish_spawner.gd" id="27_spawner"]
+[ext_resource type="Script" uid="uid://fiydosvp587" path="res://scripts/fish_spawner.gd" id="27_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/fish/yellow_fish.tscn" id="28_yellow_fish"]
 [ext_resource type="PackedScene" path="res://scenes/fish/blue_fish.tscn" id="29_blue_fish"]
 [ext_resource type="Resource" path="res://loot/palm.tres" id="30_loot_palm"]
-[ext_resource type="ArrayMesh" path="res://assets/coral/baked/branch_coral.res" id="reef_branch_coral"]
-[ext_resource type="ArrayMesh" path="res://assets/coral/baked/pink_coral.res" id="reef_pink_coral"]
-[ext_resource type="ArrayMesh" path="res://assets/coral/baked/orange_coral.res" id="reef_orange_coral"]
-[ext_resource type="ArrayMesh" path="res://assets/coral/baked/purple_coral.res" id="reef_purple_coral"]
+[ext_resource type="Script" uid="uid://ddaus3rgj41k5" path="res://scripts/shark_zone.gd" id="40_shark_zone"]
+[ext_resource type="PackedScene" path="res://scenes/shark/shark.tscn" id="41_shark"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/anemone.res" id="reef_anemone"]
+[ext_resource type="ArrayMesh" path="res://assets/coral/baked/branch_coral.res" id="reef_branch_coral"]
+[ext_resource type="ArrayMesh" path="res://assets/coral/baked/circle_shell.res" id="reef_circle_shell"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/mushroom_coral.res" id="reef_mushroom_coral"]
-[ext_resource type="ArrayMesh" path="res://assets/coral/baked/sea_stone.res" id="reef_sea_stone"]
-[ext_resource type="ArrayMesh" path="res://assets/coral/baked/sea_stone_2.res" id="reef_sea_stone_2"]
-[ext_resource type="ArrayMesh" path="res://assets/coral/baked/seaweed.res" id="reef_seaweed"]
-[ext_resource type="ArrayMesh" path="res://assets/coral/baked/seaweed_bush.res" id="reef_seaweed_bush"]
+[ext_resource type="ArrayMesh" path="res://assets/coral/baked/orange_coral.res" id="reef_orange_coral"]
+[ext_resource type="ArrayMesh" path="res://assets/coral/baked/oyster.res" id="reef_oyster"]
+[ext_resource type="ArrayMesh" path="res://assets/coral/baked/pink_coral.res" id="reef_pink_coral"]
+[ext_resource type="ArrayMesh" path="res://assets/coral/baked/purple_coral.res" id="reef_purple_coral"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/seagrass.res" id="reef_seagrass"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/seashell_blue.res" id="reef_seashell_blue"]
-[ext_resource type="ArrayMesh" path="res://assets/coral/baked/seashell_yellow.res" id="reef_seashell_yellow"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/seashell_pink.res" id="reef_seashell_pink"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/seashell_purple.res" id="reef_seashell_purple"]
-[ext_resource type="ArrayMesh" path="res://assets/coral/baked/circle_shell.res" id="reef_circle_shell"]
+[ext_resource type="ArrayMesh" path="res://assets/coral/baked/seashell_yellow.res" id="reef_seashell_yellow"]
+[ext_resource type="ArrayMesh" path="res://assets/coral/baked/seaweed.res" id="reef_seaweed"]
+[ext_resource type="ArrayMesh" path="res://assets/coral/baked/seaweed_bush.res" id="reef_seaweed_bush"]
+[ext_resource type="ArrayMesh" path="res://assets/coral/baked/sea_stone.res" id="reef_sea_stone"]
+[ext_resource type="ArrayMesh" path="res://assets/coral/baked/sea_stone_2.res" id="reef_sea_stone_2"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/spiral_shell.res" id="reef_spiral_shell"]
-[ext_resource type="ArrayMesh" path="res://assets/coral/baked/oyster.res" id="reef_oyster"]
 [ext_resource type="PackedScene" path="res://scenes/items/starfish.tscn" id="reef_starfish"]
-
-[sub_resource type="FastNoiseLite" id="CloudNoise"]
-frequency = 0.004
-fractal_octaves = 6
-fractal_gain = 0.5
-
-[sub_resource type="NoiseTexture2D" id="CloudShape"]
-width = 1024
-height = 1024
-seamless = true
-noise = SubResource("CloudNoise")
 
 [sub_resource type="FastNoiseLite" id="CloudDetailNoise"]
 noise_type = 2
 seed = 5
 frequency = 0.03
-fractal_type = 1
 fractal_octaves = 3
 
 [sub_resource type="NoiseTexture2D" id="CloudDetail"]
-seamless = true
 noise = SubResource("CloudDetailNoise")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="CloudNoise"]
+frequency = 0.004
+fractal_octaves = 6
+
+[sub_resource type="NoiseTexture2D" id="CloudShape"]
+width = 1024
+height = 1024
+noise = SubResource("CloudNoise")
+seamless = true
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("6_sky")
+shader_parameter/top_color = Color(0.1, 0.36, 0.85, 1)
+shader_parameter/horizon_color = Color(0.68, 0.86, 0.98, 1)
+shader_parameter/below_color = Color(0.25, 0.5, 0.7, 1)
+shader_parameter/gradient_curve = 0.45
+shader_parameter/sun_color = Color(1, 0.93, 0.78, 1)
+shader_parameter/sun_size = 0.035
+shader_parameter/sun_glow = 0.7
 shader_parameter/cloud_shape = SubResource("CloudShape")
 shader_parameter/cloud_detail = SubResource("CloudDetail")
+shader_parameter/cloud_color = Color(1, 1, 1, 1)
+shader_parameter/cloud_shade_color = Color(0.55, 0.64, 0.86, 1)
 shader_parameter/coverage = 0.48
 shader_parameter/edge_softness = 0.1
 shader_parameter/cloud_scale = 0.12
+shader_parameter/wind = Vector2(0.004, 0.0015)
+shader_parameter/shade_offset = 0.08
 
 [sub_resource type="Sky" id="Sky"]
 sky_material = SubResource("SkyMat")
@@ -98,8 +108,8 @@ glow_bloom = 0.05
 fog_enabled = true
 fog_light_color = Color(0.68, 0.86, 0.98, 1)
 fog_density = 0.0015
-fog_sky_affect = 0.0
 fog_aerial_perspective = 0.6
+fog_sky_affect = 0.0
 adjustment_enabled = true
 adjustment_contrast = 1.08
 adjustment_saturation = 1.15
@@ -108,20 +118,17 @@ adjustment_saturation = 1.15
 material = ExtResource("9_sand")
 size = Vector2(800, 800)
 
-[sub_resource type="WorldBoundaryShape3D" id="SeabedShape"]
-
-[sub_resource type="Curve" id="SeabedProfile"]
-min_domain = -6.0
-max_domain = 170.0
-min_value = -40.0
-max_value = 2.0
-_data = [Vector2(-6, 1.4), -0.1, -0.1, 0, 0, Vector2(-1.5, 0.95), -0.125, -0.125, 0, 0, Vector2(0, 0.65), -0.1867, -0.1867, 0, 0, Vector2(6, -0.45), -0.1425, -0.1425, 0, 0, Vector2(20, -2.2), -0.1261, -0.1261, 0, 0, Vector2(50, -6), -0.1046, -0.1046, 0, 0, Vector2(85, -9), -0.3143, -0.3143, 0, 0, Vector2(120, -28), -0.2941, -0.2941, 0, 0, Vector2(170, -34), -0.12, -0.12, 0, 0]
-point_count = 9
-
 [sub_resource type="FastNoiseLite" id="SeabedNoise"]
 seed = 11
 frequency = 0.008
 fractal_octaves = 3
+
+[sub_resource type="Curve" id="SeabedProfile"]
+_limits = [-40.0, 2.0, -6.0, 170.0]
+_data = [Vector2(-6, 1.4), -0.1, -0.1, 0, 0, Vector2(-1.5, 0.95), -0.125, -0.125, 0, 0, Vector2(0, 0.65), -0.1867, -0.1867, 0, 0, Vector2(6, -0.45), -0.1656, -0.1656, 0, 0, Vector2(16, -2), -0.1861, -0.1861, 0, 0, Vector2(24, -3.8), -0.4643, -0.4643, 0, 0, Vector2(30, -8.5), -1.0167, -1.0167, 0, 0, Vector2(36, -16), -0.675, -0.675, 0, 0, Vector2(50, -22), -0.2593, -0.2593, 0, 0, Vector2(90, -30), -0.1, -0.1, 0, 0, Vector2(170, -34), -0.05, -0.05, 0, 0]
+point_count = 11
+
+[sub_resource type="WorldBoundaryShape3D" id="SeabedShape"]
 
 [sub_resource type="Environment" id="Underwater"]
 background_mode = 1
@@ -133,42 +140,42 @@ fog_enabled = true
 fog_light_color = Color(0.03, 0.2, 0.25, 1)
 fog_density = 0.06
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=1039716545]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1798649551]
 environment = SubResource("Env")
 
-[node name="Sun" type="DirectionalLight3D" parent="."]
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1195897415]
 transform = Transform3D(0.766044, -0.413176, 0.492404, 0, 0.766044, 0.642788, -0.642788, -0.492404, 0.586824, 0, 50, 0)
 shadow_enabled = true
 directional_shadow_mode = 1
 directional_shadow_max_distance = 70.0
 
-[node name="Ocean" type="MeshInstance3D" parent="."]
+[node name="Ocean" type="MeshInstance3D" parent="." unique_id=577700535]
+material_override = ExtResource("2_water")
 cast_shadow = 0
 extra_cull_margin = 10.0
-material_override = ExtResource("2_water")
 script = ExtResource("1_ocean")
 sea_level = 0.5
 
-[node name="DeepFloorMesh" type="MeshInstance3D" parent="Ocean"]
+[node name="DeepFloorMesh" type="MeshInstance3D" parent="Ocean" unique_id=516975404]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -44, 0)
 mesh = SubResource("SeabedPlane")
 
-[node name="Terrain" type="StaticBody3D" parent="."]
+[node name="Terrain" type="StaticBody3D" parent="." unique_id=51584632]
 collision_mask = 0
 script = ExtResource("8_terrain")
-cast_shadows = false
 noise = SubResource("SeabedNoise")
 material = ExtResource("15_terrain_mat")
 profile = SubResource("SeabedProfile")
+deep_from = 40.0
 
-[node name="MainIsland" type="Marker3D" parent="Terrain"]
+[node name="MainIsland" type="Marker3D" parent="Terrain" unique_id=1165964347]
 script = ExtResource("13_island_shape")
 radius = 22.0
 height = 6.0
 
-[node name="SmallIsland" type="Marker3D" parent="Terrain"]
+[node name="SmallIsland" type="Marker3D" parent="Terrain" unique_id=2042190494]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 0, -60)
 script = ExtResource("13_island_shape")
 radius = 15.0
@@ -176,7 +183,7 @@ height = 3.5
 roughness = 0.35
 shape_seed = 3
 
-[node name="BigIsland" type="Marker3D" parent="Terrain"]
+[node name="BigIsland" type="Marker3D" parent="Terrain" unique_id=1158074324]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, -130)
 script = ExtResource("13_island_shape")
 radius = 28.0
@@ -184,16 +191,16 @@ height = 8.0
 roughness = 0.2
 shape_seed = 7
 
-[node name="DeepFloor" type="StaticBody3D" parent="."]
+[node name="DeepFloor" type="StaticBody3D" parent="." unique_id=377799262]
 collision_mask = 0
 
-[node name="Boundary" type="CollisionShape3D" parent="DeepFloor"]
+[node name="Boundary" type="CollisionShape3D" parent="DeepFloor" unique_id=935401218]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -44, 0)
 shape = SubResource("SeabedShape")
 
-[node name="Decor" type="Node3D" parent="."]
+[node name="Decor" type="Node3D" parent="." unique_id=421453376]
 
-[node name="Palms" type="Node3D" parent="Decor" node_paths=PackedStringArray("terrain")]
+[node name="Palms" type="Node3D" parent="Decor" unique_id=1444774680 node_paths=PackedStringArray("terrain")]
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("16_palm")])
@@ -208,28 +215,28 @@ collision_radius = 0.3
 collision_height = 5.0
 harvest_loot = ExtResource("30_loot_palm")
 
-[node name="Grass" type="Node3D" parent="Decor" node_paths=PackedStringArray("terrain")]
+[node name="Grass" type="Node3D" parent="Decor" unique_id=1853107382 node_paths=PackedStringArray("terrain")]
 script = ExtResource("14_scatter")
-cast_shadows = false
-visible_distance = 70.0
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("17_grass")])
 count = 300
 random_seed = 5
+cast_shadows = false
+visible_distance = 70.0
 min_height = 2.6
 min_flatness = 0.8
 scale_range = Vector2(0.9, 1.6)
 sink = 0.05
 follow_ground = true
 
-[node name="Stones" type="Node3D" parent="Decor" node_paths=PackedStringArray("terrain")]
+[node name="Stones" type="Node3D" parent="Decor" unique_id=1188398393 node_paths=PackedStringArray("terrain")]
 script = ExtResource("14_scatter")
-cast_shadows = false
-visible_distance = 120.0
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("18_stone_a"), ExtResource("19_stone_b"), ExtResource("20_stone_c"), ExtResource("21_stone_d")])
 count = 14
 random_seed = 23
+cast_shadows = false
+visible_distance = 120.0
 min_height = 0.3
 min_flatness = 0.5
 scale_range = Vector2(0.4, 1.6)
@@ -238,64 +245,62 @@ follow_ground = true
 collision_radius = 0.4
 collision_height = 0.7
 
-[node name="Fish" type="Node3D" parent="."]
+[node name="Fish" type="Node3D" parent="." unique_id=2049357584]
 
-[node name="MainIslandFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+[node name="MainIslandFish" type="Node3D" parent="Fish" unique_id=1185023257 node_paths=PackedStringArray("ocean", "terrain")]
 script = ExtResource("27_spawner")
 fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish"), ExtResource("29_blue_fish")])
-count = 8
+count = 5
 radius = 50.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 
-[node name="SmallIslandFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
+[node name="SmallIslandFish" type="Node3D" parent="Fish" unique_id=928944438 node_paths=PackedStringArray("ocean", "terrain")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 0, -60)
 script = ExtResource("27_spawner")
 fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish"), ExtResource("29_blue_fish")])
-count = 6
+count = 4
 radius = 40.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 
-[node name="BigIslandFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
+[node name="BigIslandFish" type="Node3D" parent="Fish" unique_id=1982352970 node_paths=PackedStringArray("ocean", "terrain")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, -130)
 script = ExtResource("27_spawner")
 fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish"), ExtResource("29_blue_fish")])
-count = 8
+count = 5
 radius = 55.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 
-[node name="BoatStartFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 75)
+[node name="BoatStartFish" type="Node3D" parent="Fish" unique_id=740429104 node_paths=PackedStringArray("ocean", "terrain")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
 script = ExtResource("27_spawner")
 fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish"), ExtResource("29_blue_fish")])
-count = 5
-radius = 20.0
+count = 3
+radius = 12.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 
-[node name="Chests" type="Node3D" parent="."]
+[node name="Chests" type="Node3D" parent="." unique_id=2011558760]
 
-[node name="WoodenChest" parent="Chests" instance=ExtResource("23_chest")]
+[node name="WoodenChest" parent="Chests" unique_id=1690178757 instance=ExtResource("23_chest")]
 transform = Transform3D(-0.4997, 0, 0.8662, 0, 1, 0, -0.8662, 0, -0.4997, 8.57, 5.93, 4.95)
-tier = 0
 loot = ExtResource("24_loot_wooden")
 
-[node name="SilverChest" parent="Chests" instance=ExtResource("23_chest")]
+[node name="SilverChest" parent="Chests" unique_id=1291231421 instance=ExtResource("23_chest")]
 transform = Transform3D(-0.6085, 0, 0.7935, 0, 1, 0, -0.7935, 0, -0.6085, -124.64, 3.97, -55.89)
 tier = 1
 loot = ExtResource("25_loot_silver")
 
-[node name="GoldChest" parent="Chests" instance=ExtResource("23_chest")]
+[node name="GoldChest" parent="Chests" unique_id=1728112706 instance=ExtResource("23_chest")]
 transform = Transform3D(-0.2592, 0, 0.9658, 0, 1, 0, -0.9658, 0, -0.2592, 132.17, 7.41, -126.74)
 tier = 2
 loot = ExtResource("26_loot_gold")
 
-[node name="Reef" type="Node3D" parent="."]
+[node name="Reef" type="Node3D" parent="." unique_id=500509218]
 
-[node name="Corals" type="Node3D" parent="Reef" node_paths=PackedStringArray("terrain")]
+[node name="Corals" type="Node3D" parent="Reef" unique_id=336322689 node_paths=PackedStringArray("terrain")]
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("reef_branch_coral"), ExtResource("reef_pink_coral"), ExtResource("reef_orange_coral"), ExtResource("reef_purple_coral")])
@@ -304,15 +309,13 @@ random_seed = 31
 cast_shadows = false
 visible_distance = 80.0
 chunk_size = 40.0
-area = Vector2(1.15, 3.0)
+area = Vector2(1.15, 3)
 min_height = -16.0
 max_height = -1.9
 min_flatness = 0.6
 scale_range = Vector2(0.7, 1.4)
-sink = 0.1
-follow_ground = false
 
-[node name="ReefRocks" type="Node3D" parent="Reef" node_paths=PackedStringArray("terrain")]
+[node name="ReefRocks" type="Node3D" parent="Reef" unique_id=94352615 node_paths=PackedStringArray("terrain")]
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("reef_anemone"), ExtResource("reef_mushroom_coral"), ExtResource("reef_sea_stone"), ExtResource("reef_sea_stone_2"), ExtResource("reef_seaweed"), ExtResource("reef_seaweed_bush")])
@@ -329,7 +332,7 @@ scale_range = Vector2(0.7, 1.5)
 sink = 0.05
 follow_ground = true
 
-[node name="Seagrass" type="Node3D" parent="Reef" node_paths=PackedStringArray("terrain")]
+[node name="Seagrass" type="Node3D" parent="Reef" unique_id=1040750109 node_paths=PackedStringArray("terrain")]
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("reef_seagrass")])
@@ -346,7 +349,7 @@ scale_range = Vector2(0.8, 1.6)
 sink = 0.03
 follow_ground = true
 
-[node name="Shells" type="Node3D" parent="Reef" node_paths=PackedStringArray("terrain")]
+[node name="Shells" type="Node3D" parent="Reef" unique_id=791464145 node_paths=PackedStringArray("terrain")]
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("reef_seashell_blue"), ExtResource("reef_seashell_yellow"), ExtResource("reef_seashell_pink"), ExtResource("reef_seashell_purple"), ExtResource("reef_circle_shell")])
@@ -363,7 +366,7 @@ scale_range = Vector2(0.8, 1.3)
 sink = 0.0
 follow_ground = true
 
-[node name="RareShells" type="Node3D" parent="Reef" node_paths=PackedStringArray("terrain")]
+[node name="RareShells" type="Node3D" parent="Reef" unique_id=1992988100 node_paths=PackedStringArray("terrain")]
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("reef_spiral_shell"), ExtResource("reef_oyster")])
@@ -380,14 +383,13 @@ scale_range = Vector2(0.9, 1.2)
 sink = 0.0
 follow_ground = true
 
-[node name="Starfish" type="Node3D" parent="Reef" node_paths=PackedStringArray("terrain")]
+[node name="Starfish" type="Node3D" parent="Reef" unique_id=1326563069 node_paths=PackedStringArray("terrain")]
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 scenes = Array[PackedScene]([ExtResource("reef_starfish")])
 count = 12
 random_seed = 36
 cast_shadows = false
-visible_distance = 0.0
 chunk_size = 40.0
 area = Vector2(1.05, 2.2)
 min_height = -9.0
@@ -397,69 +399,76 @@ scale_range = Vector2(0.8, 1.3)
 sink = 0.0
 follow_ground = true
 
-[node name="Items" type="Node3D" parent="."]
+[node name="Items" type="Node3D" parent="." unique_id=663446929]
 
-[node name="Coconut1" parent="Items" instance=ExtResource("10_coconut")]
+[node name="Coconut1" parent="Items" unique_id=1739982516 instance=ExtResource("10_coconut")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 10, 6)
 
-[node name="Coconut2" parent="Items" instance=ExtResource("10_coconut")]
+[node name="Coconut2" parent="Items" unique_id=1436734211 instance=ExtResource("10_coconut")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 10, 3)
 
-[node name="Coconut3" parent="Items" instance=ExtResource("10_coconut")]
+[node name="Coconut3" parent="Items" unique_id=1063840965 instance=ExtResource("10_coconut")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 10, -8)
 
-[node name="Bottle" parent="Items" instance=ExtResource("11_bottle")]
+[node name="Bottle" parent="Items" unique_id=966401072 instance=ExtResource("11_bottle")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 8, 14)
 
-[node name="Plank" parent="Items" instance=ExtResource("12_plank")]
+[node name="Plank" parent="Items" unique_id=1930636784 instance=ExtResource("12_plank")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 8, -10)
 
-[node name="Rocks" type="Node3D" parent="Items"]
+[node name="Rocks" type="Node3D" parent="Items" unique_id=2092901508]
 
-[node name="MainIslandRock1" parent="Items/Rocks" instance=ExtResource("22_rock")]
+[node name="MainIslandRock1" parent="Items/Rocks" unique_id=1644239121 instance=ExtResource("22_rock")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.47, 5.13, 9.85)
 freeze = true
 
-[node name="MainIslandRock2" parent="Items/Rocks" instance=ExtResource("22_rock")]
+[node name="MainIslandRock2" parent="Items/Rocks" unique_id=1564230654 instance=ExtResource("22_rock")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.22, 6.25, -1.87)
 freeze = true
 
-[node name="MainIslandRock3" parent="Items/Rocks" instance=ExtResource("22_rock")]
+[node name="MainIslandRock3" parent="Items/Rocks" unique_id=1875891538 instance=ExtResource("22_rock")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.87, 4.38, -3.68)
 freeze = true
 
-[node name="SmallIslandRock1" parent="Items/Rocks" instance=ExtResource("22_rock")]
+[node name="SmallIslandRock1" parent="Items/Rocks" unique_id=614719831 instance=ExtResource("22_rock")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -135.31, 3.16, -66.19)
 freeze = true
 
-[node name="SmallIslandRock2" parent="Items/Rocks" instance=ExtResource("22_rock")]
+[node name="SmallIslandRock2" parent="Items/Rocks" unique_id=2036480380 instance=ExtResource("22_rock")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -133.14, 1.78, -70.68)
 freeze = true
 
-[node name="SmallIslandRock3" parent="Items/Rocks" instance=ExtResource("22_rock")]
+[node name="SmallIslandRock3" parent="Items/Rocks" unique_id=2100542297 instance=ExtResource("22_rock")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130.2, 2.81, -68.37)
 freeze = true
 
-[node name="BigIslandRock1" parent="Items/Rocks" instance=ExtResource("22_rock")]
+[node name="BigIslandRock1" parent="Items/Rocks" unique_id=1662651318 instance=ExtResource("22_rock")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 138.28, 4.24, -132.38)
 freeze = true
 
-[node name="BigIslandRock2" parent="Items/Rocks" instance=ExtResource("22_rock")]
+[node name="BigIslandRock2" parent="Items/Rocks" unique_id=1404210937 instance=ExtResource("22_rock")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 112.89, 4.09, -148.61)
 freeze = true
 
-[node name="BigIslandRock3" parent="Items/Rocks" instance=ExtResource("22_rock")]
+[node name="BigIslandRock3" parent="Items/Rocks" unique_id=1636953321 instance=ExtResource("22_rock")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 107.73, 7.11, -125.19)
 freeze = true
 
-[node name="Boat" parent="." node_paths=PackedStringArray("ocean") instance=ExtResource("4_boat")]
+[node name="Boat" parent="." unique_id=2143456993 node_paths=PackedStringArray("ocean") instance=ExtResource("4_boat")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0.5, 36.5)
 ocean = NodePath("../Ocean")
 
-[node name="Player" parent="." node_paths=PackedStringArray("ocean", "world_environment", "respawn_point", "sun") instance=ExtResource("5_player")]
+[node name="Player" parent="." unique_id=1345830165 node_paths=PackedStringArray("ocean", "world_environment", "sun", "respawn_point") instance=ExtResource("5_player")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.6, 19)
 ocean = NodePath("../Ocean")
 world_environment = NodePath("../WorldEnvironment")
 underwater_environment = SubResource("Underwater")
-respawn_point = NodePath("../Boat/Deck/PlayerSpawn")
 sun = NodePath("../Sun")
+respawn_point = NodePath("../Boat/Deck/PlayerSpawn")
+
+[node name="SharkZone" type="Node" parent="." unique_id=1073233949 node_paths=PackedStringArray("player", "ocean", "terrain")]
+script = ExtResource("40_shark_zone")
+player = NodePath("../Player")
+ocean = NodePath("../Ocean")
+terrain = NodePath("../Terrain")
+shark_scene = ExtResource("41_shark")

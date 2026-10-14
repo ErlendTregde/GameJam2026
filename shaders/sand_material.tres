@@ -1,21 +1,25 @@
-[gd_resource type="ShaderMaterial" load_steps=5 format=3]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://clr4v32fiitt6"]
 
-[ext_resource type="Shader" path="res://shaders/toon.gdshader" id="1_toon"]
-
-[sub_resource type="FastNoiseLite" id="SandNoise"]
-frequency = 0.05
+[ext_resource type="Shader" uid="uid://c541ynbw5dove" path="res://shaders/toon.gdshader" id="1_toon"]
 
 [sub_resource type="Gradient" id="SandRamp"]
 colors = PackedColorArray(0.8, 0.8, 0.8, 1, 1, 1, 1, 1)
 
+[sub_resource type="FastNoiseLite" id="SandNoise"]
+frequency = 0.05
+
 [sub_resource type="NoiseTexture2D" id="SandTex"]
-seamless = true
-color_ramp = SubResource("SandRamp")
 noise = SubResource("SandNoise")
+color_ramp = SubResource("SandRamp")
+seamless = true
 
 [resource]
+render_priority = 0
 shader = ExtResource("1_toon")
 shader_parameter/albedo_color = Color(0.98, 0.85, 0.52, 1)
 shader_parameter/albedo_tex = SubResource("SandTex")
+shader_parameter/use_normal_map = false
+shader_parameter/normal_strength = 0.5
 shader_parameter/uv_scale = Vector2(0.15, 0.15)
+shader_parameter/use_vertex_color = false
 shader_parameter/world_uv = true

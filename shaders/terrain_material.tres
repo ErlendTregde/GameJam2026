@@ -1,15 +1,25 @@
-[gd_resource type="ShaderMaterial" format=3]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bpmyibeuyl7uf"]
 
-[ext_resource type="Shader" path="res://shaders/terrain.gdshader" id="1_terrain"]
+[ext_resource type="Shader" uid="uid://bj2gpu3a6a4m5" path="res://shaders/terrain.gdshader" id="1_terrain"]
 
 [sub_resource type="FastNoiseLite" id="DetailNoise"]
 frequency = 0.03
 fractal_octaves = 3
 
 [sub_resource type="NoiseTexture2D" id="Detail"]
-seamless = true
 noise = SubResource("DetailNoise")
+seamless = true
 
 [resource]
+render_priority = 0
 shader = ExtResource("1_terrain")
+shader_parameter/sand_color = Color(0.96, 0.84, 0.55, 1)
+shader_parameter/wet_sand_color = Color(0.72, 0.6, 0.4, 1)
+shader_parameter/wet_height = 1.1
+shader_parameter/grass_color = Color(0.44, 0.64, 0.26, 1)
+shader_parameter/grass_dark_color = Color(0.32, 0.5, 0.2, 1)
+shader_parameter/grass_height = 2.4
+shader_parameter/grass_blend = 0.6
+shader_parameter/grass_min_flatness = 0.8
 shader_parameter/detail_tex = SubResource("Detail")
+shader_parameter/detail_scale = 0.08

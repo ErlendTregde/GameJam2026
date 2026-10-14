@@ -14,6 +14,11 @@ extends CharacterBody3D
 ## Stays at least this far below the surface and above the sea floor (m).
 @export var surface_margin := 0.8
 @export var floor_margin := 0.6
+## Never swims into water shallower than this (m), so it can't end up on the beach.
+@export var min_depth := 1.2
+## ...or deeper than this (m): fish stay on the island shelf, out of the sharks' deep water.
+## Set by the spawner.
+@export var max_depth := 9.0
 ## Left behind when it dies (a fish WorldItem scene).
 @export var drop: PackedScene
 
@@ -24,7 +29,6 @@ var _home := Vector3.ZERO
 var _target := Vector3.ZERO
 var _flee := 0.0
 var _floor := -30.0
-var _tick := 0
 
 @onready var _model: Node3D = $Model
 
@@ -46,11 +50,16 @@ func _physics_process(delta: float) -> void:
 	# Turn smoothly toward the target, then swim forward (-Z, where the head is).
 	var want := Basis.looking_at(to.normalized())
 	global_basis = global_basis.slerp(want, minf(turn_speed * delta * (2.0 if _flee > 0.0 else 1.0), 1.0)).orthonormalized()
-	global_position += -global_basis.z * current_speed * delta
-	_tick += 1
-	if _tick % 10 == 0:  # the floor changes slowly; no need to look it up every tick
-		_floor = _floor_y()
-	global_position.y = clampf(global_position.y, _floor + floor_margin, _surface_y() - surface_margin)
+	var next := global_position - global_basis.z * current_speed * delta
+	var next_floor := _floor_y_at(next.x, next.z)
+	if not _depth_ok(_surface_y() - next_floor):
+		# Shallows, an island or the deep drop-off ahead: don't go there, head back home.
+		_target = _home
+		_flee = 0.0
+	else:
+		global_position = next
+		_floor = next_floor
+	global_position.y = clampf(global_position.y, _floor + floor_margin, maxf(_floor + floor_margin, _surface_y() - surface_margin))
 	# Too far to see: don't spend time animating it.
 	var camera := get_viewport().get_camera_3d()
 	var seen: bool = camera == null or camera.global_position.distance_squared_to(global_position) < _model.visible_distance * _model.visible_distance
@@ -64,10 +73,23 @@ func _pick_target() -> void:
 		var z := _home.z + offset.y
 		var low := _floor_y_at(x, z) + floor_margin
 		var high := _surface_y() - surface_margin
-		if high - low > 0.5:  # deep enough to swim there
+		if high - low > 0.5 and _depth_ok(_surface_y() - _floor_y_at(x, z)) and _path_is_deep(x, z):
 			_target = Vector3(x, randf_range(low, high), z)
 			return
 	_target = _home
+
+
+func _depth_ok(depth: float) -> bool:
+	return depth >= min_depth and depth <= max_depth
+
+
+## Whether the straight swim from here to x/z stays in water of the right depth.
+func _path_is_deep(x: float, z: float) -> bool:
+	for i in range(1, 6):
+		var p := global_position.lerp(Vector3(x, 0, z), i / 6.0)
+		if not _depth_ok(_surface_y() - _floor_y_at(p.x, p.z)):
+			return false
+	return true
 
 
 func take_damage(amount: float, _at := Vector3.ZERO) -> void:
@@ -86,7 +108,8 @@ func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 func _die() -> void:
 	if drop:
 		var item: RigidBody3D = drop.instantiate()
-		get_parent().add_child(item)
+		var world: Node = get_tree().current_scene if get_tree().current_scene else get_parent()
+		world.add_child(item)  # not the spawner: it removes its children when you swim away
 		item.global_transform = global_transform
 		item.linear_velocity = Vector3.UP * 1.0
 	queue_free()

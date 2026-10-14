@@ -1,33 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=8 format=3]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://j5s2b1e05i5v"]
 
-[ext_resource type="Shader" path="res://shaders/ocean.gdshader" id="1_shader"]
-
-[sub_resource type="FastNoiseLite" id="Noise_a"]
-noise_type = 3
-frequency = 0.02
-fractal_octaves = 4
-
-[sub_resource type="NoiseTexture2D" id="Normal_a"]
-width = 512
-height = 512
-seamless = true
-as_normal_map = true
-bump_strength = 6.0
-noise = SubResource("Noise_a")
-
-[sub_resource type="FastNoiseLite" id="Noise_b"]
-noise_type = 3
-seed = 7
-frequency = 0.035
-fractal_octaves = 3
-
-[sub_resource type="NoiseTexture2D" id="Normal_b"]
-width = 512
-height = 512
-seamless = true
-as_normal_map = true
-bump_strength = 4.0
-noise = SubResource("Noise_b")
+[ext_resource type="Shader" uid="uid://dwd5a1ofxmctg" path="res://shaders/ocean.gdshader" id="1_shader"]
 
 [sub_resource type="FastNoiseLite" id="Noise_foam"]
 noise_type = 2
@@ -38,9 +11,32 @@ cellular_return_type = 0
 [sub_resource type="NoiseTexture2D" id="Foam"]
 width = 256
 height = 256
+noise = SubResource("Noise_foam")
 seamless = true
 invert = true
-noise = SubResource("Noise_foam")
+
+[sub_resource type="FastNoiseLite" id="Noise_a"]
+noise_type = 3
+frequency = 0.02
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="Normal_a"]
+noise = SubResource("Noise_a")
+seamless = true
+as_normal_map = true
+bump_strength = 6.0
+
+[sub_resource type="FastNoiseLite" id="Noise_b"]
+noise_type = 3
+seed = 7
+frequency = 0.035
+fractal_octaves = 3
+
+[sub_resource type="NoiseTexture2D" id="Normal_b"]
+noise = SubResource("Noise_b")
+seamless = true
+as_normal_map = true
+bump_strength = 4.0
 
 [resource]
 render_priority = 0
@@ -49,6 +45,21 @@ shader_parameter/wave_a = Vector4(1, 0, 0.08, 60)
 shader_parameter/wave_b = Vector4(0.7, 0.6, 0.1, 31)
 shader_parameter/wave_c = Vector4(-0.3, 1, 0.1, 18)
 shader_parameter/wave_d = Vector4(0.2, -0.8, 0.08, 11)
+shader_parameter/wave_time = 0.0
+shader_parameter/deep_color = Color(0, 0.05, 0.09, 1)
+shader_parameter/absorption = Vector3(0.45, 0.12, 0.1)
+shader_parameter/sss_color = Color(0.05, 0.4, 0.35, 1)
+shader_parameter/sss_strength = 0.6
+shader_parameter/roughness = 0.04
+shader_parameter/underside_color = Color(0.15, 0.45, 0.5, 1)
 shader_parameter/normal_a = SubResource("Normal_a")
 shader_parameter/normal_b = SubResource("Normal_b")
+shader_parameter/normal_scale = 0.05
+shader_parameter/normal_strength = 0.5
+shader_parameter/scroll_a = Vector2(0.012, 0.006)
+shader_parameter/scroll_b = Vector2(-0.008, 0.014)
+shader_parameter/refraction = 0.03
 shader_parameter/foam_tex = SubResource("Foam")
+shader_parameter/foam_color = Color(0.95, 0.95, 0.95, 1)
+shader_parameter/shore_foam_depth = 1.5
+shader_parameter/crest_foam_height = 0.85

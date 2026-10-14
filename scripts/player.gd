@@ -10,16 +10,43 @@ extends CharacterBody3D
 @export_group("Swimming")
 @export var ocean: Ocean
 @export var swim_speed := 2.5
+## How quickly swimming reaches its speed and glides to a stop (m/s per s): water has momentum.
+@export var swim_acceleration := 5.0
 ## Sinking speed when not holding jump.
 @export var sink_speed := 0.8
 @export var rise_speed := 2.0
-## Swimming starts when the water reaches this high above the feet.
+## Swimming down while holding dive (Ctrl), m/s: about as fast as rising.
+@export var dive_speed := 2.0
+## How hard the water stops vertical motion, e.g. a fall or jump back in (m/s per s).
+@export var water_brake := 14.0
+## Swimming starts when the water reaches this high above the feet...
 @export var chest_height := 0.9
-## Pressing jump at the surface launches you this fast, e.g. to climb onto the boat.
-@export var climb_velocity := 6.5
+## ...and ends again only this much lower, so bobbing on waves doesn't flip in and out of swimming.
+@export var swim_exit_margin := 0.35
+## Within this much below floating depth you float on the waves; deeper you sink slowly (m).
+@export var surface_band := 4.0
+## How fast you drift back up to the surface when floating (m/s): gentle, like real buoyancy.
+@export var float_up_speed := 1.0
+## Pressing jump while floating gives a small hop this fast (you can't jump far out of water).
+@export var climb_velocity := 3.5
+## ...unless an edge (the boat deck, land) is right in front of you and at most this high above
+## the water: then you pull yourself up onto it.
+@export var climb_reach := 2.4
+## Seconds the pull-up takes.
+@export var climb_time := 0.5
+## Seconds before you can push out of the water again.
+@export var climb_cooldown := 0.8
 ## Swapped in for the WorldEnvironment's environment while the camera is under water.
 @export var world_environment: WorldEnvironment
 @export var underwater_environment: Environment
+@export_subgroup("Swim camera")
+## Slow up-down bob per swim stroke while moving (m), and strokes per second.
+@export var stroke_bob := 0.045
+@export var stroke_rate := 0.75
+## Gentle roll while floating at the surface (degrees).
+@export var float_roll := 1.6
+## Field of view under water (water magnifies, so slightly narrower).
+@export var underwater_fov := 72.0
 ## The world's sun, so the held item is lit the same way as the world.
 @export var sun: DirectionalLight3D
 
@@ -55,6 +82,20 @@ extends CharacterBody3D
 var items: Array[ItemData] = []
 var selected_slot := 0
 var health := 0.0
+## True while swimming (not walking on land or a deck); read by the SharkZone.
+var in_water := false
+## Swimming, or just above the water with nothing solid underfoot (jumping in, climbing out).
+## Read by the SharkZone: only standing on the boat or land is out of the sea.
+var exposed_to_sea := false
+var _swim_time := 0.0
+var _climb_timer := 0.0
+var _vault_time := -1.0  # >= 0 while pulling up onto an edge
+var _vault_from := Vector3.ZERO
+var _vault_on: Node3D  # what we climb onto; the target follows it (the boat bobs)
+var _vault_to_local := Vector3.ZERO
+var _vault_over := 0.0  # height the pull-up arcs over
+var _swim_sway := 0.0  # 0..1, how much of the swim camera motion is applied
+var _base_fov := 80.0
 var stamina := 0.0
 var exhausted := false
 var _since_sprint := 0.0
@@ -82,6 +123,7 @@ var _drown_timer := 0.0
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_base_fov = _camera.fov
 	health = max_health
 	_health_bar.max_value = max_health
 	_health_bar.value = health
@@ -136,26 +178,35 @@ func _physics_process(delta: float) -> void:
 	var forward := -global_basis.z
 	forward.y = 0.0
 	global_basis = Basis.looking_at(forward.normalized())
+	if _vault_time >= 0.0:
+		_update_vault(delta)
+		return
 
 	var water_depth := ocean.get_height(global_position) - global_position.y if ocean else -INF
-	var swimming := water_depth > chest_height
-	if swimming:
-		_swim(delta, water_depth)
-	elif not is_on_floor():
+	var swimming := water_depth > (chest_height - swim_exit_margin if in_water else chest_height)
+	in_water = swimming
+	exposed_to_sea = swimming or (not is_on_floor() and water_depth > -2.5)
+	if not swimming and not is_on_floor():
 		velocity += get_gravity() * delta
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = jump_velocity
 
 	var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	var direction := global_basis * Vector3(input.x, 0.0, input.y)
 	var move_speed := swim_speed if swimming else speed
 	var sprinting := _update_stamina(delta, input != Vector2.ZERO, swimming)
 	if sprinting:
 		move_speed *= swim_sprint_multiplier if swimming else sprint_multiplier
 	elif _item_use.is_using():
 		move_speed *= drinking_speed_multiplier
-	velocity.x = direction.x * move_speed
-	velocity.z = direction.z * move_speed
+	if swimming:
+		_swim(delta, water_depth, input, move_speed)
+	else:
+		var direction := global_basis * Vector3(input.x, 0.0, input.y)
+		velocity.x = direction.x * move_speed
+		velocity.z = direction.z * move_speed
+	_update_swim_camera(delta, swimming, input != Vector2.ZERO, water_depth)
+	# Swimming: slide along underwater slopes in any direction instead of treating them as walls.
+	motion_mode = CharacterBody3D.MOTION_MODE_FLOATING if swimming else CharacterBody3D.MOTION_MODE_GROUNDED
 	move_and_slide()
 	_held.set_walk_speed(Vector2(velocity.x, velocity.z).length() if is_on_floor() else 0.0)
 
@@ -211,15 +262,98 @@ func consume(item: ItemData) -> void:
 		_refresh_hotbar()
 
 
-func _swim(delta: float, water_depth: float) -> void:
-	var target := -sink_speed
-	if Input.is_action_pressed("jump"):
-		if Input.is_action_just_pressed("jump") and water_depth < chest_height + 0.3:
+## Swimming: move where you look (look down + forward to dive), with momentum. At the surface
+## you float on the waves; below it you sink slowly unless you swim or hold jump to rise.
+func _swim(delta: float, water_depth: float, input: Vector2, move_speed: float) -> void:
+	var at_surface := water_depth < chest_height + surface_band
+	_climb_timer -= delta
+	# Push out of the water (e.g. onto the boat) only when floating at the surface, not mid-plunge.
+	if Input.is_action_just_pressed("jump") and _climb_timer <= 0.0 and water_depth < chest_height + 0.8:
+		if _start_vault():
+			_climb_timer = climb_cooldown
+			return
+		if water_depth < chest_height + 0.35:  # nothing to climb onto: just a small hop
+			_climb_timer = climb_cooldown
 			velocity.y = climb_velocity
 			return
-		# Rise, settling with the head just above the surface.
-		target = clampf((water_depth - chest_height) * 4.0, -sink_speed, rise_speed)
-	velocity.y = move_toward(velocity.y, target, 10.0 * delta)
+	var want := _camera.global_basis * Vector3(input.x, 0.0, input.y) * move_speed
+	var float_y := clampf((water_depth - chest_height) * 4.0, -rise_speed, float_up_speed)  # head above the surface
+	if Input.is_action_pressed("dive"):
+		want.y = -dive_speed
+	elif Input.is_action_pressed("jump"):
+		want.y = minf((water_depth - chest_height) * 4.0, rise_speed)  # swim up, settle at the surface
+	elif at_surface and want.y > -0.6:
+		want.y = float_y  # floating: ride the waves unless clearly diving
+	elif at_surface:
+		want.y = minf(want.y, float_y)
+	else:
+		want.y -= sink_speed * (1.0 - absf(input.y))  # drifting down slowly when not swimming
+	var flat := Vector2(velocity.x, velocity.z).move_toward(Vector2(want.x, want.z), swim_acceleration * delta)
+	var pushing_off := _climb_timer > climb_cooldown - 0.35 and velocity.y > 0.0  # just jumped: let it carry
+	var vy := velocity.y if pushing_off else move_toward(velocity.y, want.y, water_brake * delta)
+	velocity = Vector3(flat.x, vy, flat.y)
+
+
+## Looks for an edge right in front (deck or land, low enough to reach) and starts pulling up.
+func _start_vault() -> bool:
+	var water := ocean.get_height(global_position)
+	for reach_ahead: float in [0.75, 1.1]:  # a little farther too, past a curved hull
+		var ahead := global_position - global_basis.z * reach_ahead
+		var top := water + climb_reach + 0.4
+		var hit := {}
+		var land := {}  # lowest place to stand found under the starting point (the floor inside the hull)
+		var over := -INF  # highest thing passed on the way down (the side's rim): climb over it
+		for i in 6:  # look down past the sail and the rounded rim
+			# Down to below the water line: the floor inside the hull sits a little under it.
+			var query := PhysicsRayQueryParameters3D.create(Vector3(ahead.x, top, ahead.z), Vector3(ahead.x, water - 0.8, ahead.z), 1 | 4)
+			hit = get_world_3d().direct_space_state.intersect_ray(query)
+			if hit.is_empty():
+				break
+			if hit.position.y - water <= climb_reach:
+				over = maxf(over, hit.position.y)
+				if hit.normal.y >= 0.7:
+					land = hit
+			top = hit.position.y - 0.05
+		if land.is_empty():
+			continue
+		hit = land
+		_vault_over = maxf(over, hit.position.y) + 0.35
+		_vault_on = hit.collider
+		_vault_to_local = _vault_on.to_local(hit.position + Vector3.UP * 0.05)
+		_vault_from = global_position
+		_vault_time = 0.0
+		velocity = Vector3.ZERO
+		return true
+	return false
+
+
+## Pull-up: up first, then forward over the edge, landing on it.
+func _update_vault(delta: float) -> void:
+	_vault_time += delta
+	var t := minf(_vault_time / climb_time, 1.0)
+	var to := _vault_on.to_global(_vault_to_local) if is_instance_valid(_vault_on) else _vault_from
+	var over := Vector3(_vault_from.x, maxf(_vault_over, to.y + 0.35), _vault_from.z)
+	var a := _vault_from.lerp(over, t)
+	var b := over.lerp(to, t)
+	global_position = a.lerp(b, smoothstep(0.0, 1.0, t))
+	if t >= 1.0:
+		_vault_time = -1.0
+		velocity = Vector3.ZERO
+		in_water = false
+		if _vault_on and _vault_on.is_in_group("platform") and get_parent() != _vault_on:
+			reparent(_vault_on)
+
+
+## Swim camera: slow stroke bob while moving, gentle roll while floating, narrower FOV below.
+func _update_swim_camera(delta: float, swimming: bool, moving: bool, water_depth: float) -> void:
+	_swim_sway = move_toward(_swim_sway, 1.0 if swimming else 0.0, delta * 2.0)
+	_swim_time += delta
+	var stroke := sin(_swim_time * TAU * stroke_rate) * stroke_bob * (1.0 if moving else 0.25)
+	var floating := clampf(1.0 - absf(water_depth - chest_height), 0.0, 1.0)  # near the surface
+	_camera.position.y = stroke * _swim_sway
+	_camera.rotation.z = deg_to_rad(sin(_swim_time * 0.9) * float_roll * floating) * _swim_sway
+	var fov := underwater_fov if _underwater else _base_fov
+	_camera.fov = move_toward(_camera.fov, fov, delta * 20.0)
 
 
 func _update_underwater() -> void:
@@ -332,6 +466,8 @@ func _floor_body() -> Node:
 ## Turns walking and looking on/off (off while steering the boat).
 func set_controlled(value: bool) -> void:
 	set_physics_process(value)
+	in_water = false
+	exposed_to_sea = false
 	_combat.set_process_unhandled_input(value)
 	_item_use.set_process_unhandled_input(value)
 	velocity = Vector3.ZERO

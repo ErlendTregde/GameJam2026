@@ -1,0 +1,123 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/boat.gd" id="1_boat"]
+[ext_resource type="PackedScene" path="res://assets/boat/fishing_boat.glb" id="2_model"]
+[ext_resource type="Shape3D" path="res://assets/boat/boat_collision.res" id="3_deck"]
+[ext_resource type="Shader" path="res://shaders/water_mask.gdshader" id="4_mask"]
+
+[sub_resource type="ShaderMaterial" id="WaterMaskMat"]
+render_priority = -1
+shader = ExtResource("4_mask")
+
+[sub_resource type="BoxShape3D" id="Hull"]
+size = Vector3(2.4, 1, 6.8)
+
+[sub_resource type="BoxShape3D" id="HelmZone"]
+size = Vector3(2.4, 2, 1.8)
+
+[sub_resource type="LabelSettings" id="PromptText"]
+font_size = 22
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Boat" type="RigidBody3D"]
+collision_layer = 2
+mass = 800.0
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, -0.3, 0)
+linear_damp = 1.5
+angular_damp = 2.0
+script = ExtResource("1_boat")
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0, 0.3, -3)
+
+[node name="HullShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+shape = SubResource("Hull")
+
+[node name="Deck" type="AnimatableBody3D" parent="." groups=["platform"]]
+collision_layer = 4
+collision_mask = 0
+sync_to_physics = false
+
+[node name="DeckShape" type="CollisionShape3D" parent="Deck"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0, 0.3, -3)
+shape = ExtResource("3_deck")
+
+[node name="Probes" type="Node3D" parent="."]
+
+[node name="BowTip" type="Marker3D" parent="Probes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, -3.1)
+
+[node name="BowLeft" type="Marker3D" parent="Probes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, -0.35, -2.2)
+
+[node name="BowRight" type="Marker3D" parent="Probes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, -0.35, -2.2)
+
+[node name="MidLeft" type="Marker3D" parent="Probes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -0.35, 0.4)
+
+[node name="MidRight" type="Marker3D" parent="Probes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.35, 0.4)
+
+[node name="SternLeft" type="Marker3D" parent="Probes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, -0.35, 2.9)
+
+[node name="SternRight" type="Marker3D" parent="Probes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, -0.35, 2.9)
+
+[node name="Propeller" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 3.4)
+
+[node name="WaterMask" type="CSGPolygon3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.6, 0)
+cast_shadow = 0
+polygon = PackedVector2Array(0.05, -3.03, 0.58, -2.96, 1.03, -2.07, 1.25, 0.18, 1.02, 1.43, 0.59, 2.24, 0, 3.18, -0.59, 2.24, -1.02, 1.43, -1.25, 0.18, -1.03, -2.07, -0.58, -2.96, -0.05, -3.03)
+depth = 0.02
+material = SubResource("WaterMaskMat")
+
+[node name="PlayerSpawn" type="Marker3D" parent="Deck"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0.5)
+
+[node name="Helm" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 2.8)
+collision_layer = 0
+collision_mask = 8
+
+[node name="HelmShape" type="CollisionShape3D" parent="Helm"]
+shape = SubResource("HelmZone")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+top_level = true
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 2, 0)
+spring_length = 14.0
+margin = 0.3
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D"]
+far = 2000.0
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Prompt" type="Label" parent="HUD"]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -80.0
+offset_right = 300.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "E: take the helm"
+label_settings = SubResource("PromptText")
+horizontal_alignment = 1
+
+[connection signal="body_entered" from="Helm" to="." method="_on_helm_body_entered"]
+[connection signal="body_exited" from="Helm" to="." method="_on_helm_body_exited"]

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="LootTable" format=3]
+
+[ext_resource type="Script" path="res://scripts/loot_table.gd" id="1_loot"]
+[ext_resource type="Script" path="res://scripts/inventory/item_data.gd" id="2_itemdata"]
+[ext_resource type="Resource" path="res://items/bottle.tres" id="item_bottle"]
+[ext_resource type="Resource" path="res://items/coconut.tres" id="item_coconut"]
+[ext_resource type="Resource" path="res://items/plank.tres" id="item_plank"]
+[ext_resource type="Resource" path="res://items/rock.tres" id="item_rock"]
+[ext_resource type="Resource" path="res://items/spear.tres" id="item_spear"]
+
+[resource]
+script = ExtResource("1_loot")
+always = Array[ExtResource("2_itemdata")]([ExtResource("item_spear")])
+pool = Array[ExtResource("2_itemdata")]([ExtResource("item_coconut"), ExtResource("item_bottle"), ExtResource("item_plank"), ExtResource("item_rock")])
+picks = Vector2i(2, 3)

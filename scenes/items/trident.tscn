@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/inventory/world_item.gd" id="1_world_item"]
+[ext_resource type="Resource" path="res://items/trident.tres" id="2_item"]
+[ext_resource type="ArrayMesh" path="res://assets/weapons/trident/trident_mesh.res" id="3_mesh"]
+
+[sub_resource type="BoxShape3D" id="Shape"]
+size = Vector3(0.3, 1.7, 0.09)
+
+[node name="Trident" type="RigidBody3D"]
+collision_layer = 16
+collision_mask = 7
+mass = 3.0
+continuous_cd = true
+script = ExtResource("1_world_item")
+item = ExtResource("2_item")
+
+[node name="Model" type="MeshInstance3D" parent="."]
+mesh = ExtResource("3_mesh")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape")

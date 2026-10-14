@@ -1,0 +1,373 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="Shader" path="res://shaders/toon.gdshader" id="2_toon"]
+[ext_resource type="PackedScene" path="res://scenes/inventory/slot.tscn" id="3_slot"]
+[ext_resource type="Script" path="res://scripts/inventory/held_view.gd" id="4_held"]
+[ext_resource type="Script" path="res://scripts/combat.gd" id="5_combat"]
+[ext_resource type="Script" path="res://scripts/item_use.gd" id="6_item_use"]
+
+[sub_resource type="ShaderMaterial" id="BodyMat"]
+shader = ExtResource("2_toon")
+shader_parameter/albedo_color = Color(0.9, 0.45, 0.3, 1)
+
+[sub_resource type="CapsuleShape3D" id="Body"]
+radius = 0.25
+height = 1.4
+
+[sub_resource type="CapsuleMesh" id="BodyMesh"]
+material = SubResource("BodyMat")
+radius = 0.25
+height = 1.4
+
+[sub_resource type="StyleBoxFlat" id="Dot"]
+bg_color = Color(1, 1, 1, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 0.5)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="BarBack"]
+bg_color = Color(0.25, 0.22, 0.24, 0.85)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 4
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="HealthFill"]
+bg_color = Color(0.45, 0.85, 0.22, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StaminaFill"]
+bg_color = Color(1, 0.8, 0.22, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="OxygenFill"]
+bg_color = Color(0.35, 0.78, 1, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="Gradient" id="VignetteRamp"]
+offsets = PackedFloat32Array(0, 0.82, 1.15)
+colors = PackedColorArray(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.7, 0, 0, 0.55)
+
+[sub_resource type="GradientTexture2D" id="Vignette"]
+gradient = SubResource("VignetteRamp")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Animation" id="Hurt"]
+resource_name = "hurt"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("HUD/DamageFlash:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Head/Camera3D:h_offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.04, 0.08, 0.12, 0.16, 0.2, 0.24, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.06, -0.05, 0.04, -0.03, 0.02, -0.01, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Head/Camera3D:v_offset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.04, 0.08, 0.12, 0.16, 0.2, 0.24, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -0.04, 0.05, -0.03, 0.03, -0.015, 0.01, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("HUD/Status/HealthBar:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.35),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1.6, 1.6, 1.6, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="Animations"]
+_data = {
+&"hurt": SubResource("Hurt")
+}
+
+[sub_resource type="Environment" id="HeldLight"]
+background_mode = 1
+ambient_light_source = 2
+ambient_light_color = Color(0.62, 0.7, 0.82, 1)
+ambient_light_energy = 0.8
+tonemap_mode = 2
+tonemap_white = 6.0
+adjustment_enabled = true
+adjustment_contrast = 1.08
+adjustment_saturation = 1.15
+
+[sub_resource type="SphereShape3D" id="AttackProbe"]
+radius = 0.35
+
+[sub_resource type="SphereShape3D" id="InteractProbe"]
+radius = 0.15
+
+[sub_resource type="LabelSettings" id="PromptText"]
+font_size = 18
+outline_size = 6
+outline_color = Color(0.11, 0.1, 0.12, 1)
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 8
+collision_mask = 5
+floor_snap_length = 0.3
+script = ExtResource("1_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+shape = SubResource("Body")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+layers = 2
+mesh = SubResource("BodyMesh")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+cull_mask = 1048573
+current = true
+fov = 80.0
+near = 0.05
+far = 2000.0
+
+[node name="InteractRay" type="ShapeCast3D" parent="Head/Camera3D"]
+shape = SubResource("InteractProbe")
+target_position = Vector3(0, 0, -2.5)
+max_results = 1
+collision_mask = 16
+
+[node name="AttackCast" type="ShapeCast3D" parent="Head/Camera3D"]
+enabled = false
+shape = SubResource("AttackProbe")
+target_position = Vector3(0, 0, -2)
+max_results = 8
+collision_mask = 32
+
+[node name="Combat" type="Node" parent="." node_paths=PackedStringArray("cast", "held_view")]
+script = ExtResource("5_combat")
+cast = NodePath("../Head/Camera3D/AttackCast")
+held_view = NodePath("../HUD/HeldView")
+
+[node name="ItemUse" type="Node" parent="." node_paths=PackedStringArray("player", "held_view")]
+script = ExtResource("6_item_use")
+player = NodePath("..")
+held_view = NodePath("../HUD/HeldView")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="HeldView" type="SubViewportContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+script = ExtResource("4_held")
+
+[node name="SubViewport" type="SubViewport" parent="HUD/HeldView"]
+own_world_3d = true
+transparent_bg = true
+scaling_3d_mode = 0
+scaling_3d_scale = 1.0
+handle_input_locally = false
+msaa_3d = 1
+size = Vector2i(1152, 648)
+render_target_update_mode = 0
+
+[node name="Camera3D" type="Camera3D" parent="HUD/HeldView/SubViewport"]
+environment = SubResource("HeldLight")
+fov = 70.0
+near = 0.01
+far = 10.0
+
+[node name="Holder" type="Node3D" parent="HUD/HeldView/SubViewport/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.24, -0.7)
+
+[node name="Light" type="DirectionalLight3D" parent="HUD/HeldView/SubViewport"]
+
+[node name="DamageFlash" type="TextureRect" parent="HUD"]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("Vignette")
+expand_mode = 1
+
+[node name="Crosshair" type="Panel" parent="HUD"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -3.0
+offset_top = -3.0
+offset_right = 3.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Dot")
+
+[node name="Status" type="VBoxContainer" parent="HUD"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = -130.0
+offset_right = 338.0
+offset_bottom = -28.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="OxygenRow" type="HBoxContainer" parent="HUD/Status"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="OxygenBar" type="ProgressBar" parent="HUD/Status/OxygenRow"]
+custom_minimum_size = Vector2(170, 18)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/background = SubResource("BarBack")
+theme_override_styles/fill = SubResource("OxygenFill")
+value = 100.0
+show_percentage = false
+
+[node name="StaminaBar" type="ProgressBar" parent="HUD/Status"]
+custom_minimum_size = Vector2(230, 18)
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 2
+theme_override_styles/background = SubResource("BarBack")
+theme_override_styles/fill = SubResource("StaminaFill")
+value = 100.0
+show_percentage = false
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/Status"]
+custom_minimum_size = Vector2(300, 28)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("BarBack")
+theme_override_styles/fill = SubResource("HealthFill")
+value = 100.0
+show_percentage = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("Animations")
+}
+
+[node name="Prompt" type="Label" parent="HUD"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = 24.0
+offset_right = 200.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+label_settings = SubResource("PromptText")
+horizontal_alignment = 1
+
+[node name="Hotbar" type="HBoxContainer" parent="HUD"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -83.0
+offset_right = -28.0
+offset_bottom = -7.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="Slot1" parent="HUD/Hotbar" instance=ExtResource("3_slot")]
+layout_mode = 2
+
+[node name="Slot2" parent="HUD/Hotbar" instance=ExtResource("3_slot")]
+layout_mode = 2
+
+[node name="Slot3" parent="HUD/Hotbar" instance=ExtResource("3_slot")]
+layout_mode = 2

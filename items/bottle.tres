@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/inventory/item_data.gd" id="1_item"]
+
+[resource]
+script = ExtResource("1_item")
+name = "Water Bottle"
+scene_path = "res://scenes/items/bottle.tscn"
+held_size = 0.2
+held_rotation = Vector3(0, 0, -8)
+consumable = true
+heal = 8.0
+restore_stamina = 50.0
+use_time = 1.6

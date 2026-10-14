@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/inventory/item_data.gd" id="1_item"]
+[ext_resource type="PackedScene" path="res://scenes/thrown_trident.tscn" id="2_thrown"]
+
+[resource]
+script = ExtResource("1_item")
+name = "Trident"
+scene_path = "res://scenes/items/trident.tscn"
+hold_style = 1
+held_size = 1.7
+held_rotation = Vector3(0, 0, 0)
+grip = 0.3
+damage = 40.0
+reach = 2.6
+cooldown = 0.55
+thrown_scene = ExtResource("2_thrown")

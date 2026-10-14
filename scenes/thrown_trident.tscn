@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/thrown_weapon.gd" id="1_thrown"]
+[ext_resource type="ArrayMesh" path="res://assets/weapons/trident/trident_mesh.res" id="2_mesh"]
+
+[sub_resource type="CapsuleShape3D" id="Shape"]
+radius = 0.08
+height = 1.7
+
+[node name="ThrownTrident" type="RigidBody3D"]
+collision_layer = 0
+collision_mask = 33
+mass = 3.0
+gravity_scale = 0.6
+continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 1
+script = ExtResource("1_thrown")
+
+[node name="Model" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+mesh = ExtResource("2_mesh")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+shape = SubResource("Shape")

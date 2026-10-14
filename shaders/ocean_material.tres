@@ -1,0 +1,54 @@
+[gd_resource type="ShaderMaterial" load_steps=8 format=3]
+
+[ext_resource type="Shader" path="res://shaders/ocean.gdshader" id="1_shader"]
+
+[sub_resource type="FastNoiseLite" id="Noise_a"]
+noise_type = 3
+frequency = 0.02
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="Normal_a"]
+width = 512
+height = 512
+seamless = true
+as_normal_map = true
+bump_strength = 6.0
+noise = SubResource("Noise_a")
+
+[sub_resource type="FastNoiseLite" id="Noise_b"]
+noise_type = 3
+seed = 7
+frequency = 0.035
+fractal_octaves = 3
+
+[sub_resource type="NoiseTexture2D" id="Normal_b"]
+width = 512
+height = 512
+seamless = true
+as_normal_map = true
+bump_strength = 4.0
+noise = SubResource("Noise_b")
+
+[sub_resource type="FastNoiseLite" id="Noise_foam"]
+noise_type = 2
+seed = 3
+frequency = 0.04
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="Foam"]
+width = 256
+height = 256
+seamless = true
+invert = true
+noise = SubResource("Noise_foam")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_shader")
+shader_parameter/wave_a = Vector4(1, 0, 0.08, 60)
+shader_parameter/wave_b = Vector4(0.7, 0.6, 0.1, 31)
+shader_parameter/wave_c = Vector4(-0.3, 1, 0.1, 18)
+shader_parameter/wave_d = Vector4(0.2, -0.8, 0.08, 11)
+shader_parameter/normal_a = SubResource("Normal_a")
+shader_parameter/normal_b = SubResource("Normal_b")
+shader_parameter/foam_tex = SubResource("Foam")

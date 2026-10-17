@@ -413,8 +413,15 @@ func _drop() -> void:
 	_refresh_hotbar()
 
 
-func _toss_velocity(_from: Vector3) -> Vector3:
-	return velocity - _camera.global_basis.z * 2.5
+## A lob that lands where the crosshair points (up to 4 m away), so you can aim drops onto the scale.
+func _toss_velocity(from: Vector3) -> Vector3:
+	var aim_from := _camera.global_position
+	var aim_to := aim_from - _camera.global_basis.z * 4.0
+	var query := PhysicsRayQueryParameters3D.create(aim_from, aim_to, 1 | 4 | 16, [get_rid()])
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	var target: Vector3 = hit.position if hit else aim_to
+	var t := 0.45  # flight time
+	return (target - from) / t - get_gravity() * t * 0.5
 
 
 func _spawn_item(item: ItemData, weight: float, at: Vector3, toss: Vector3) -> void:

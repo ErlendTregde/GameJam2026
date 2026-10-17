@@ -49,6 +49,9 @@
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/sea_stone_2.res" id="reef_sea_stone_2"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/spiral_shell.res" id="reef_spiral_shell"]
 [ext_resource type="PackedScene" path="res://scenes/items/starfish.tscn" id="reef_starfish"]
+[ext_resource type="PackedScene" path="res://scenes/shop/dock.tscn" id="shop_dock"]
+[ext_resource type="PackedScene" path="res://scenes/shop/sell_scale.tscn" id="shop_scale"]
+[ext_resource type="PackedScene" path="res://scenes/shop/coco.tscn" id="shop_coco"]
 
 [sub_resource type="FastNoiseLite" id="CloudDetailNoise"]
 noise_type = 2
@@ -472,3 +475,15 @@ player = NodePath("../Player")
 ocean = NodePath("../Ocean")
 terrain = NodePath("../Terrain")
 shark_scene = ExtResource("41_shark")
+
+[node name="Shop" type="Node3D" parent="."]
+
+[node name="Dock" parent="Shop" instance=ExtResource("shop_dock")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.75, 28)
+
+[node name="SellScale" parent="Shop" node_paths=PackedStringArray("coco") instance=ExtResource("shop_scale")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -6, 1, 25.5)
+coco = NodePath("../Coco")
+
+[node name="Coco" parent="Shop" instance=ExtResource("shop_coco")]
+transform = Transform3D(-0.65, 0, 0.76, 0, 1, 0, -0.76, 0, -0.65, -7.1, 1, 25.2)

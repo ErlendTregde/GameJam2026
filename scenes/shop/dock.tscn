@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" path="res://shaders/toon.gdshader" id="1_toon"]
+
+[sub_resource type="ShaderMaterial" id="Wood"]
+shader = ExtResource("1_toon")
+shader_parameter/albedo_color = Color(0.5, 0.35, 0.21, 1)
+
+[sub_resource type="BoxMesh" id="DeckMesh"]
+material = SubResource("Wood")
+size = Vector3(3, 0.5, 10)
+
+[sub_resource type="BoxShape3D" id="DeckShape"]
+size = Vector3(3, 0.5, 10)
+
+[node name="Dock" type="StaticBody3D"]
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("DeckMesh")
+
+[node name="Shape" type="CollisionShape3D" parent="."]
+shape = SubResource("DeckShape")

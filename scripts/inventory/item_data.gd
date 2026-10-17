@@ -1,3 +1,4 @@
+@tool  # ShopItem (a @tool) shows item models in the editor
 class_name ItemData
 extends Resource
 ## One kind of item. Make a new item by saving one of these as a .tres in res://items/.

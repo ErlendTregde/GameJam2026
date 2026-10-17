@@ -62,5 +62,5 @@ transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3, 0, 0.7)
 coco = NodePath("../Coco")
 
 [node name="Coco" parent="." instance=ExtResource("3_coco")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 0, 0.6)
+transform = Transform3D(0.94, 0, -0.34, 0, 1, 0, 0.34, 0, 0.94, 3.85, 0.79, 1.05)
 

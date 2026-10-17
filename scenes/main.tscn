@@ -1,18 +1,18 @@
 [gd_scene format=3 uid="uid://baisnsavedux"]
 
 [ext_resource type="Script" uid="uid://cholbe3r5b1l2" path="res://scripts/ocean.gd" id="1_ocean"]
-[ext_resource type="Material" path="res://shaders/ocean_material.tres" id="2_water"]
+[ext_resource type="Material" uid="uid://j5s2b1e05i5v" path="res://shaders/ocean_material.tres" id="2_water"]
 [ext_resource type="PackedScene" path="res://scenes/boat.tscn" id="4_boat"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="5_player"]
 [ext_resource type="Shader" uid="uid://dbloj66opedh6" path="res://shaders/sky.gdshader" id="6_sky"]
 [ext_resource type="Script" uid="uid://dmyct3oj0rjey" path="res://scripts/terrain.gd" id="8_terrain"]
-[ext_resource type="Material" path="res://shaders/sand_material.tres" id="9_sand"]
+[ext_resource type="Material" uid="uid://clr4v32fiitt6" path="res://shaders/sand_material.tres" id="9_sand"]
 [ext_resource type="PackedScene" path="res://scenes/items/coconut.tscn" id="10_coconut"]
 [ext_resource type="PackedScene" path="res://scenes/items/bottle.tscn" id="11_bottle"]
 [ext_resource type="PackedScene" path="res://scenes/items/plank.tscn" id="12_plank"]
 [ext_resource type="Script" uid="uid://1eawd26xlww6" path="res://scripts/island_shape.gd" id="13_island_shape"]
 [ext_resource type="Script" uid="uid://o1ug7e8wr72d" path="res://scripts/scatter.gd" id="14_scatter"]
-[ext_resource type="Material" path="res://shaders/terrain_material.tres" id="15_terrain_mat"]
+[ext_resource type="Material" uid="uid://bpmyibeuyl7uf" path="res://shaders/terrain_material.tres" id="15_terrain_mat"]
 [ext_resource type="ArrayMesh" path="res://assets/tree/palm_mesh.res" id="16_palm"]
 [ext_resource type="ArrayMesh" path="res://assets/grass/grass_mesh.res" id="17_grass"]
 [ext_resource type="ArrayMesh" path="res://assets/stone/stone_02.res" id="18_stone_a"]
@@ -21,7 +21,6 @@
 [ext_resource type="ArrayMesh" path="res://assets/stone/stone_08.res" id="21_stone_d"]
 [ext_resource type="PackedScene" path="res://scenes/items/rock.tscn" id="22_rock"]
 [ext_resource type="PackedScene" path="res://scenes/chest.tscn" id="23_chest"]
-[ext_resource type="Resource" path="res://loot/wooden.tres" id="24_loot_wooden"]
 [ext_resource type="Resource" path="res://loot/silver.tres" id="25_loot_silver"]
 [ext_resource type="Resource" path="res://loot/gold.tres" id="26_loot_gold"]
 [ext_resource type="Script" uid="uid://fiydosvp587" path="res://scripts/fish_spawner.gd" id="27_spawner"]
@@ -30,6 +29,9 @@
 [ext_resource type="Resource" path="res://loot/palm.tres" id="30_loot_palm"]
 [ext_resource type="Script" uid="uid://ddaus3rgj41k5" path="res://scripts/shark_zone.gd" id="40_shark_zone"]
 [ext_resource type="PackedScene" path="res://scenes/shark/shark.tscn" id="41_shark"]
+[ext_resource type="PackedScene" path="res://scenes/crab/crab.tscn" id="crab_scene"]
+[ext_resource type="Script" uid="uid://djqmio8emlabu" path="res://scripts/crab_spawner.gd" id="crab_spawner"]
+[ext_resource type="Resource" path="res://loot/gamble_1.tres" id="loot_gamble_1"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/anemone.res" id="reef_anemone"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/branch_coral.res" id="reef_branch_coral"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/circle_shell.res" id="reef_circle_shell"]
@@ -49,16 +51,10 @@
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/sea_stone_2.res" id="reef_sea_stone_2"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/spiral_shell.res" id="reef_spiral_shell"]
 [ext_resource type="PackedScene" path="res://scenes/items/starfish.tscn" id="reef_starfish"]
-[ext_resource type="PackedScene" path="res://scenes/shop/dock.tscn" id="shop_dock"]
-[ext_resource type="PackedScene" path="res://scenes/shop/sell_scale.tscn" id="shop_scale"]
-[ext_resource type="PackedScene" path="res://scenes/shop/coco.tscn" id="shop_coco"]
 [ext_resource type="PackedScene" path="res://scenes/shop/shop_board.tscn" id="shop_board"]
+[ext_resource type="Resource" path="res://items/bottle.tres" id="shop_bottle"]
 [ext_resource type="PackedScene" path="res://scenes/shop/shop_item.tscn" id="shop_item"]
 [ext_resource type="Resource" path="res://items/spear.tres" id="shop_spear"]
-[ext_resource type="Resource" path="res://items/bottle.tres" id="shop_bottle"]
-[ext_resource type="Resource" path="res://loot/gamble_1.tres" id="loot_gamble_1"]
-[ext_resource type="Script" path="res://scripts/crab_spawner.gd" id="crab_spawner"]
-[ext_resource type="PackedScene" path="res://scenes/crab/crab.tscn" id="crab_scene"]
 
 [sub_resource type="FastNoiseLite" id="CloudDetailNoise"]
 noise_type = 2
@@ -487,35 +483,25 @@ shark_scene = ExtResource("41_shark")
 boss_bar = NodePath("../Player/HUD/BossBar")
 message = NodePath("../Player/HUD/Message")
 
-[node name="Shop" type="Node3D" parent="."]
+[node name="Shop" type="Node3D" parent="." unique_id=1993667263]
 
-[node name="Dock" parent="Shop" instance=ExtResource("shop_dock")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.75, 28)
+[node name="ShopBoard" parent="Shop" unique_id=827448380 instance=ExtResource("shop_board")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -3.310526, 6.5351224, 0.9471264)
 
-[node name="SellScale" parent="Shop" node_paths=PackedStringArray("coco") instance=ExtResource("shop_scale")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -6, 1, 25.5)
-coco = NodePath("../Coco")
-
-[node name="Coco" parent="Shop" instance=ExtResource("shop_coco")]
-transform = Transform3D(-0.65, 0, 0.76, 0, 1, 0, -0.76, 0, -0.65, -7.1, 1, 25.2)
-
-[node name="ShopBoard" parent="Shop" instance=ExtResource("shop_board")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -8, 0.85, 19)
-
-[node name="Spear" parent="Shop/ShopBoard" instance=ExtResource("shop_item")]
+[node name="Spear" parent="Shop/ShopBoard" unique_id=1279938782 instance=ExtResource("shop_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.28, 0.12)
 item = ExtResource("shop_spear")
 price = 40
 display_size = 1.4
 model_rotation = Vector3(0, 0, 90)
 
-[node name="Bottle" parent="Shop/ShopBoard" instance=ExtResource("shop_item")]
+[node name="Bottle" parent="Shop/ShopBoard" unique_id=1868958528 instance=ExtResource("shop_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.25, 0.12)
 item = ExtResource("shop_bottle")
 price = 8
 display_size = 0.35
 
-[node name="Crabs" type="Node3D" parent="." node_paths=PackedStringArray("terrain", "island", "player")]
+[node name="Crabs" type="Node3D" parent="." unique_id=1134087308 node_paths=PackedStringArray("terrain", "island", "player")]
 script = ExtResource("crab_spawner")
 terrain = NodePath("../Terrain")
 island = NodePath("../Terrain/MainIsland")

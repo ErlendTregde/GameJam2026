@@ -1,45 +1,32 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://88isvsqsrxf4"]
 
-[ext_resource type="Script" path="res://scripts/shop/coco.gd" id="1_coco"]
+[ext_resource type="Script" uid="uid://dyooj23k1yqbd" path="res://scripts/shop/coco.gd" id="1_coco"]
 [ext_resource type="ArrayMesh" path="res://assets/cocunut/coconut_whole.res" id="2_coconut"]
-[ext_resource type="Shader" path="res://shaders/toon.gdshader" id="3_toon"]
-[ext_resource type="Texture2D" path="res://assets/coco/face-removebg-preview.png" id="4_face"]
+[ext_resource type="Texture2D" uid="uid://bgahuv4xgooe3" path="res://assets/coco/face-removebg-preview.png" id="4_face"]
 
-[sub_resource type="ShaderMaterial" id="Crate"]
-shader = ExtResource("3_toon")
-shader_parameter/albedo_color = Color(0.5, 0.34, 0.2, 1)
-
-[sub_resource type="BoxMesh" id="CrateMesh"]
-material = SubResource("Crate")
-size = Vector3(0.5, 0.5, 0.5)
-
-[node name="Coco" type="Node3D" node_paths=PackedStringArray("bubble")]
+[node name="Coco" type="Node3D" unique_id=476524425 node_paths=PackedStringArray("bubble")]
 script = ExtResource("1_coco")
 bubble = NodePath("Bubble")
 
-[node name="Crate" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
-mesh = SubResource("CrateMesh")
+[node name="Head" type="Node3D" parent="." unique_id=613737825]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 
-[node name="Head" type="Node3D" parent="."]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0.5, 0)
-
-[node name="Coconut" type="MeshInstance3D" parent="Head"]
+[node name="Coconut" type="MeshInstance3D" parent="Head" unique_id=984372375]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 mesh = ExtResource("2_coconut")
 
-[node name="Face" type="Decal" parent="Head"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.15, 0.15)
-size = Vector3(0.3, 0.3, 0.14)
+[node name="Face" type="Decal" parent="Head" unique_id=1240539314]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.0006790161, 0.13887942, 0.15)
+size = Vector3(0.41735536, 0.3, 0.2313037)
 texture_albedo = ExtResource("4_face")
 upper_fade = 0.0
 lower_fade = 0.0
 
-[node name="Bubble" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+[node name="Bubble" type="Label3D" parent="." unique_id=47485641]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 visible = false
 pixel_size = 0.004
 billboard = 1
+text = "..."
 font_size = 48
 outline_size = 14
-text = "..."

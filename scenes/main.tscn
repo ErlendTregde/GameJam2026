@@ -56,6 +56,7 @@
 [ext_resource type="PackedScene" path="res://scenes/shop/shop_item.tscn" id="shop_item"]
 [ext_resource type="Resource" path="res://items/spear.tres" id="shop_spear"]
 [ext_resource type="Resource" path="res://items/bottle.tres" id="shop_bottle"]
+[ext_resource type="Resource" path="res://loot/gamble_1.tres" id="loot_gamble_1"]
 
 [sub_resource type="FastNoiseLite" id="CloudDetailNoise"]
 noise_type = 2
@@ -293,7 +294,9 @@ terrain = NodePath("../../Terrain")
 
 [node name="WoodenChest" parent="Chests" unique_id=1690178757 instance=ExtResource("23_chest")]
 transform = Transform3D(-0.4997, 0, 0.8662, 0, 1, 0, -0.8662, 0, -0.4997, 8.57, 5.93, 4.95)
-loot = ExtResource("24_loot_wooden")
+loot = ExtResource("loot_gamble_1")
+cost = 15
+reset_time = 4.0
 
 [node name="SilverChest" parent="Chests" unique_id=1291231421 instance=ExtResource("23_chest")]
 transform = Transform3D(-0.6085, 0, 0.7935, 0, 1, 0, -0.7935, 0, -0.6085, -124.64, 3.97, -55.89)

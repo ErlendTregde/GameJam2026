@@ -23,6 +23,9 @@ const KIT := {
 @export var toss := Vector2(1.5, 3.0)
 ## Seconds between each item popping out.
 @export var item_interval := 0.15
+## > 0 makes it a gamble chest: opening costs this much, and it closes again after reset_time.
+@export var cost := 0
+@export var reset_time := 0.0
 
 var opened := false
 
@@ -43,11 +46,13 @@ func _show_tier() -> void:
 
 
 func get_prompt() -> String:
-	return "" if opened else "E  open chest"
-
-
-func interact(_player: Node) -> void:
 	if opened:
+		return ""
+	return "E  gamble $%d" % cost if cost > 0 else "E  open chest"
+
+
+func interact(player: Node) -> void:
+	if opened or (cost > 0 and not player.spend(cost)):
 		return
 	opened = true
 	($Model/AnimationPlayer as AnimationPlayer).play(KIT[tier][2])
@@ -61,3 +66,7 @@ func interact(_player: Node) -> void:
 		dropped.linear_velocity = global_basis.z * toss.x + Vector3.UP * toss.y + sideways
 		dropped.angular_velocity = Vector3(rng.randf(), rng.randf(), rng.randf()) * 4.0
 		await get_tree().create_timer(item_interval).timeout
+	if reset_time > 0.0:
+		await get_tree().create_timer(reset_time).timeout
+		($Model/AnimationPlayer as AnimationPlayer).play_backwards(KIT[tier][2])
+		opened = false

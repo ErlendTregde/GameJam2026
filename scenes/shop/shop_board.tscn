@@ -1,0 +1,56 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" path="res://shaders/toon.gdshader" id="1_toon"]
+
+[sub_resource type="ShaderMaterial" id="Wood"]
+shader = ExtResource("1_toon")
+shader_parameter/albedo_color = Color(0.45, 0.3, 0.18, 1)
+
+[sub_resource type="BoxMesh" id="PostMesh"]
+material = SubResource("Wood")
+size = Vector3(0.12, 2.2, 0.12)
+
+[sub_resource type="BoxShape3D" id="PostShape"]
+size = Vector3(0.12, 2.2, 0.12)
+
+[sub_resource type="BoxMesh" id="PlankMesh"]
+material = SubResource("Wood")
+size = Vector3(2, 0.35, 0.06)
+
+[sub_resource type="BoxShape3D" id="BoardShape"]
+size = Vector3(2, 1.15, 0.06)
+
+[node name="ShopBoard" type="StaticBody3D"]
+collision_mask = 0
+
+[node name="PostL" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 1.1, -0.09)
+mesh = SubResource("PostMesh")
+
+[node name="PostLShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 1.1, -0.09)
+shape = SubResource("PostShape")
+
+[node name="PostR" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 1.1, -0.09)
+mesh = SubResource("PostMesh")
+
+[node name="PostRShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 1.1, -0.09)
+shape = SubResource("PostShape")
+
+[node name="PlankLow" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("PlankMesh")
+
+[node name="PlankMid" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, 0)
+mesh = SubResource("PlankMesh")
+
+[node name="PlankTop" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.66, 0)
+mesh = SubResource("PlankMesh")
+
+[node name="BoardShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, 0)
+shape = SubResource("BoardShape")

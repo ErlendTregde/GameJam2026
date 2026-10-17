@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/shop/shop_item.gd" id="1_item"]
+
+[sub_resource type="BoxShape3D" id="Hit"]
+size = Vector3(0.5, 0.6, 0.2)
+
+[node name="ShopItem" type="StaticBody3D" node_paths=PackedStringArray("label")]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_item")
+label = NodePath("Label")
+
+[node name="Shape" type="CollisionShape3D" parent="."]
+shape = SubResource("Hit")
+
+[node name="Label" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0.1)
+billboard = 1
+font_size = 56
+outline_size = 14
+text = "Item
+$0
+[E]"

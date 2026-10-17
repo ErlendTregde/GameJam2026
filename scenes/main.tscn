@@ -52,6 +52,10 @@
 [ext_resource type="PackedScene" path="res://scenes/shop/dock.tscn" id="shop_dock"]
 [ext_resource type="PackedScene" path="res://scenes/shop/sell_scale.tscn" id="shop_scale"]
 [ext_resource type="PackedScene" path="res://scenes/shop/coco.tscn" id="shop_coco"]
+[ext_resource type="PackedScene" path="res://scenes/shop/shop_board.tscn" id="shop_board"]
+[ext_resource type="PackedScene" path="res://scenes/shop/shop_item.tscn" id="shop_item"]
+[ext_resource type="Resource" path="res://items/spear.tres" id="shop_spear"]
+[ext_resource type="Resource" path="res://items/bottle.tres" id="shop_bottle"]
 
 [sub_resource type="FastNoiseLite" id="CloudDetailNoise"]
 noise_type = 2
@@ -487,3 +491,19 @@ coco = NodePath("../Coco")
 
 [node name="Coco" parent="Shop" instance=ExtResource("shop_coco")]
 transform = Transform3D(-0.65, 0, 0.76, 0, 1, 0, -0.76, 0, -0.65, -7.1, 1, 25.2)
+
+[node name="ShopBoard" parent="Shop" instance=ExtResource("shop_board")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -8, 0.85, 19)
+
+[node name="Spear" parent="Shop/ShopBoard" instance=ExtResource("shop_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.28, 0.12)
+item = ExtResource("shop_spear")
+price = 40
+display_size = 1.4
+model_rotation = Vector3(0, 0, 90)
+
+[node name="Bottle" parent="Shop/ShopBoard" instance=ExtResource("shop_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.25, 0.12)
+item = ExtResource("shop_bottle")
+price = 8
+display_size = 0.35

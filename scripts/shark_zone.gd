@@ -5,8 +5,9 @@ extends Node
 ##  - all water deeper than `danger_depth` (the deep channels between the islands' shelves), and
 ##  - any Area3D you add as a child of this node (drag / resize it in the editor to add a zone).
 ## Swimming there for `spawn_delay` seconds brings a shark. It first circles you near the surface
-## for `warning_time` (fin showing); stay and it attacks. Once it hunts, only
-## swimming back toward the island you came from (or leaving the water) makes it give up.
+## for `warning_time` (fin showing), then attacks. Once it hunts it doesn't give up, even if you
+## reach land (it waits at the shore); only killing you makes it leave. It keeps its damage, so
+## the next fight picks up where the last one ended.
 ## In the editor the depth zone is previewed in red (never shown in the game).
 
 @export_tool_button("Refresh preview") var refresh_button := _build_preview
@@ -27,8 +28,6 @@ extends Node
 @export var warning_time := 5.0
 ## Where the shark appears: this far from the player, behind them (m).
 @export var spawn_distance := 25.0
-## Seconds you must be safe before the shark gives up (so a jump or a wave doesn't end it).
-@export var give_up_delay := 0.75
 ## Boss health bar (HUD) shown while the shark hunts; its child Label shows the name.
 @export var boss_bar: ProgressBar
 ## Shown when the shark dies.
@@ -47,8 +46,7 @@ extends Node
 
 var _shark: Shark
 var _danger_time := 0.0
-var _safe_time := 0.0
-var _home: IslandShape  # the island whose safe water the player was last in
+var _boss_health := -1.0  # what the shark had left when it last swam off; -1 = never met
 var _preview: MeshInstance3D
 
 
@@ -59,6 +57,11 @@ func _ready() -> void:
 	for area in get_children():
 		if area is Area3D:
 			area.collision_mask |= 8  # detect the player (layer 4)
+	if player:
+		player.died.connect(func() -> void:
+			_danger_time = 0.0
+			if _shark:
+				_shark.leave())
 
 
 func _physics_process(delta: float) -> void:
@@ -72,23 +75,12 @@ func _physics_process(delta: float) -> void:
 			(boss_bar.get_node("Name") as Label).text = _shark.display_name
 	if defeated:
 		return
-	var pos := player.global_position
-	var hunting := _shark != null and not _shark.is_leaving()
-	var deep := in_zone(pos)
-	if not deep and not hunting:
-		_home = nearest_island(pos)
-	# While hunted, only water near home is safe: the other island's shelf doesn't save you.
-	var safe := not deep and (not hunting or nearest_island(pos) == _home)
-	var danger := player.exposed_to_sea and not safe
-	_danger_time = _danger_time + delta if danger else 0.0
-	_safe_time = 0.0 if danger else _safe_time + delta
-	if danger:
-		if _shark == null and _danger_time >= spawn_delay:
-			_spawn()
-		elif _shark:
-			_shark.hunt()
-	elif _shark and _safe_time >= give_up_delay:
-		_shark.leave()
+	var deep := player.exposed_to_sea and in_zone(player.global_position)
+	_danger_time = _danger_time + delta if deep else 0.0
+	if _shark == null and _danger_time >= spawn_delay:
+		_spawn()
+	elif _shark and _shark.is_leaving() and deep:
+		_shark.hunt()  # back in before it was gone
 
 
 ## Whether `pos` is in shark water: deep, or inside one of the Area3D zones.
@@ -101,17 +93,6 @@ func in_zone(pos: Vector3) -> bool:
 	return false
 
 
-func nearest_island(pos: Vector3) -> IslandShape:
-	var best: IslandShape
-	var best_d := INF
-	for island: IslandShape in terrain.find_children("*", "IslandShape", false):
-		var d := Vector2(pos.x - island.position.x, pos.z - island.position.z).length() - island.radius
-		if d < best_d:
-			best_d = d
-			best = island
-	return best
-
-
 func _spawn() -> void:
 	_shark = shark_scene.instantiate()
 	_shark.target = player
@@ -119,13 +100,17 @@ func _spawn() -> void:
 	_shark.terrain = terrain
 	_shark.warning_time = warning_time
 	add_child(_shark)
+	if _boss_health > 0.0:
+		_shark.health = _boss_health
 	# Out of sight: behind the player, deeper down.
 	var camera := get_viewport().get_camera_3d()
 	var back := camera.global_basis.z if camera else Vector3.BACK
 	back.y = 0.0
 	_shark.global_position = player.global_position + back.normalized() * spawn_distance + Vector3.DOWN * 2.5
 	_shark.look_at(player.global_position, Vector3.UP)
-	_shark.gone.connect(func() -> void: _shark = null)
+	_shark.gone.connect(func() -> void:
+		_boss_health = _shark.health
+		_shark = null)
 	_shark.died.connect(_on_shark_died)
 
 

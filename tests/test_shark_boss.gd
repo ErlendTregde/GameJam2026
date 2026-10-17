@@ -1,30 +1,52 @@
 extends SceneTree
-## 10 spear hits kill the shark; the zone is defeated and never spawns again; a new shark is at full health.
+## The shark comes in deep water, keeps hunting even when you reach land, leaves only when it
+## kills you, keeps its damage for the next fight, and stays dead once killed.
+
+func _wait_for(cond: Callable, seconds: float) -> bool:
+	var t := 0.0
+	while t < seconds:
+		if cond.call():
+			return true
+		await physics_frame
+		t += 1.0 / 60.0
+	return cond.call()
+
 
 func _init() -> void:
 	var main: Node = load("res://scenes/main.tscn").instantiate()
 	get_root().add_child(main)
 	await create_timer(1.0).timeout
 	var zone: SharkZone = main.get_node("SharkZone")
+	var p: Player = main.get_node("Player")
 	var spear: ItemData = load("res://items/spear.tres")
 	assert(spear.damage == 20.0 and load("res://items/rock.tres").damage == 5.0, "damage balance")
-	zone._spawn()
+	var deep := Vector3(60, -2, 60)
+	assert(zone.in_zone(deep), "test point is shark water")
+	var land: Vector3 = p.global_position
+	# Swim in deep water: the shark comes.
+	p.global_position = deep
+	assert(await _wait_for(func() -> bool: return zone._shark != null, 5.0), "shark spawns in deep water")
 	var shark: Shark = zone._shark
-	assert(shark.health == shark.max_health and shark.max_health == 200.0, "full health")
-	shark.take_damage(50.0)
-	shark.leave()
-	zone._shark = null  # escaped: the next shark is a new one
-	zone._spawn()
-	assert(zone._shark.health == 200.0, "new shark at full health")
+	assert(shark.health == 200.0, "first shark at full health")
+	shark.take_damage(60.0)
+	# Back on land: it keeps hunting.
+	p.global_position = land
+	await create_timer(3.0).timeout
+	assert(is_instance_valid(shark) and not shark.is_leaving(), "reaching land doesn't make it give up")
+	# It kills you: it leaves, keeping its damage.
+	p.take_damage(9999.0)
+	assert(shark.is_leaving(), "leaves after killing you")
+	assert(await _wait_for(func() -> bool: return zone._shark == null, 20.0), "swims off and despawns")
+	# Back into deep water: it returns with the health it had left.
+	p.global_position = deep
+	assert(await _wait_for(func() -> bool: return zone._shark != null, 5.0), "shark comes back")
 	shark = zone._shark
-	for i in 10:
+	assert(shark.health == 140.0, "kept its damage (%.0f)" % shark.health)
+	for i in 7:
 		shark.take_damage(spear.damage)
-	assert(zone.defeated, "zone defeated after 10 spear hits")
+	assert(zone.defeated, "killed")
 	await create_timer(3.0).timeout
 	assert(zone._shark == null, "dead shark removed")
-	# Put the player in deep water: no new shark.
-	var p: Player = main.get_node("Player")
-	p.global_position = Vector3(0, 0, 0) + Vector3(60, -2, 60)
 	zone._danger_time = 99.0
 	for i in 30:
 		await physics_frame

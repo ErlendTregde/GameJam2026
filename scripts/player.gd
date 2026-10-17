@@ -1,5 +1,8 @@
 class_name Player
 extends CharacterBody3D
+
+## Health ran out (just before respawning).
+signal died
 ## First-person walker and swimmer. Standing on a "platform" body (the boat deck) makes it
 ## a child of that body, so it rides along with every roll and pitch of the boat.
 
@@ -490,6 +493,7 @@ func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 	_animations.stop()
 	_animations.play("hurt")  # red vignette, camera shake, health bar flash
 	if health == 0.0:
+		died.emit()
 		_respawn()
 
 

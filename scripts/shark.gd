@@ -26,6 +26,8 @@ signal died
 @export var back_off_time := 0.9
 ## Stays at least this far under the surface (m).
 @export var surface_margin := 0.8
+## Never swims into water shallower than this (m): it waits at the shore instead.
+@export var min_depth := 1.5
 ## Gone once it is this far from the target while leaving (m).
 @export var despawn_distance := 45.0
 @export_group("Warning")
@@ -149,7 +151,9 @@ func _physics_process(delta: float) -> void:
 	if want.length() > 0.01:
 		var turn := Basis.looking_at(want.normalized())
 		global_basis = global_basis.slerp(turn, minf(turn_speed * delta, 1.0)).orthonormalized()
-	global_position += -global_basis.z * speed * delta
+	var next := global_position - global_basis.z * speed * delta
+	if terrain == null or ocean == null or ocean.sea_level - terrain.get_floor_height(next.x, next.z) >= min_depth:
+		global_position = next
 	# Stay in the water: under the surface, above the sea floor.
 	var margin := circle_depth if is_circling() else surface_margin
 	var surface := ocean.get_height(global_position) - margin if ocean else 0.0

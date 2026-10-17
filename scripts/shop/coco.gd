@@ -16,8 +16,22 @@ extends Node3D
 @export var bubble: Label3D
 ## Seconds a line stays up.
 @export var talk_time := 3.0
+## Turns its head to watch you within this distance (m), this fast.
+@export var watch_distance := 8.0
+@export var turn_speed := 6.0
 
 var _tween: Tween
+
+@onready var _head: Node3D = $Head
+
+
+func _process(delta: float) -> void:
+	var camera := get_viewport().get_camera_3d()
+	var yaw := 0.0  # facing forward when nobody is near
+	if camera and global_position.distance_to(camera.global_position) < watch_distance:
+		var to := to_local(camera.global_position)
+		yaw = atan2(to.x, to.z)  # the face is on +Z
+	_head.rotation.y = lerp_angle(_head.rotation.y, yaw, minf(turn_speed * delta, 1.0))
 
 
 func say(big: bool) -> void:

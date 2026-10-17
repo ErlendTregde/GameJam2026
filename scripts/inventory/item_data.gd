@@ -44,6 +44,32 @@ enum HoldStyle { FLOAT, POLEARM }
 ## What is left in the hand afterwards (a cracked coconut); empty = used up.
 @export var becomes: ItemData
 
+@export_group("Selling")
+## What the scale pays: per item, or per kg when sold_by_weight. 0 = can't be sold.
+@export var price := 0
+@export var sold_by_weight := false
+## Caught creatures come in sizes (kg); (0, 0) = no size.
+@export var weight_range := Vector2.ZERO
+## The weight at which the model is its normal size.
+@export var base_weight := 1.0
+
+
+## A random size: mostly around the middle, sometimes small, rarely big.
+func roll_weight(rng: RandomNumberGenerator) -> float:
+	if weight_range == Vector2.ZERO:
+		return 0.0
+	var t := clampf(rng.randfn(0.4, 0.18), 0.0, 1.0)
+	return clampf(snappedf(lerpf(weight_range.x, weight_range.y, t), 0.1), weight_range.x, weight_range.y)
+
+
+## Model scale for a weight (mass grows with volume, so scale is the cube root).
+func size_scale(weight: float) -> float:
+	return pow(weight / base_weight, 1.0 / 3.0) if weight > 0.0 else 1.0
+
+
+func value(weight: float) -> int:
+	return roundi(price * weight) if sold_by_weight else price
+
 
 ## The item's model on its own, ready to show anywhere (e.g. in a hotbar slot).
 func make_model() -> Node3D:

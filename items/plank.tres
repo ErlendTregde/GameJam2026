@@ -6,3 +6,4 @@
 script = ExtResource("1_item")
 name = "Plank"
 scene_path = "res://scenes/items/plank.tscn"
+price = 3

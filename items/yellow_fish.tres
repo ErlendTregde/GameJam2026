@@ -8,3 +8,7 @@ name = "Yellow Fish"
 scene_path = "res://scenes/items/yellow_fish.tscn"
 held_size = 0.15
 held_rotation = Vector3(0, 70, 0)
+price = 4
+sold_by_weight = true
+weight_range = Vector2(0.4, 3.5)
+base_weight = 1.0

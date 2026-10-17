@@ -80,6 +80,9 @@ extends CharacterBody3D
 
 ## One entry per hotbar slot (null = empty). Add a Slot under HUD/Hotbar for more room.
 var items: Array[ItemData] = []
+## Weight (kg) of the item in each slot; 0 = no size.
+var weights: Array[float] = []
+var money := 0
 var selected_slot := 0
 var health := 0.0
 ## True while swimming (not walking on land or a deck); read by the SharkZone.
@@ -117,6 +120,7 @@ var _drown_timer := 0.0
 @onready var _combat: Combat = $Combat
 @onready var _item_use: ItemUse = $ItemUse
 @onready var _stamina_bar: ProgressBar = $HUD/Status/StaminaBar
+@onready var _money_label: Label = $HUD/Status/Money
 @onready var _world := get_parent()
 @onready var _surface_environment := world_environment.environment if world_environment else null
 
@@ -132,6 +136,7 @@ func _ready() -> void:
 	_stamina_bar.value = stamina
 	_held.sun = sun
 	items.resize(_hotbar.get_child_count())
+	weights.resize(items.size())
 	for i in items.size():
 		_hotbar.get_child(i).set_number(i + 1)
 	_refresh_hotbar()
@@ -259,6 +264,7 @@ func consume(item: ItemData) -> void:
 	var slot := items.find(item)
 	if slot != -1:
 		items[slot] = item.becomes
+		weights[slot] = 0.0
 		_refresh_hotbar()
 
 
@@ -378,12 +384,20 @@ func _select(slot: int) -> void:
 
 
 func _pick_up(world_item: WorldItem) -> void:
-	# The selected slot if it is free, otherwise the first free one.
+	if not items.has(null):
+		return
+	give(world_item.item, world_item.weight)
+	world_item.queue_free()
+
+
+## Puts an item in the selected slot if free, else the first free one, else drops it at your feet.
+func give(item: ItemData, weight := 0.0) -> void:
 	var slot := selected_slot if items[selected_slot] == null else items.find(null)
 	if slot == -1:
+		_spawn_item(item, weight, global_position + Vector3.UP * 0.5, Vector3.ZERO)
 		return
-	items[slot] = world_item.item
-	world_item.queue_free()
+	items[slot] = item
+	weights[slot] = weight
 	_refresh_hotbar()
 
 
@@ -391,12 +405,36 @@ func _drop() -> void:
 	var item := items[selected_slot]
 	if item == null or item == _combat.thrown_item:  # can't drop what is still flying
 		return
+	var weight := weights[selected_slot]
 	items[selected_slot] = null
-	var dropped: WorldItem = load(item.scene_path).instantiate()
-	_world.add_child(dropped)
-	dropped.global_position = _camera.global_position - _camera.global_basis.z * 0.8
-	dropped.linear_velocity = velocity - _camera.global_basis.z * 2.5
+	weights[selected_slot] = 0.0
+	var from := _camera.global_position - _camera.global_basis.z * 0.8
+	_spawn_item(item, weight, from, _toss_velocity(from))
 	_refresh_hotbar()
+
+
+func _toss_velocity(_from: Vector3) -> Vector3:
+	return velocity - _camera.global_basis.z * 2.5
+
+
+func _spawn_item(item: ItemData, weight: float, at: Vector3, toss: Vector3) -> void:
+	var dropped: WorldItem = load(item.scene_path).instantiate()
+	dropped.weight = weight
+	_world.add_child(dropped)
+	dropped.global_position = at
+	dropped.linear_velocity = toss
+
+
+func add_money(amount: int) -> void:
+	money += amount
+	_money_label.text = "$ %d" % money
+
+
+func spend(amount: int) -> bool:
+	if amount > money:
+		return false
+	add_money(-amount)
+	return true
 
 
 func _refresh_hotbar() -> void:

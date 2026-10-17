@@ -1,7 +1,7 @@
 class_name Fish
 extends CharacterBody3D
 ## A fish swimming around under water near where it started. Wanders between the sea floor and
-## the surface, darts away when hit, and leaves `drop` (a fish item) behind when killed.
+## the surface, darts away when hit, and leaves `item` (a fish of its size) behind when killed.
 ## The spawner sets `ocean` and `terrain`.
 
 @export var health := 20.0
@@ -20,7 +20,10 @@ extends CharacterBody3D
 ## Set by the spawner.
 @export var max_depth := 9.0
 ## Left behind when it dies (a fish WorldItem scene).
-@export var drop: PackedScene
+## What it leaves behind when killed (a fish item); its weight range sets this fish's size.
+@export var item: ItemData
+
+var weight := 0.0
 
 var ocean: Ocean
 var terrain: Terrain
@@ -34,6 +37,9 @@ var _floor := -30.0
 
 
 func _ready() -> void:
+	if item:
+		weight = item.roll_weight(RandomNumberGenerator.new())
+		$Model.scale *= item.size_scale(weight)
 	_home = global_position
 	_floor = _floor_y()
 	_pick_target()
@@ -106,12 +112,13 @@ func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 
 
 func _die() -> void:
-	if drop:
-		var item: RigidBody3D = drop.instantiate()
+	if item:
+		var dropped: WorldItem = load(item.scene_path).instantiate()
+		dropped.weight = weight
 		var world: Node = get_tree().current_scene if get_tree().current_scene else get_parent()
-		world.add_child(item)  # not the spawner: it removes its children when you swim away
-		item.global_transform = global_transform
-		item.linear_velocity = Vector3.UP * 1.0
+		world.add_child(dropped)  # not the spawner: it removes its children when you swim away
+		dropped.global_transform = global_transform
+		dropped.linear_velocity = Vector3.UP * 1.0
 	queue_free()
 
 

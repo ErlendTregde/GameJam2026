@@ -8,11 +8,17 @@ extends RigidBody3D
 @export var item: ItemData
 ## Comes to rest as soon as it touches the ground.
 @export var settle_on_landing := true
+## Size in kg (caught fish and crabs); 0 = the normal size. Set before adding to the tree.
+@export var weight := 0.0
 
 var _settling := false
 
 
 func _ready() -> void:
+	var s := item.size_scale(weight) if item else 1.0
+	for child in get_children():
+		if child is Node3D:
+			child.scale *= s
 	if settle_on_landing and not freeze:
 		contact_monitor = true
 		max_contacts_reported = 1

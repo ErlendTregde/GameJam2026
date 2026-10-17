@@ -8,3 +8,4 @@ name = "Starfish"
 scene_path = "res://scenes/items/starfish.tscn"
 held_size = 0.16
 held_rotation = Vector3(60, 0, 0)
+price = 5

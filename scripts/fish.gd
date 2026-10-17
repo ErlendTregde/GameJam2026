@@ -32,6 +32,7 @@ var _home := Vector3.ZERO
 var _target := Vector3.ZERO
 var _flee := 0.0
 var _floor := -30.0
+var _turning := false  # blocked by the shallows or the drop-off: turning around
 
 @onready var _model: Node3D = $Model
 
@@ -55,14 +56,18 @@ func _physics_process(delta: float) -> void:
 		to = _target - global_position
 	# Turn smoothly toward the target, then swim forward (-Z, where the head is).
 	var want := Basis.looking_at(to.normalized())
-	global_basis = global_basis.slerp(want, minf(turn_speed * delta * (2.0 if _flee > 0.0 else 1.0), 1.0)).orthonormalized()
+	var turn := 3.0 if _turning else (2.0 if _flee > 0.0 else 1.0)
+	global_basis = global_basis.slerp(want, minf(turn_speed * delta * turn, 1.0)).orthonormalized()
 	var next := global_position - global_basis.z * current_speed * delta
 	var next_floor := _floor_y_at(next.x, next.z)
 	if not _depth_ok(_surface_y() - next_floor):
-		# Shallows, an island or the deep drop-off ahead: don't go there, head back home.
-		_target = _home
-		_flee = 0.0
+		# Shallows, an island or the deep drop-off ahead: pick somewhere reachable once and turn to it.
+		if not _turning:
+			_pick_target()
+			_flee = 0.0
+		_turning = true
 	else:
+		_turning = false
 		global_position = next
 		_floor = next_floor
 	global_position.y = clampf(global_position.y, _floor + floor_margin, maxf(_floor + floor_margin, _surface_y() - surface_margin))
@@ -82,7 +87,8 @@ func _pick_target() -> void:
 		if high - low > 0.5 and _depth_ok(_surface_y() - _floor_y_at(x, z)) and _path_is_deep(x, z):
 			_target = Vector3(x, randf_range(low, high), z)
 			return
-	_target = _home
+	# Nowhere reachable found: head home, or turn around if already there.
+	_target = _home if _home.distance_to(global_position) > 2.0 else global_position + global_basis.z * 4.0
 
 
 func _depth_ok(depth: float) -> bool:

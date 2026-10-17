@@ -55,8 +55,7 @@ func _spawn_all() -> void:
 		fish.ocean = ocean
 		fish.terrain = terrain
 		fish.max_depth = max_depth + 1.0
-		fish.position = Vector3(x, randf_range(floor_y + 1.0, surface - 1.0), z)
+		fish.position = to_local(Vector3(x, randf_range(floor_y + 1.0, surface - 1.0), z))  # set before _ready: it is the fish's home
 		fish.rotation.y = randf() * TAU
 		add_child(fish)
-		fish.global_position = Vector3(x, fish.position.y, z)
 		spawned += 1

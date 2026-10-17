@@ -291,7 +291,7 @@ terrain = NodePath("../../Terrain")
 [node name="Chests" type="Node3D" parent="." unique_id=2011558760]
 
 [node name="WoodenChest" parent="Chests" unique_id=1690178757 instance=ExtResource("23_chest")]
-transform = Transform3D(-0.4997, 0, 0.8662, 0, 1, 0, -0.8662, 0, -0.4997, 8.57, 5.93, 4.95)
+transform = Transform3D(-0.4997, 0, 0.8662, 0, 1, 0, -0.8662, 0, -0.4997, -3.2411509, 7.089722, 3.6114578)
 loot = ExtResource("loot_gamble_1")
 cost = 15
 reset_time = 4.0

@@ -1,46 +1,13 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/shop/sell_scale.gd" id="1_scale"]
-[ext_resource type="Shader" path="res://shaders/toon.gdshader" id="2_toon"]
+[ext_resource type="PackedScene" path="res://assets/table/simple_table_low_poly.glb" id="2_table"]
 
-[sub_resource type="ShaderMaterial" id="Wood"]
-shader = ExtResource("2_toon")
-shader_parameter/albedo_color = Color(0.55, 0.38, 0.22, 1)
+[sub_resource type="BoxShape3D" id="TableShape"]
+size = Vector3(1.12, 0.79, 2.4)
 
-[sub_resource type="ShaderMaterial" id="Metal"]
-shader = ExtResource("2_toon")
-shader_parameter/albedo_color = Color(0.7, 0.72, 0.75, 1)
-
-[sub_resource type="BoxMesh" id="PostMesh"]
-material = SubResource("Wood")
-size = Vector3(0.15, 0.9, 0.15)
-
-[sub_resource type="BoxShape3D" id="PostShape"]
-size = Vector3(0.15, 0.9, 0.15)
-
-[sub_resource type="BoxMesh" id="TrayMesh"]
-material = SubResource("Metal")
-size = Vector3(0.9, 0.04, 0.6)
-
-[sub_resource type="BoxShape3D" id="TrayShape"]
-size = Vector3(0.9, 0.04, 0.6)
-
-[sub_resource type="BoxMesh" id="RimLong"]
-material = SubResource("Metal")
-size = Vector3(0.9, 0.08, 0.03)
-
-[sub_resource type="BoxShape3D" id="RimLongShape"]
-size = Vector3(0.9, 0.08, 0.03)
-
-[sub_resource type="BoxMesh" id="RimShort"]
-material = SubResource("Metal")
-size = Vector3(0.03, 0.08, 0.6)
-
-[sub_resource type="BoxShape3D" id="RimShortShape"]
-size = Vector3(0.03, 0.08, 0.6)
-
-[sub_resource type="BoxShape3D" id="TrayZone"]
-size = Vector3(0.9, 0.5, 0.6)
+[sub_resource type="BoxShape3D" id="TopZone"]
+size = Vector3(1.12, 0.5, 2.4)
 
 [node name="SellScale" type="StaticBody3D" node_paths=PackedStringArray("tray_area", "sign_label")]
 collision_layer = 17
@@ -49,55 +16,15 @@ script = ExtResource("1_scale")
 tray_area = NodePath("Tray/Zone")
 sign_label = NodePath("Sign")
 
-[node name="Post" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
-mesh = SubResource("PostMesh")
+[node name="Model" parent="." instance=ExtResource("2_table")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0.394, 0)
 
-[node name="PostCollision" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
-shape = SubResource("PostShape")
+[node name="Shape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395, 0)
+shape = SubResource("TableShape")
 
-[node name="Tray" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
-collision_mask = 0
-
-[node name="Mesh" type="MeshInstance3D" parent="Tray"]
-mesh = SubResource("TrayMesh")
-
-[node name="Shape" type="CollisionShape3D" parent="Tray"]
-shape = SubResource("TrayShape")
-
-[node name="RimFront" type="MeshInstance3D" parent="Tray"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0.3)
-mesh = SubResource("RimLong")
-
-[node name="RimFrontShape" type="CollisionShape3D" parent="Tray"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0.3)
-shape = SubResource("RimLongShape")
-
-[node name="RimBack" type="MeshInstance3D" parent="Tray"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -0.3)
-mesh = SubResource("RimLong")
-
-[node name="RimBackShape" type="CollisionShape3D" parent="Tray"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -0.3)
-shape = SubResource("RimLongShape")
-
-[node name="RimLeft" type="MeshInstance3D" parent="Tray"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 0.05, 0)
-mesh = SubResource("RimShort")
-
-[node name="RimLeftShape" type="CollisionShape3D" parent="Tray"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 0.05, 0)
-shape = SubResource("RimShortShape")
-
-[node name="RimRight" type="MeshInstance3D" parent="Tray"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0.05, 0)
-mesh = SubResource("RimShort")
-
-[node name="RimRightShape" type="CollisionShape3D" parent="Tray"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0.05, 0)
-shape = SubResource("RimShortShape")
+[node name="Tray" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.79, 0)
 
 [node name="Zone" type="Area3D" parent="Tray"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
@@ -106,10 +33,10 @@ collision_mask = 16
 monitorable = false
 
 [node name="Shape" type="CollisionShape3D" parent="Tray/Zone"]
-shape = SubResource("TrayZone")
+shape = SubResource("TopZone")
 
 [node name="Sign" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 billboard = 1
 font_size = 64
 outline_size = 16

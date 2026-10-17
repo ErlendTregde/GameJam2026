@@ -1,6 +1,8 @@
 [gd_scene format=3]
 
 [ext_resource type="Shader" path="res://shaders/toon.gdshader" id="1_toon"]
+[ext_resource type="PackedScene" path="res://scenes/shop/sell_scale.tscn" id="2_table"]
+[ext_resource type="PackedScene" path="res://scenes/shop/coco.tscn" id="3_coco"]
 
 [sub_resource type="ShaderMaterial" id="Wood"]
 shader = ExtResource("1_toon")
@@ -54,3 +56,11 @@ mesh = SubResource("PlankMesh")
 [node name="BoardShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, 0)
 shape = SubResource("BoardShape")
+
+[node name="SellScale" parent="." node_paths=PackedStringArray("coco") instance=ExtResource("2_table")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3, 0, 0.7)
+coco = NodePath("../Coco")
+
+[node name="Coco" parent="." instance=ExtResource("3_coco")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 0, 0.6)
+

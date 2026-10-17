@@ -2,30 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/crab.gd" id="1_crab"]
 [ext_resource type="Resource" path="res://items/crab.tres" id="3_item"]
-[ext_resource type="Shader" path="res://shaders/toon.gdshader" id="2_toon"]
-
-[sub_resource type="ShaderMaterial" id="Shell"]
-shader = ExtResource("2_toon")
-shader_parameter/albedo_color = Color(0.9, 0.35, 0.15, 1)
-
-[sub_resource type="StandardMaterial3D" id="Eye"]
-shading_mode = 0
-albedo_color = Color(0.05, 0.03, 0.02, 1)
-
-[sub_resource type="SphereMesh" id="Body"]
-material = SubResource("Shell")
-radius = 0.15
-height = 0.3
-
-[sub_resource type="SphereMesh" id="Claw"]
-material = SubResource("Shell")
-radius = 0.06
-height = 0.12
-
-[sub_resource type="SphereMesh" id="EyeMesh"]
-material = SubResource("Eye")
-radius = 0.02
-height = 0.04
+[ext_resource type="PackedScene" path="res://assets/crab/8e224d59efb14bff84c4a67788a89506.glb" id="4_model"]
 
 [sub_resource type="BoxShape3D" id="Box"]
 size = Vector3(0.4, 0.15, 0.3)
@@ -34,27 +11,8 @@ size = Vector3(0.4, 0.15, 0.3)
 script = ExtResource("1_crab")
 item = ExtResource("3_item")
 
-[node name="Model" type="Node3D" parent="."]
-
-[node name="Body" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1.4, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.08, 0)
-mesh = SubResource("Body")
-
-[node name="ClawL" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.08, -0.12)
-mesh = SubResource("Claw")
-
-[node name="ClawR" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.08, -0.12)
-mesh = SubResource("Claw")
-
-[node name="EyeL" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.05, 0.16, -0.12)
-mesh = SubResource("EyeMesh")
-
-[node name="EyeR" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.16, -0.12)
-mesh = SubResource("EyeMesh")
+[node name="Model" parent="." instance=ExtResource("4_model")]
+transform = Transform3D(0.45, 0, 0, 0, 0.45, 0, 0, 0, 0.45, 0, 0.225, -0.05)
 
 [node name="Hitbox" type="StaticBody3D" parent="."]
 collision_layer = 32

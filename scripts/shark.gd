@@ -6,6 +6,12 @@ extends Node3D
 ## Hitting it scares it off for a moment. Spawned and controlled by a SharkZone.
 
 signal gone
+signal died
+
+@export var display_name := "Great White"
+@export var max_health := 200.0
+## Dropped where it dies (a trophy worth a lot at the scale).
+@export var trophy: ItemData
 
 @export var chase_speed := 8.0
 @export var lunge_speed := 11.0
@@ -39,12 +45,15 @@ var terrain: Terrain
 var _leaving := false
 var _back_off := 0.0
 var _circled := 0.0
+var health := 0.0
+var _dead := false
 
 @onready var _animations: AnimationPlayer = $Model/AnimationPlayer
 @onready var _mouth: Marker3D = $Mouth
 
 
 func _ready() -> void:
+	health = max_health
 	_animations.get_animation("Swim").loop_mode = Animation.LOOP_LINEAR
 	_animations.play("Swim")
 
@@ -68,11 +77,40 @@ func is_circling() -> bool:
 	return not _leaving and _circled < warning_time
 
 
-func take_damage(_amount: float, _at := Vector3.ZERO) -> void:
+func is_dead() -> bool:
+	return _dead
+
+
+func take_damage(amount: float, _at := Vector3.ZERO) -> void:
+	if _dead:
+		return
+	health = maxf(health - amount, 0.0)
+	if health == 0.0:
+		_die()
+		return
 	_back_off = maxf(_back_off, 1.2)  # stabbed: veers off, but only briefly
 
 
+func _die() -> void:
+	_dead = true
+	died.emit()
+	if trophy:
+		var drop: WorldItem = load(trophy.scene_path).instantiate()
+		var world := get_tree().current_scene if get_tree().current_scene else get_tree().root.get_child(-1)
+		world.add_child(drop)  # tests run without a current_scene: main is the root's last child
+		drop.global_position = global_position + Vector3.UP
+	_animations.speed_scale = 0.2
+	var tween := create_tween().set_parallel()
+	tween.tween_property(self, "rotation:z", PI, 1.2)  # belly up
+	tween.tween_property(self, "global_position:y", global_position.y - 4.0, 2.5)
+	tween.chain().tween_callback(func() -> void:
+		gone.emit()
+		queue_free())
+
+
 func _physics_process(delta: float) -> void:
+	if _dead:
+		return
 	if target == null or not is_instance_valid(target):
 		_leaving = true
 	var to_target := (target.global_position + Vector3.UP * 0.9 - global_position) if is_instance_valid(target) else -global_basis.z

@@ -29,6 +29,13 @@ extends Node
 @export var spawn_distance := 25.0
 ## Seconds you must be safe before the shark gives up (so a jump or a wave doesn't end it).
 @export var give_up_delay := 0.75
+## Boss health bar (HUD) shown while the shark hunts; its child Label shows the name.
+@export var boss_bar: ProgressBar
+## Shown when the shark dies.
+@export var message: Label
+@export var defeated_text := "The way is open!"
+## Set when its shark is killed: the zone is safe for good.
+@export var defeated := false
 @export_group("Editor preview")
 @export var show_preview := true:
 	set(value):
@@ -56,6 +63,14 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint() or player == null:
+		return
+	if boss_bar:
+		boss_bar.visible = _shark != null and not _shark.is_leaving() and not _shark.is_dead()
+		if boss_bar.visible:
+			boss_bar.max_value = _shark.max_health
+			boss_bar.value = _shark.health
+			(boss_bar.get_node("Name") as Label).text = _shark.display_name
+	if defeated:
 		return
 	var pos := player.global_position
 	var hunting := _shark != null and not _shark.is_leaving()
@@ -111,6 +126,16 @@ func _spawn() -> void:
 	_shark.global_position = player.global_position + back.normalized() * spawn_distance + Vector3.DOWN * 2.5
 	_shark.look_at(player.global_position, Vector3.UP)
 	_shark.gone.connect(func() -> void: _shark = null)
+	_shark.died.connect(_on_shark_died)
+
+
+func _on_shark_died() -> void:
+	defeated = true
+	if message:
+		message.text = defeated_text
+		message.visible = true
+		await get_tree().create_timer(4.0).timeout
+		message.visible = false
 
 
 ## Red overlay at sea level over the deep (shark) water, editor only.

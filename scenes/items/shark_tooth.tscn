@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/inventory/world_item.gd" id="1_world_item"]
+[ext_resource type="Resource" path="res://items/shark_tooth.tres" id="2_item"]
+[ext_resource type="Shader" path="res://shaders/toon.gdshader" id="3_toon"]
+
+[sub_resource type="ShaderMaterial" id="Look"]
+shader = ExtResource("3_toon")
+shader_parameter/albedo_color = Color(0.95, 0.93, 0.85, 1)
+
+[sub_resource type="PrismMesh" id="Mesh"]
+material = SubResource("Look")
+size = Vector3(0.08, 0.14, 0.03)
+
+[sub_resource type="BoxShape3D" id="Shape"]
+size = Vector3(0.08, 0.14, 0.03)
+
+[node name="SharkTooth" type="RigidBody3D"]
+collision_layer = 16
+collision_mask = 7
+mass = 1.5
+continuous_cd = true
+script = ExtResource("1_world_item")
+item = ExtResource("2_item")
+
+[node name="Model" type="MeshInstance3D" parent="."]
+mesh = SubResource("Mesh")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape")

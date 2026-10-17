@@ -473,12 +473,14 @@ underwater_environment = SubResource("Underwater")
 sun = NodePath("../Sun")
 respawn_point = NodePath("../Boat/Deck/PlayerSpawn")
 
-[node name="SharkZone" type="Node" parent="." unique_id=1073233949 node_paths=PackedStringArray("player", "ocean", "terrain")]
+[node name="SharkZone" type="Node" parent="." unique_id=1073233949 node_paths=PackedStringArray("player", "ocean", "terrain", "boss_bar", "message")]
 script = ExtResource("40_shark_zone")
 player = NodePath("../Player")
 ocean = NodePath("../Ocean")
 terrain = NodePath("../Terrain")
 shark_scene = ExtResource("41_shark")
+boss_bar = NodePath("../Player/HUD/BossBar")
+message = NodePath("../Player/HUD/Message")
 
 [node name="Shop" type="Node3D" parent="."]
 

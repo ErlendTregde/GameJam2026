@@ -12,6 +12,8 @@ extends Node
 @export var held_view: Node
 ## Seconds into the swing when the hit lands.
 @export var hit_delay := 0.13
+## Used when the hand is empty (punching).
+@export var fist: ItemData
 
 @export_group("Throw")
 ## Holding attack longer than this starts a throw instead of a melee hit.
@@ -63,10 +65,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func attack() -> void:
-	if item == null or item.damage <= 0.0 or _cooldown > 0.0 or item == thrown_item:
+	var weapon := item if item else fist
+	if weapon == null or weapon.damage <= 0.0 or _cooldown > 0.0 or (item and item == thrown_item):
 		return
-	_cooldown = item.cooldown
-	var weapon := item
+	_cooldown = weapon.cooldown
 	held_view.swing()
 	await get_tree().create_timer(hit_delay).timeout
 	cast.target_position = Vector3(0, 0, -weapon.reach)

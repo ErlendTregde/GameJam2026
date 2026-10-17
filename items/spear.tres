@@ -10,6 +10,6 @@ hold_style = 1
 held_size = 1.6
 held_rotation = Vector3(0, 0, 0)
 grip = 0.3
-damage = 25.0
+damage = 20.0
 reach = 2.8
 cooldown = 0.6

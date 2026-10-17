@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/shark.gd" id="1_shark"]
 [ext_resource type="PackedScene" path="res://assets/shark/ps1low_poly_great_white_shark.glb" id="2_model"]
+[ext_resource type="Resource" path="res://items/shark_tooth.tres" id="3_tooth"]
 
 [sub_resource type="CapsuleShape3D" id="Body"]
 radius = 0.55
@@ -9,6 +10,7 @@ height = 4.6
 
 [node name="Shark" type="Node3D"]
 script = ExtResource("1_shark")
+trophy = ExtResource("3_tooth")
 
 [node name="Model" parent="." instance=ExtResource("2_model")]
 transform = Transform3D(-0.68, 0, 0, 0, 0.68, 0, 0, 0, -0.68, 0, 0, 0)

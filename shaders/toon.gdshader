@@ -14,6 +14,8 @@ uniform vec2 uv_scale = vec2(1.0);
 uniform bool use_vertex_color = false;
 // Use world x/z as UV (for ground that moves with the camera, like the seabed).
 uniform bool world_uv = false;
+// Per object, set from code (HitFlash): red flash when hit, alpha = strength.
+instance uniform vec4 hit_tint : source_color = vec4(1.0, 0.0, 0.0, 0.0);
 
 varying vec2 world_xz;
 
@@ -27,7 +29,8 @@ void fragment() {
 	if (use_vertex_color) {
 		color *= COLOR.rgb;
 	}
-	ALBEDO = stylize(color);
+	ALBEDO = mix(stylize(color), hit_tint.rgb, hit_tint.a);
+	EMISSION = hit_tint.rgb * hit_tint.a * 0.4;  // still reads red in the dark under water
 	if (use_normal_map) {
 		NORMAL_MAP = texture(normal_tex, uv).rgb;
 		NORMAL_MAP_DEPTH = normal_strength;

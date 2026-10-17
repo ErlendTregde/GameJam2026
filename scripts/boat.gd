@@ -61,13 +61,13 @@ func _set_driving(value: bool) -> void:
 	_player.set_controlled(not value)
 	if value:
 		_camera.make_current()
-	_prompt.text = "E: leave helm   W/S: throttle   A/D: steer" if value else "E: take the helm"
+	_prompt.text = "[E] leave helm   [W/S] throttle   [A/D] steer" if value else "[E] take the helm"
 
 
 func _on_helm_body_entered(body: Node3D) -> void:
 	if body is Player:
 		_player = body
-		_prompt.text = "E: take the helm"
+		_prompt.text = "[E] take the helm"
 		_prompt.visible = true
 
 

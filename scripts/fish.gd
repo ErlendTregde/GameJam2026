@@ -106,6 +106,7 @@ func _path_is_deep(x: float, z: float) -> bool:
 
 func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 	health -= amount
+	HitFlash.flash(_model)
 	if health <= 0.0:
 		_die()
 		return
@@ -125,6 +126,7 @@ func _die() -> void:
 		world.add_child(dropped)  # not the spawner: it removes its children when you swim away
 		dropped.global_transform = global_transform
 		dropped.linear_velocity = Vector3.UP * 1.0
+		HitFlash.flash(dropped.get_node("Model"), 1.0, 0.5)  # dead: redder, then back to normal
 	queue_free()
 
 

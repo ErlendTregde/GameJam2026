@@ -468,7 +468,7 @@ func _update_prompt() -> void:
 	elif not target is WorldItem:
 		_prompt.text = target.get_prompt()
 	elif items.has(null):
-		_prompt.text = "E  pick up %s" % target.item.name
+		_prompt.text = "[E] pick up %s" % target.item.name
 	else:
 		_prompt.text = "Inventory full"
 

@@ -115,7 +115,7 @@ offset_right = 300.0
 offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 0
-text = "E: take the helm"
+text = "[E] take the helm"
 label_settings = SubResource("PromptText")
 horizontal_alignment = 1
 

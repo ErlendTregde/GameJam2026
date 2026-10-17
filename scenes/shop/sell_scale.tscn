@@ -42,5 +42,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0)
 billboard = 1
 font_size = 64
 outline_size = 16
-text = "Drop catch here
-[Q]"
+text = ""

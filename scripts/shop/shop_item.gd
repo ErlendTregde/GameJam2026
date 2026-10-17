@@ -44,7 +44,9 @@ func _show_model() -> void:
 	_model.basis = turn.scaled(Vector3.ONE * s)
 	_model.position = turn * -bounds.get_center() * s
 	if label:
-		label.text = "%s\n$%d\n[E]" % [item.name, price]
+		label.text = "$%d\n[E]" % price
+		var top := (Transform3D(_model.basis, _model.position) * bounds).end.y
+		label.position = Vector3(0, top + 0.25, 0.1)
 
 
 func _process(delta: float) -> void:

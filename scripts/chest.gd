@@ -48,7 +48,7 @@ func _show_tier() -> void:
 func get_prompt() -> String:
 	if opened:
 		return ""
-	return "E  gamble $%d" % cost if cost > 0 else "E  open chest"
+	return "[E] gamble $%d" % cost if cost > 0 else "[E] open chest"
 
 
 func interact(player: Node) -> void:

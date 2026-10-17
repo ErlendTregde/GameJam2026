@@ -61,6 +61,7 @@ func _pick_target() -> void:
 func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 	health -= amount
 	if health > 0.0:
+		HitFlash.flash($Model)
 		_wait = 0.0
 		return
 	if item:
@@ -69,4 +70,5 @@ func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 		var world := get_tree().current_scene if get_tree().current_scene else get_tree().root.get_child(-1)
 		world.add_child(dropped)  # tests run without a current_scene: main is the root's last child
 		dropped.global_position = global_position + Vector3.UP * 0.3
+		HitFlash.flash(dropped.get_node("Model"), 1.0, 0.5)  # dead: redder, then back to normal
 	queue_free()

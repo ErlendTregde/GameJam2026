@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/inventory/item_data.gd" id="1_item"]
+
+[resource]
+script = ExtResource("1_item")
+name = "Yellow Shell"
+scene_path = "res://scenes/items/seashell_yellow.tscn"
+held_size = 0.14
+held_rotation = Vector3(60, 0, 0)
+price = 2

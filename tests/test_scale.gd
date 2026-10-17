@@ -22,7 +22,7 @@ func _init() -> void:
 	p.give(spear)
 	p._drop()
 	await create_timer(2.0).timeout
-	assert(scale.total() == fish.value(2.0), "fish landed on the tray and is counted; spear isn't")
+	assert(scale.total() == fish.value(2.0) + spear.price, "fish and spear landed on the table and are counted")
 	# Looking at the catch on the tray targets the scale: E sells, it doesn't pick the fish back up.
 	var on_tray: WorldItem = scale.tray_area.get_overlapping_bodies().filter(func(b: Node) -> bool: return b is WorldItem and b.item == fish)[0]
 	for f in 5:
@@ -31,10 +31,10 @@ func _init() -> void:
 		p.get_node("Head").rotation.x = atan2(aim.y, Vector2(aim.x, aim.z).length())
 		await physics_frame
 	assert(p._target() == scale, "aiming at catch on the tray targets the scale")
-	assert(scale.get_prompt() == "E  sell $%d" % fish.value(2.0), "sell prompt")
+	assert(scale.get_prompt() == "[E] sell $%d" % scale.total(), "sell prompt")
 	scale.interact(p)
 	await physics_frame
-	assert(p.money == fish.value(2.0), "paid")
+	assert(p.money == fish.value(2.0) + spear.price, "paid")
 	assert(scale.total() == 0, "sold items are gone")
 	print("PASS test_scale")
 	quit()

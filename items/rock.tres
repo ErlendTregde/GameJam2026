@@ -11,3 +11,4 @@ held_rotation = Vector3(20, 30, 0)
 damage = 5.0
 reach = 1.8
 cooldown = 0.45
+price = 1

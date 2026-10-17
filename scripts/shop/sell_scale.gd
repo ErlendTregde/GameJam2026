@@ -1,7 +1,7 @@
 class_name SellScale
 extends StaticBody3D
-## A dock scale. Drop catch onto the tray (Q); the sign shows the total weight and price; press E
-## on the scale to sell everything on it. Items that can't be sold (price 0, e.g. tools) stay.
+## The selling table. Drop catch onto it (Q); the price of everything on it shows above; press E
+## on the table to sell it all. Items that can't be sold (price 0) stay.
 
 ## Finds the items lying on the tray.
 @export var tray_area: Area3D
@@ -9,8 +9,11 @@ extends StaticBody3D
 @export var coco: Coco
 ## A sale pays this much or more per item when it counts as a big catch ("chonker" lines).
 @export var big_value := 15
+## Coco says this the first time you look at the table.
+@export var hint := "Drop your catch on the table with [Q], then press [E] to sell!"
 
 var _sold := 0.0  # seconds the "+$" text is still shown
+var _hinted := false
 
 
 func _ready() -> void:
@@ -25,17 +28,14 @@ func _process(delta: float) -> void:
 	_sold -= delta
 	if _sold > 0.0:
 		return
-	var items := _on_tray()
-	var kg := 0.0
-	for it in items:
-		kg += it.weight
-	sign_label.text = "%.1f kg\n$%d" % [kg, total()] if items else "Drop catch here\n[Q]"
+	var sum := total()
+	sign_label.text = "$%d" % sum if sum > 0 else ""
 
 
 func _on_tray() -> Array[WorldItem]:
 	var out: Array[WorldItem] = []
 	for body in tray_area.get_overlapping_bodies():
-		if body is WorldItem and body.item.price > 0:
+		if body is WorldItem and body.item and body.item.price > 0:
 			out.append(body)
 	return out
 
@@ -48,8 +48,11 @@ func total() -> int:
 
 
 func get_prompt() -> String:
+	if not _hinted and coco:
+		_hinted = true
+		coco.say_line(hint)
 	var sum := total()
-	return "E  sell $%d" % sum if sum > 0 else ""
+	return "[E] sell $%d" % sum if sum > 0 else ""
 
 
 func interact(player: Node) -> void:

@@ -57,6 +57,8 @@
 [ext_resource type="Resource" path="res://items/spear.tres" id="shop_spear"]
 [ext_resource type="Resource" path="res://items/bottle.tres" id="shop_bottle"]
 [ext_resource type="Resource" path="res://loot/gamble_1.tres" id="loot_gamble_1"]
+[ext_resource type="Script" path="res://scripts/crab_spawner.gd" id="crab_spawner"]
+[ext_resource type="PackedScene" path="res://scenes/crab/crab.tscn" id="crab_scene"]
 
 [sub_resource type="FastNoiseLite" id="CloudDetailNoise"]
 noise_type = 2
@@ -512,3 +514,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.25, 0.12)
 item = ExtResource("shop_bottle")
 price = 8
 display_size = 0.35
+
+[node name="Crabs" type="Node3D" parent="." node_paths=PackedStringArray("terrain", "island", "player")]
+script = ExtResource("crab_spawner")
+terrain = NodePath("../Terrain")
+island = NodePath("../Terrain/MainIsland")
+player = NodePath("../Player")
+crab_scene = ExtResource("crab_scene")

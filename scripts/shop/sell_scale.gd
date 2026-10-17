@@ -13,6 +13,14 @@ extends StaticBody3D
 var _sold := 0.0  # seconds the "+$" text is still shown
 
 
+func _ready() -> void:
+	add_to_group("sell_scale")
+
+
+func holds(item: WorldItem) -> bool:
+	return item in _on_tray()
+
+
 func _process(delta: float) -> void:
 	_sold -= delta
 	if _sold > 0.0:

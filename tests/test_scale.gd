@@ -23,6 +23,14 @@ func _init() -> void:
 	p._drop()
 	await create_timer(2.0).timeout
 	assert(scale.total() == fish.value(2.0), "fish landed on the tray and is counted; spear isn't")
+	# Looking at the catch on the tray targets the scale: E sells, it doesn't pick the fish back up.
+	var on_tray: WorldItem = scale.tray_area.get_overlapping_bodies().filter(func(b: Node) -> bool: return b is WorldItem and b.item == fish)[0]
+	for f in 5:
+		var aim := on_tray.global_position - cam.global_position
+		p.rotation.y = atan2(-aim.x, -aim.z)
+		p.get_node("Head").rotation.x = atan2(aim.y, Vector2(aim.x, aim.z).length())
+		await physics_frame
+	assert(p._target() == scale, "aiming at catch on the tray targets the scale")
 	assert(scale.get_prompt() == "E  sell $%d" % fish.value(2.0), "sell prompt")
 	scale.interact(p)
 	await physics_frame

@@ -23,6 +23,10 @@ extends Node
 @export var min_throw_speed := 10.0
 @export var max_throw_speed := 32.0
 
+@export_group("Gun")
+## Field of view while scoped (right mouse with a gun), as a share of the normal one.
+@export var aim_fov_scale := 0.6
+
 ## The held item; only items with damage > 0 can attack. Switching cancels a charging throw.
 var item: ItemData:
 	set(value):
@@ -32,14 +36,25 @@ var item: ItemData:
 			held_view.set_charge(0.0)
 ## The item currently flying (it is back in the hand when this is null again).
 var thrown_item: ItemData
+## Scoped in with a gun (right mouse); the player zooms the camera.
+var aiming := false
 
 var _cooldown := 0.0
 var _hold := -1.0  # seconds attack has been held for a throwable; -1 = not holding
+var _loaded := 1.0  # gun: 1 = ready, 0 = spear out, in between = reloading
+var _shot: Harpoon  # the gun's spear while it is out
 
 
 func _process(delta: float) -> void:
 	_cooldown -= delta
-	held_view.set_hidden(thrown_item != null and item == thrown_item)
+	var gun := item != null and item.fire_scene != null
+	aiming = gun and Input.is_action_pressed("aim")
+	if gun and thrown_item == null:
+		_loaded = minf(_loaded + delta / item.reload_time, 1.0)
+	held_view.set_gun(aiming, _loaded if gun else 1.0)
+	if is_instance_valid(_shot):
+		_shot.muzzle = held_view.muzzle()
+	held_view.set_hidden(not gun and thrown_item != null and item == thrown_item)
 	if _hold >= 0.0:
 		_hold += delta
 		held_view.set_charge(_charge())
@@ -47,6 +62,10 @@ func _process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED or not event.is_action("attack"):
+		return
+	if item != null and item.fire_scene != null:
+		if event.is_pressed():
+			_fire()
 		return
 	var can_throw := item != null and item.thrown_scene != null and thrown_item == null
 	if event.is_pressed():
@@ -100,6 +119,27 @@ func _throw(charge: float) -> void:
 	thrown.linear_velocity = -camera.global_basis.z * lerpf(min_throw_speed, max_throw_speed, charge)
 	thrown.look_at(thrown.global_position + thrown.linear_velocity, Vector3.UP)
 	thrown.returned.connect(func() -> void: thrown_item = null)
+
+
+## Gun: fires the spear straight at the crosshair; it comes back on its line, then reloads.
+func _fire() -> void:
+	if item == null or item.fire_scene == null or thrown_item != null or _loaded < 1.0:
+		return
+	thrown_item = item
+	_loaded = 0.0
+	held_view.swing()  # recoil
+	var camera := cast.get_parent() as Node3D
+	var shot: Harpoon = item.fire_scene.instantiate()
+	_shot = shot
+	shot.muzzle = held_view.muzzle()
+	shot.damage = item.damage
+	shot.catcher = camera
+	shot.player = get_parent()
+	(get_tree().current_scene if get_tree().current_scene else get_tree().root).add_child(shot)
+	shot.global_position = camera.global_position - camera.global_basis.z * 0.7
+	shot.linear_velocity = -camera.global_basis.z * item.shot_speed
+	shot.look_at(shot.global_position + shot.linear_velocity, Vector3.UP)
+	shot.returned.connect(func() -> void: thrown_item = null)
 
 
 ## The node that takes damage for this collider: itself or the nearest parent that can.

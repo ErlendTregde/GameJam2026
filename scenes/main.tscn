@@ -31,6 +31,13 @@
 [ext_resource type="PackedScene" path="res://scenes/shark/shark.tscn" id="41_shark"]
 [ext_resource type="PackedScene" path="res://scenes/crab/crab.tscn" id="crab_scene"]
 [ext_resource type="Script" uid="uid://djqmio8emlabu" path="res://scripts/crab_spawner.gd" id="crab_spawner"]
+[ext_resource type="PackedScene" path="res://scenes/items/circle_shell.tscn" id="item_circle_shell"]
+[ext_resource type="PackedScene" path="res://scenes/items/oyster.tscn" id="item_oyster"]
+[ext_resource type="PackedScene" path="res://scenes/items/seashell_blue.tscn" id="item_seashell_blue"]
+[ext_resource type="PackedScene" path="res://scenes/items/seashell_pink.tscn" id="item_seashell_pink"]
+[ext_resource type="PackedScene" path="res://scenes/items/seashell_purple.tscn" id="item_seashell_purple"]
+[ext_resource type="PackedScene" path="res://scenes/items/seashell_yellow.tscn" id="item_seashell_yellow"]
+[ext_resource type="PackedScene" path="res://scenes/items/spiral_shell.tscn" id="item_spiral_shell"]
 [ext_resource type="Resource" path="res://loot/gamble_1.tres" id="loot_gamble_1"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/anemone.res" id="reef_anemone"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/branch_coral.res" id="reef_branch_coral"]
@@ -44,17 +51,11 @@
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/sea_stone.res" id="reef_sea_stone"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/sea_stone_2.res" id="reef_sea_stone_2"]
 [ext_resource type="PackedScene" path="res://scenes/items/starfish.tscn" id="reef_starfish"]
-[ext_resource type="PackedScene" path="res://scenes/items/seashell_blue.tscn" id="item_seashell_blue"]
-[ext_resource type="PackedScene" path="res://scenes/items/seashell_yellow.tscn" id="item_seashell_yellow"]
-[ext_resource type="PackedScene" path="res://scenes/items/seashell_pink.tscn" id="item_seashell_pink"]
-[ext_resource type="PackedScene" path="res://scenes/items/seashell_purple.tscn" id="item_seashell_purple"]
-[ext_resource type="PackedScene" path="res://scenes/items/circle_shell.tscn" id="item_circle_shell"]
-[ext_resource type="PackedScene" path="res://scenes/items/spiral_shell.tscn" id="item_spiral_shell"]
-[ext_resource type="PackedScene" path="res://scenes/items/oyster.tscn" id="item_oyster"]
 [ext_resource type="PackedScene" path="res://scenes/shop/shop_board.tscn" id="shop_board"]
 [ext_resource type="Resource" path="res://items/bottle.tres" id="shop_bottle"]
 [ext_resource type="PackedScene" path="res://scenes/shop/shop_item.tscn" id="shop_item"]
 [ext_resource type="Resource" path="res://items/spear.tres" id="shop_spear"]
+[ext_resource type="Resource" path="res://items/speargun.tres" id="shop_speargun"]
 
 [sub_resource type="FastNoiseLite" id="CloudDetailNoise"]
 noise_type = 2
@@ -494,6 +495,13 @@ item = ExtResource("shop_spear")
 price = 40
 display_size = 1.4
 model_rotation = Vector3(0, 0, -12)
+
+[node name="Speargun" parent="Shop/ShopBoard" instance=ExtResource("shop_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.72, 0.12)
+item = ExtResource("shop_speargun")
+price = 60
+display_size = 0.9
+model_rotation = Vector3(0, 90, 0)
 
 [node name="Bottle" parent="Shop/ShopBoard" unique_id=1868958528 instance=ExtResource("shop_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.25, 0.12)

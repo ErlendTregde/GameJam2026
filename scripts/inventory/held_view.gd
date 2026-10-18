@@ -4,7 +4,9 @@ extends SubViewportContainer
 ## FLOAT - small items float in view, sway with mouse look, bob while walking, punch forward.
 ## POLEARM - spears are held low at real length, pointing at the crosshair, and stab straight
 ##   along the shaft (short wind-up, fast drive, brief hold, slower pull back).
-## Both dip in from below when swapped and pull back while a throw is charged.
+## GUN - held pointing forward at the hip; right mouse brings it to the middle (scoped), it kicks
+##   on a shot, and its spear slides back in while it reloads.
+## All dip in from below when swapped and pull back while a throw is charged.
 
 ## Where a FLOAT item rests in front of the camera (m), and how it is turned (degrees).
 @export var rest_position := Vector3(0.3, -0.24, -0.7)
@@ -38,6 +40,12 @@ extends SubViewportContainer
 @export var thrust_reach := 0.55
 ## Walking: the tip dips this much (degrees) with each step.
 @export var polearm_bob_pitch := 1.2
+@export_group("Gun")
+## Where a gun rests (hip) and where it goes when scoped (m, camera space).
+@export var gun_rest_position := Vector3(0.2, -0.17, -0.42)
+@export var gun_aim_position := Vector3(0.0, -0.1, -0.36)
+## How far back the spear starts while reloading (model units, along the gun).
+@export var reload_slide := 12.0
 @export_group("Drink")
 ## Where the opening of a drink goes: the mouth, just below the view (m, camera space).
 @export var mouth_position := Vector3(0.0, -0.16, -0.2)
@@ -64,6 +72,11 @@ var _charge := 0.0
 var _shown_charge := 0.0
 var _drink := 1.0  # 0 -> 1 over one drink; 1 = not drinking
 var _drink_time := 1.6
+var _aim := 0.0
+var _shown_aim := 0.0
+var _loaded := 1.0
+var _spear: Node3D  # a gun's loaded spear, if its model has one
+var _spear_rest := Vector3.ZERO
 
 @onready var _camera: Camera3D = $SubViewport/Camera3D
 @onready var _holder: Node3D = $SubViewport/Camera3D/Holder
@@ -106,9 +119,13 @@ func _set_model(item: ItemData) -> void:
 	_model_item = item
 	for child in _holder.get_children():
 		child.queue_free()
+	_spear = null
 	if item == null:
 		return
 	var model := item.make_model()
+	_spear = model.find_child("Spear", true, false)
+	if _spear:
+		_spear_rest = _spear.position
 	_holder.add_child(model)
 	var bounds := ItemData.model_bounds(model)
 	var s := item.held_size / maxf(bounds.get_longest_axis_size(), 0.01)
@@ -141,6 +158,17 @@ func stop_drink() -> void:
 ## How far a throw is charged (0..1); the item pulls back to match.
 func set_charge(charge: float) -> void:
 	_charge = charge
+
+
+## Gun state: scoped in or not, and how loaded it is (0 = spear out, 1 = ready).
+func set_gun(aiming: bool, loaded: float) -> void:
+	_aim = 1.0 if aiming else 0.0
+	_loaded = loaded
+
+
+## Where the held item's front end (a gun's muzzle) is, in camera space.
+func muzzle() -> Vector3:
+	return _holder.transform * Vector3(0.0, 0.0, -_item.held_size * 0.5) if _item else Vector3(0.15, -0.15, -0.5)
 
 
 ## Hides the item while it is away (thrown).
@@ -189,6 +217,18 @@ func _process(delta: float) -> void:
 		var tilt := Basis.from_euler(Vector3((step * polearm_bob_pitch * _walk + _sway.y * 60.0) * PI / 180.0, -_sway.x, 0.0))
 		var basis := aim * tilt
 		_holder.transform = charge * Transform3D(basis, grip_position + lag * 0.5 + bob + dip + basis * Vector3(0, 0, -_thrust()))
+	elif _item and _item.hold_style == ItemData.HoldStyle.GUN:
+		_shown_aim = move_toward(_shown_aim, _aim, delta * 6.0)
+		var aim := smoothstep(0.0, 1.0, _shown_aim)
+		var free := 1.0 - aim * 0.8  # scoped: steadier
+		var bob := Vector3(sin(_bob_time) * 0.6, -absf(cos(_bob_time)), 0.0) * bob_amount * _walk
+		var kick := (1.0 - _swing) * (1.0 - _swing)  # recoil right after a shot, easing back
+		var turn := Vector3(_sway.y * 300.0 * free + 6.0 * kick, -_sway.x * 300.0 * free, 0.0)
+		var pos := gun_rest_position.lerp(gun_aim_position, aim) + (lag + bob) * free + Vector3(0.0, 0.015, 0.08) * kick + dip
+		_holder.transform = Transform3D(Basis.from_euler(turn * PI / 180.0), pos)
+		if _spear:
+			_spear.visible = _loaded > 0.0
+			_spear.position = _spear_rest + Vector3(0.0, (1.0 - _loaded) * reload_slide, 0.0)  # slides in from behind
 	else:
 		var bob := Vector3(sin(_bob_time) * 0.6, -absf(cos(_bob_time)), 0.0) * bob_amount * _walk
 		var hit := sin(PI * pow(_swing, 0.6))  # fast out, slower back

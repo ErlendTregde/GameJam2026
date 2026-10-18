@@ -8,11 +8,11 @@ extends Resource
 ## hotbar slot and the hand show. A path, not a PackedScene, so the scene can point back here.
 @export_file("*.tscn") var scene_path := ""
 
-enum HoldStyle { FLOAT, POLEARM }
+enum HoldStyle { FLOAT, POLEARM, GUN }
 
 @export_group("In hand")
 ## FLOAT: small item floating in view. POLEARM: a spear held low at real length, pointing at
-## the crosshair, stabbing along the shaft.
+## the crosshair, stabbing along the shaft. GUN: held pointing forward; right mouse scopes in.
 @export var hold_style := HoldStyle.FLOAT
 ## Longest side of the model when held (m); for a polearm its real length.
 @export var held_size := 0.17
@@ -32,6 +32,10 @@ enum HoldStyle { FLOAT, POLEARM }
 @export var cooldown := 0.5
 ## Set for weapons that can be thrown by holding attack (the trident): what flies.
 @export var thrown_scene: PackedScene
+## Set for guns (the speargun): what a shot fires, how fast (m/s), and the reload after it is back.
+@export var fire_scene: PackedScene
+@export var shot_speed := 30.0
+@export var reload_time := 1.2
 
 @export_group("Consumable")
 ## Use (left click) to drink or eat it. Common items restore a little, rare ones more.

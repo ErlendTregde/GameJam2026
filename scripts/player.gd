@@ -361,8 +361,9 @@ func _update_swim_camera(delta: float, swimming: bool, moving: bool, water_depth
 	var floating := clampf(1.0 - absf(water_depth - chest_height), 0.0, 1.0)  # near the surface
 	_camera.position.y = stroke * _swim_sway
 	_camera.rotation.z = deg_to_rad(sin(_swim_time * 0.9) * float_roll * floating) * _swim_sway
-	var fov := underwater_fov if _underwater else _base_fov
-	_camera.fov = move_toward(_camera.fov, fov, delta * 20.0)
+	var fov := (underwater_fov if _underwater else _base_fov) * (_combat.aim_fov_scale if _combat.aiming else 1.0)
+	var fast := _combat.aiming or _camera.fov < fov - 15.0  # scoping snaps; the underwater change eases
+	_camera.fov = move_toward(_camera.fov, fov, delta * (160.0 if fast else 20.0))
 
 
 func _update_underwater() -> void:

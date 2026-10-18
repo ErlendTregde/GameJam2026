@@ -1,5 +1,8 @@
 class_name Crab
 extends Node3D
+
+## Killed; `drop` is the crab item it left (a speargun spear carries it back).
+signal killed(drop: WorldItem)
 ## A beach crab: wanders along the sand, scuttles away sideways when the player comes close,
 ## and leaves `item` (with its size) behind when killed. Sticks to the terrain height.
 
@@ -71,4 +74,5 @@ func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 		world.add_child(dropped)  # tests run without a current_scene: main is the root's last child
 		dropped.global_position = global_position + Vector3.UP * 0.3
 		HitFlash.flash(dropped.get_node("Model"), 1.0, 0.5)  # dead: redder, then back to normal
+		killed.emit(dropped)
 	queue_free()

@@ -1,5 +1,8 @@
 class_name Fish
 extends CharacterBody3D
+
+## Killed; `drop` is the fish item it left (a speargun spear carries it back).
+signal killed(drop: WorldItem)
 ## A fish swimming around under water near where it started. Wanders between the sea floor and
 ## the surface, darts away when hit, and leaves `item` (a fish of its size) behind when killed.
 ## The spawner sets `ocean` and `terrain`.
@@ -127,6 +130,7 @@ func _die() -> void:
 		dropped.global_transform = global_transform
 		dropped.linear_velocity = Vector3.UP * 1.0
 		HitFlash.flash(dropped.get_node("Model"), 1.0, 0.5)  # dead: redder, then back to normal
+		killed.emit(dropped)
 	queue_free()
 
 

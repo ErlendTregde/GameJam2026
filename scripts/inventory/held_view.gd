@@ -42,8 +42,8 @@ extends SubViewportContainer
 @export var polearm_bob_pitch := 1.2
 @export_group("Gun")
 ## Where a gun rests (hip) and where it goes when scoped (m, camera space).
-@export var gun_rest_position := Vector3(0.2, -0.15, -0.82)
-@export var gun_aim_position := Vector3(0.0, -0.11, -0.7)
+@export var gun_rest_position := Vector3(0.2, -0.16, -0.72)
+@export var gun_aim_position := Vector3(0.0, -0.1, -0.36)
 ## How much a gun turns and lags with mouse look (FLOAT items use 1).
 @export var gun_sway := 0.3
 ## How far back the spear starts while reloading (model units, along the gun).

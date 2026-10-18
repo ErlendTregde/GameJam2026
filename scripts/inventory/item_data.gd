@@ -67,9 +67,10 @@ func roll_weight(rng: RandomNumberGenerator) -> float:
 	return clampf(snappedf(lerpf(weight_range.x, weight_range.y, t), 0.1), weight_range.x, weight_range.y)
 
 
-## Model scale for a weight (mass grows with volume, so scale is the cube root).
+## Model scale for a weight. Real mass grows with volume (cube root), but that makes sizes hard
+## to tell apart in game, so the square root: a fish twice as heavy looks ~1.4x as long.
 func size_scale(weight: float) -> float:
-	return pow(weight / base_weight, 1.0 / 3.0) if weight > 0.0 else 1.0
+	return sqrt(weight / base_weight) if weight > 0.0 else 1.0
 
 
 func value(weight: float) -> int:

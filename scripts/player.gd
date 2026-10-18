@@ -459,9 +459,9 @@ func spend(amount: int) -> bool:
 func _refresh_hotbar() -> void:
 	for i in items.size():
 		var slot := _hotbar.get_child(i)
-		slot.set_item(items[i])
+		slot.set_item(items[i], weights[i])
 		slot.set_selected(i == selected_slot)
-	_held.show_item(items[selected_slot])
+	_held.show_item(items[selected_slot], weights[selected_slot])
 	_combat.item = items[selected_slot]
 	_item_use.item = items[selected_slot]
 

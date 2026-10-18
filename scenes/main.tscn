@@ -56,6 +56,7 @@
 [ext_resource type="PackedScene" path="res://scenes/shop/shop_item.tscn" id="shop_item"]
 [ext_resource type="Resource" path="res://items/spear.tres" id="shop_spear"]
 [ext_resource type="Resource" path="res://items/speargun.tres" id="shop_speargun"]
+[ext_resource type="Script" path="res://scripts/inventory/item_data.gd" id="item_data_script"]
 
 [sub_resource type="FastNoiseLite" id="CloudDetailNoise"]
 noise_type = 2
@@ -474,6 +475,7 @@ world_environment = NodePath("../WorldEnvironment")
 underwater_environment = SubResource("Underwater")
 sun = NodePath("../Sun")
 respawn_point = NodePath("../Boat/Deck/PlayerSpawn")
+starting_items = Array[ExtResource("item_data_script")]([ExtResource("shop_speargun")])
 
 [node name="SharkZone" type="Node" parent="." unique_id=1073233949 node_paths=PackedStringArray("player", "ocean", "terrain", "boss_bar", "message")]
 script = ExtResource("40_shark_zone")

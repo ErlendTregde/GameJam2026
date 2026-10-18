@@ -17,6 +17,7 @@ func _init() -> void:
 	p.get_node("Head").rotation.x = atan2(to.y, Vector2(to.x, to.z).length())
 	var fish: ItemData = load("res://items/yellow_fish.tres")
 	var spear: ItemData = load("res://items/spear.tres")
+	p.items.fill(null)  # start empty (the player may spawn with test items)
 	p.give(fish, 2.0)
 	p._drop()
 	p.give(spear)

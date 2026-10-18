@@ -53,6 +53,8 @@ signal died
 ## The world's sun, so the held item is lit the same way as the world.
 @export var sun: DirectionalLight3D
 
+## In the hotbar from the start (e.g. for testing).
+@export var starting_items: Array[ItemData] = []
 @export_group("Health")
 @export var max_health := 100.0
 ## Seconds you can stay under water before you start drowning.
@@ -140,6 +142,8 @@ func _ready() -> void:
 	_held.sun = sun
 	items.resize(_hotbar.get_child_count())
 	weights.resize(items.size())
+	for item in starting_items:
+		give(item)
 	for i in items.size():
 		_hotbar.get_child(i).set_number(i + 1)
 	_refresh_hotbar()

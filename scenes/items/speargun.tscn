@@ -11,7 +11,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/speargun/parts/spear.res" id="9_spear"]
 
 [sub_resource type="BoxShape3D" id="Shape"]
-size = Vector3(0.06, 0.18, 1.0)
+size = Vector3(0.06, 0.2, 1.18)
 
 [node name="Speargun" type="RigidBody3D"]
 collision_layer = 16
@@ -24,27 +24,34 @@ item = ExtResource("2_item")
 [node name="Model" type="Node3D" parent="."]
 
 [node name="Gun" type="Node3D" parent="Model"]
-transform = Transform3D(-0.034, 0, 0, 0, 0, 0.034, 0, 0.034, 0, 0, 0.052, 0.123)
+transform = Transform3D(-0.034, 0, 0, 0, 0, 0.034, 0, 0.034, 0, 0, -0.002, 0.524)
 
 [node name="Barrel" type="MeshInstance3D" parent="Model/Gun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0088, -5.0562, 1.3953)
 mesh = ExtResource("3_barrel")
 
 [node name="Grip" type="MeshInstance3D" parent="Model/Gun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0088, -5.0562, 1.3953)
 mesh = ExtResource("4_grip")
 
 [node name="Body" type="MeshInstance3D" parent="Model/Gun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0088, -5.0562, 1.3953)
 mesh = ExtResource("5_body")
 
 [node name="Detail" type="MeshInstance3D" parent="Model/Gun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0088, -5.0562, 1.3953)
 mesh = ExtResource("6_detail")
 
 [node name="Trigger" type="MeshInstance3D" parent="Model/Gun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0468, -1.852, 0.3172)
 mesh = ExtResource("7_trigger")
 
 [node name="Slide" type="MeshInstance3D" parent="Model/Gun"]
+transform = Transform3D(1.0179, 0, 0, 0, 1, 0, 0, 0, 1, -0.0386, -4.7078, 2.2554)
 mesh = ExtResource("8_slide")
 
 [node name="Spear" type="MeshInstance3D" parent="Model/Gun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0468, -14.4687, 2.0664)
 mesh = ExtResource("9_spear")
 
 [node name="Collision" type="CollisionShape3D" parent="."]

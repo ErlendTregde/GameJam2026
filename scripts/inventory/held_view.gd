@@ -42,8 +42,10 @@ extends SubViewportContainer
 @export var polearm_bob_pitch := 1.2
 @export_group("Gun")
 ## Where a gun rests (hip) and where it goes when scoped (m, camera space).
-@export var gun_rest_position := Vector3(0.2, -0.17, -0.42)
-@export var gun_aim_position := Vector3(0.0, -0.1, -0.36)
+@export var gun_rest_position := Vector3(0.2, -0.15, -0.82)
+@export var gun_aim_position := Vector3(0.0, -0.11, -0.7)
+## How much a gun turns and lags with mouse look (FLOAT items use 1).
+@export var gun_sway := 0.3
 ## How far back the spear starts while reloading (model units, along the gun).
 @export var reload_slide := 12.0
 @export_group("Drink")
@@ -220,7 +222,7 @@ func _process(delta: float) -> void:
 	elif _item and _item.hold_style == ItemData.HoldStyle.GUN:
 		_shown_aim = move_toward(_shown_aim, _aim, delta * 6.0)
 		var aim := smoothstep(0.0, 1.0, _shown_aim)
-		var free := 1.0 - aim * 0.8  # scoped: steadier
+		var free := (1.0 - aim * 0.8) * gun_sway  # heavy, and steadier still when scoped
 		var bob := Vector3(sin(_bob_time) * 0.6, -absf(cos(_bob_time)), 0.0) * bob_amount * _walk
 		var kick := (1.0 - _swing) * (1.0 - _swing)  # recoil right after a shot, easing back
 		var turn := Vector3(_sway.y * 300.0 * free + 6.0 * kick, -_sway.x * 300.0 * free, 0.0)

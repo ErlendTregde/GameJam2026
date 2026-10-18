@@ -157,8 +157,13 @@ func _physics_process(delta: float) -> void:
 		var turn := Basis.looking_at(want.normalized())
 		global_basis = global_basis.slerp(turn, minf(turn_speed * delta, 1.0)).orthonormalized()
 	var next := global_position - global_basis.z * speed * delta
-	if terrain == null or ocean == null or ocean.sea_level - terrain.get_floor_height(next.x, next.z) >= min_depth:
+	if terrain == null or ocean == null:
 		global_position = next
+	else:
+		var depth_next := ocean.sea_level - terrain.get_floor_height(next.x, next.z)
+		# Shallow water is off limits, but it may always swim toward deeper water (never trapped).
+		if depth_next >= min_depth or depth_next > ocean.sea_level - terrain.get_floor_height(global_position.x, global_position.z):
+			global_position = next
 	# Stay in the water: under the surface, above the sea floor.
 	var margin := circle_depth if is_circling() else surface_margin
 	var surface := ocean.get_height(global_position) - margin if ocean else 0.0

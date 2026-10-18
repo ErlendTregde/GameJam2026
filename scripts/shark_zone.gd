@@ -116,11 +116,10 @@ func _spawn() -> void:
 	add_child(_shark)
 	if _boss_health > 0.0:
 		_shark.health = _boss_health
-	# Out of sight: behind the player, deeper down.
 	var camera := get_viewport().get_camera_3d()
 	var back := camera.global_basis.z if camera else Vector3.BACK
 	back.y = 0.0
-	_shark.global_position = player.global_position + back.normalized() * spawn_distance + Vector3.DOWN * 2.5
+	_shark.global_position = _spawn_point(back.normalized(), _shark.min_depth + 2.0)
 	_shark.look_at(player.global_position, Vector3.UP)
 	_shark.gone.connect(func() -> void:
 		_boss_health = _shark.health
@@ -137,6 +136,20 @@ func _on_shark_died() -> void:
 		message.visible = true
 		await get_tree().create_timer(4.0).timeout
 		message.visible = false
+
+
+## Out of sight where possible: behind the player first, then further around, skipping islands
+## and water shallower than `depth`; between the sea floor and the surface.
+func _spawn_point(back: Vector3, depth: float) -> Vector3:
+	var pos := player.global_position
+	for dist: float in [spawn_distance, spawn_distance * 0.6]:
+		for k in 12:
+			var turn := ceili(k / 2.0) * TAU / 12.0 * (1.0 if k % 2 == 0 else -1.0)  # 0, -30, +30, -60, ...
+			var p := pos + back.rotated(Vector3.UP, turn) * dist
+			var floor_y := terrain.get_floor_height(p.x, p.z)
+			if ocean.sea_level - floor_y >= depth:
+				return Vector3(p.x, clampf(pos.y - 2.5, floor_y + 1.0, ocean.sea_level - 1.5), p.z)
+	return pos + back * spawn_distance + Vector3.DOWN * 2.5  # nowhere deep enough nearby
 
 
 ## Red overlay at sea level over the deep (shark) water, editor only.

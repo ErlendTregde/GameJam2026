@@ -10,6 +10,8 @@ signal died
 
 @export var display_name := "Great White"
 @export var max_health := 200.0
+## Scales the model, mouth and hitbox (the body itself stays unscaled: its turning re-normalizes it).
+@export var size := 1.0
 ## Dropped where it dies (a trophy worth a lot at the scale).
 @export var trophy: ItemData
 
@@ -56,6 +58,9 @@ var _dead := false
 
 func _ready() -> void:
 	health = max_health
+	$Model.scale *= size
+	$Hitbox.scale *= size
+	_mouth.position *= size
 	_animations.get_animation("Swim").loop_mode = Animation.LOOP_LINEAR
 	_animations.play("Swim")
 

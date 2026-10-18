@@ -14,6 +14,8 @@ uniform vec2 uv_scale = vec2(1.0);
 uniform bool use_vertex_color = false;
 // Use world x/z as UV (for ground that moves with the camera, like the seabed).
 uniform bool world_uv = false;
+// Per object, set from code: recolours a model (e.g. a fish variant). White = unchanged.
+instance uniform vec4 tint : source_color = vec4(1.0);
 // Per object, set from code (HitFlash): red flash when hit, alpha = strength.
 instance uniform vec4 hit_tint : source_color = vec4(1.0, 0.0, 0.0, 0.0);
 
@@ -25,7 +27,7 @@ void vertex() {
 
 void fragment() {
 	vec2 uv = (world_uv ? world_xz : UV) * uv_scale;
-	vec3 color = texture(albedo_tex, uv).rgb * albedo_color.rgb;
+	vec3 color = texture(albedo_tex, uv).rgb * albedo_color.rgb * tint.rgb;
 	if (use_vertex_color) {
 		color *= COLOR.rgb;
 	}

@@ -26,6 +26,9 @@
 [ext_resource type="Script" uid="uid://fiydosvp587" path="res://scripts/fish_spawner.gd" id="27_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/fish/yellow_fish.tscn" id="28_yellow_fish"]
 [ext_resource type="PackedScene" path="res://scenes/fish/blue_fish.tscn" id="29_blue_fish"]
+[ext_resource type="PackedScene" path="res://scenes/fish/red_snapper.tscn" id="l2_red_snapper"]
+[ext_resource type="PackedScene" path="res://scenes/fish/deep_grouper.tscn" id="l2_deep_grouper"]
+[ext_resource type="PackedScene" path="res://scenes/shark/big_shark.tscn" id="l2_big_shark"]
 [ext_resource type="Resource" path="res://loot/palm.tres" id="30_loot_palm"]
 [ext_resource type="Script" uid="uid://ddaus3rgj41k5" path="res://scripts/shark_zone.gd" id="40_shark_zone"]
 [ext_resource type="PackedScene" path="res://scenes/shark/shark.tscn" id="41_shark"]
@@ -138,6 +141,9 @@ point_count = 11
 
 [sub_resource type="WorldBoundaryShape3D" id="SeabedShape"]
 
+[sub_resource type="SphereShape3D" id="Level2Zone"]
+radius = 70.0
+
 [sub_resource type="Environment" id="Underwater"]
 background_mode = 1
 background_color = Color(0.03, 0.2, 0.25, 1)
@@ -190,6 +196,7 @@ radius = 15.0
 height = 3.5
 roughness = 0.35
 shape_seed = 3
+depth_scale = 2.0
 
 [node name="BigIsland" type="Marker3D" parent="Terrain" unique_id=1158074324]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, -130)
@@ -266,8 +273,8 @@ terrain = NodePath("../../Terrain")
 [node name="SmallIslandFish" type="Node3D" parent="Fish" unique_id=928944438 node_paths=PackedStringArray("ocean", "terrain")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 0, -60)
 script = ExtResource("27_spawner")
-fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish"), ExtResource("29_blue_fish")])
-count = 4
+fish_scenes = Array[PackedScene]([ExtResource("l2_red_snapper"), ExtResource("l2_deep_grouper"), ExtResource("29_blue_fish")])
+count = 6
 radius = 40.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
@@ -465,7 +472,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 107.73, 7.11, -125.19)
 freeze = true
 
 [node name="Boat" parent="." unique_id=2143456993 node_paths=PackedStringArray("ocean") instance=ExtResource("4_boat")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0.5, 36.5)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -103, 0.5, -47.5)
+locked = true
 ocean = NodePath("../Ocean")
 
 [node name="Player" parent="." unique_id=1345830165 node_paths=PackedStringArray("ocean", "world_environment", "sun", "respawn_point") instance=ExtResource("5_player")]
@@ -475,7 +483,7 @@ world_environment = NodePath("../WorldEnvironment")
 underwater_environment = SubResource("Underwater")
 sun = NodePath("../Sun")
 starting_items = Array[ExtResource("item_data_script")]([ExtResource("shop_speargun")])
-respawn_point = NodePath("../Boat/Deck/PlayerSpawn")
+respawn_point = NodePath("../Spawn")
 
 [node name="SharkZone" type="Node" parent="." unique_id=1073233949 node_paths=PackedStringArray("player", "ocean", "terrain", "boss_bar", "message")]
 script = ExtResource("40_shark_zone")
@@ -517,3 +525,51 @@ terrain = NodePath("../Terrain")
 island = NodePath("../Terrain/MainIsland")
 player = NodePath("../Player")
 crab_scene = ExtResource("crab_scene")
+
+[node name="Spawn" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.6, 19)
+
+[node name="SharkZone2" type="Node" parent="." node_paths=PackedStringArray("player", "ocean", "terrain", "boss_bar", "message", "unlocks")]
+script = ExtResource("40_shark_zone")
+player = NodePath("../Player")
+ocean = NodePath("../Ocean")
+terrain = NodePath("../Terrain")
+shark_scene = ExtResource("l2_big_shark")
+use_depth = false
+dive_depth = 8.0
+warning_time = 4.0
+boss_bar = NodePath("../Player/HUD/BossBar")
+message = NodePath("../Player/HUD/Message")
+defeated_text = "The boat is unlocked!"
+unlocks = [NodePath("../Boat")]
+
+[node name="Island2Water" type="Area3D" parent="SharkZone2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 0, -60)
+collision_layer = 0
+monitorable = false
+
+[node name="Shape" type="CollisionShape3D" parent="SharkZone2/Island2Water"]
+shape = SubResource("Level2Zone")
+
+[node name="ShopBoard2" parent="Shop" instance=ExtResource("shop_board")]
+transform = Transform3D(0.42, 0, 0.91, 0, 1, 0, -0.91, 0, 0.42, -131, 4.35, -61)
+
+[node name="Spear" parent="Shop/ShopBoard2" instance=ExtResource("shop_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 1.3, 0.12)
+item = ExtResource("shop_spear")
+price = 40
+display_size = 1.4
+model_rotation = Vector3(0, 0, -12)
+
+[node name="Speargun" parent="Shop/ShopBoard2" instance=ExtResource("shop_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.72, 0.12)
+item = ExtResource("shop_speargun")
+price = 60
+display_size = 0.9
+model_rotation = Vector3(0, 90, 0)
+
+[node name="Bottle" parent="Shop/ShopBoard2" instance=ExtResource("shop_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.25, 0.12)
+item = ExtResource("shop_bottle")
+price = 8
+display_size = 0.35

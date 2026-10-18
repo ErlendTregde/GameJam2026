@@ -11,6 +11,9 @@ extends RigidBody3D
 ## Resists sliding sideways, like a keel.
 @export var keel_drag := 1.5
 @export var mouse_sensitivity := 0.003
+## Can't be steered until unlocked (e.g. by beating the island's boss).
+@export var locked := false
+@export var locked_text := "Locked: beat the boss in the deep water"
 
 var driving := false
 var _player: Player
@@ -47,7 +50,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		if driving:
 			_set_driving(false)
-		elif _player:
+		elif _player and not locked:
 			_set_driving(true)
 	elif driving and event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		_pivot.rotate_y(-event.relative.x * mouse_sensitivity)
@@ -67,7 +70,7 @@ func _set_driving(value: bool) -> void:
 func _on_helm_body_entered(body: Node3D) -> void:
 	if body is Player:
 		_player = body
-		_prompt.text = "[E] take the helm"
+		_prompt.text = locked_text if locked else "[E] take the helm"
 		_prompt.visible = true
 
 

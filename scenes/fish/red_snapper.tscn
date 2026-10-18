@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/fish.gd" id="1_fish"]
+[ext_resource type="PackedScene" path="res://scenes/fish/fish_model.tscn" id="2_model"]
+[ext_resource type="Resource" path="res://items/red_snapper.tres" id="3_item"]
+
+[sub_resource type="CapsuleShape3D" id="Shape"]
+radius = 0.18
+height = 0.8
+
+[node name="RedSnapper" type="CharacterBody3D"]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("1_fish")
+health = 35.0
+speed = 1.6
+item = ExtResource("3_item")
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
+variant = 0
+length = 0.75
+tint = Color(1, 0.35, 0.3, 1)
+
+[node name="PauseOffScreen" type="VisibleOnScreenEnabler3D" parent="."]
+aabb = AABB(-0.4, -0.4, -0.5, 0.8, 0.8, 1.0)
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+shape = SubResource("Shape")

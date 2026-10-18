@@ -10,5 +10,8 @@ extends Marker3D
 @export var height := 5.0
 ## How wobbly the coastline is (0 = round, 0.4 = very irregular).
 @export_range(0.0, 0.6) var roughness := 0.25
+## How deep the sea around this island gets, relative to the Terrain profile (2 = twice as deep).
+## Blends smoothly toward the neighbouring islands' value.
+@export var depth_scale := 1.0
 ## Changes the coastline and hill shape without moving the island.
 @export var shape_seed := 0

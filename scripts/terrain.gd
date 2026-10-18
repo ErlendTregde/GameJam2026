@@ -44,6 +44,8 @@ func get_floor_height(x: float, z: float) -> float:
 		_islands.assign(find_children("*", "IslandShape", false))
 	var shore := INF  # distance to the nearest shoreline; negative = on an island
 	var top := -INF
+	var depth_sum := 0.0  # depth_scale weighted toward the closest islands
+	var weight_sum := 0.0
 	for island in _islands:
 		var offset := Vector2(x - island.position.x, z - island.position.z)
 		var angle := offset.angle()
@@ -56,9 +58,14 @@ func get_floor_height(x: float, z: float) -> float:
 				hill += noise.get_noise_2d(x * 3.0 + island.shape_seed * 31.0, z * 3.0) * minf(-d * 0.15, 1.2)
 			top = maxf(top, profile.sample(0.0) + hill)
 		shore = minf(shore, d)
+		var w := 1.0 / pow(maxf(d, 1.0), 2.0)
+		depth_sum += island.depth_scale * w
+		weight_sum += w
 	if shore < 0.0:
 		return top
 	var h := profile.sample(shore)
+	if h < 0.0 and weight_sum > 0.0:
+		h *= depth_sum / weight_sum
 	if noise:
 		var amount := lerpf(shallow_variation, deep_variation, smoothstep(deep_from - 20.0, deep_from + 20.0, shore))
 		h += noise.get_noise_2d(x, z) * amount * smoothstep(5.0, 30.0, shore)

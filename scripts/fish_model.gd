@@ -24,6 +24,8 @@ const KIT := {
 			_apply()
 
 
+## Recolours the fish (white = its own colours), so one model makes several kinds.
+@export var tint := Color.WHITE
 ## Fish are small and mostly under water: their shadows are invisible but cost a lot.
 @export var cast_shadows := false
 ## Not drawn beyond this distance (m); 0 = always.
@@ -35,6 +37,7 @@ func _ready() -> void:
 	for mesh: MeshInstance3D in find_children("*", "MeshInstance3D", true, false):
 		mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if cast_shadows else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		mesh.visibility_range_end = visible_distance
+		mesh.set_instance_shader_parameter("tint", tint)
 
 
 ## Swim animation per variant with only that fish's tracks; built once, shared by all fish.

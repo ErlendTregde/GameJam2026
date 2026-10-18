@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/shark/shark.tscn" id="1_shark"]
+
+[node name="BigShark" instance=ExtResource("1_shark")]
+size = 1.7
+display_name = "Giant Shark"
+max_health = 400.0
+chase_speed = 9.0
+lunge_speed = 12.5
+bite_range = 3.8
+bite_damage = 50.0
+breach_height = 4.5
+surface_margin = 1.4
+min_depth = 2.5
+circle_radius = 13.0
+circle_depth = 0.8

@@ -7,7 +7,7 @@ func _init() -> void:
 	await create_timer(1.0).timeout
 	var p: Player = main.get_node("Player")
 	var chest: Chest = main.get_node("Chests/WoodenChest")
-	assert(chest.cost == 15 and chest.get_prompt() == "[E] gamble $15", "gamble prompt")
+	assert(chest.cost == 15 and chest.get_prompt() == "[E] $15", "gamble prompt")
 	var before := chest.get_parent().get_child_count()
 	chest.interact(p)
 	assert(not chest.opened and p.money == 0, "too poor: stays shut")

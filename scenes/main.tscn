@@ -32,6 +32,7 @@
 [ext_resource type="PackedScene" path="res://scenes/crab/crab.tscn" id="crab_scene"]
 [ext_resource type="Script" uid="uid://djqmio8emlabu" path="res://scripts/crab_spawner.gd" id="crab_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/items/circle_shell.tscn" id="item_circle_shell"]
+[ext_resource type="Script" uid="uid://cpugdrgpajuyg" path="res://scripts/inventory/item_data.gd" id="item_data_script"]
 [ext_resource type="PackedScene" path="res://scenes/items/oyster.tscn" id="item_oyster"]
 [ext_resource type="PackedScene" path="res://scenes/items/seashell_blue.tscn" id="item_seashell_blue"]
 [ext_resource type="PackedScene" path="res://scenes/items/seashell_pink.tscn" id="item_seashell_pink"]
@@ -56,7 +57,6 @@
 [ext_resource type="PackedScene" path="res://scenes/shop/shop_item.tscn" id="shop_item"]
 [ext_resource type="Resource" path="res://items/spear.tres" id="shop_spear"]
 [ext_resource type="Resource" path="res://items/speargun.tres" id="shop_speargun"]
-[ext_resource type="Script" path="res://scripts/inventory/item_data.gd" id="item_data_script"]
 
 [sub_resource type="FastNoiseLite" id="CloudDetailNoise"]
 noise_type = 2
@@ -167,7 +167,7 @@ script = ExtResource("1_ocean")
 sea_level = 0.5
 
 [node name="DeepFloorMesh" type="MeshInstance3D" parent="Ocean" unique_id=516975404]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -44, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.022972584, -43.92312, -0.036201477)
 mesh = SubResource("SeabedPlane")
 
 [node name="Terrain" type="StaticBody3D" parent="." unique_id=51584632]
@@ -474,8 +474,8 @@ ocean = NodePath("../Ocean")
 world_environment = NodePath("../WorldEnvironment")
 underwater_environment = SubResource("Underwater")
 sun = NodePath("../Sun")
-respawn_point = NodePath("../Boat/Deck/PlayerSpawn")
 starting_items = Array[ExtResource("item_data_script")]([ExtResource("shop_speargun")])
+respawn_point = NodePath("../Boat/Deck/PlayerSpawn")
 
 [node name="SharkZone" type="Node" parent="." unique_id=1073233949 node_paths=PackedStringArray("player", "ocean", "terrain", "boss_bar", "message")]
 script = ExtResource("40_shark_zone")
@@ -498,7 +498,7 @@ price = 40
 display_size = 1.4
 model_rotation = Vector3(0, 0, -12)
 
-[node name="Speargun" parent="Shop/ShopBoard" instance=ExtResource("shop_item")]
+[node name="Speargun" parent="Shop/ShopBoard" unique_id=2088284266 instance=ExtResource("shop_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.72, 0.12)
 item = ExtResource("shop_speargun")
 price = 60

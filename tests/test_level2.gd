@@ -1,4 +1,4 @@
-extends SceneTree
+extends RefCounted
 ## Level 2: island 2's water is deeper; its boat is locked; swimming there is safe, but diving
 ## deep brings the Giant Shark (a bigger, tougher shark); killing it unlocks the boat.
 
@@ -7,14 +7,18 @@ func _hold(p: Player, pos: Vector3, seconds: float) -> void:
 	while t < seconds:
 		p.global_position = pos
 		p.velocity = Vector3.ZERO
-		await physics_frame
+		await tree.physics_frame
 		t += 1.0 / 60.0
 
 
-func _init() -> void:
+var tree: SceneTree
+
+
+func run(scene_tree: SceneTree) -> void:
+	tree = scene_tree
 	var main: Node = load("res://scenes/main.tscn").instantiate()
-	get_root().add_child(main)
-	await create_timer(1.0).timeout
+	tree.root.add_child(main)
+	await tree.create_timer(1.0).timeout
 	var terrain: Terrain = main.get_node("Terrain")
 	var ocean: Ocean = main.get_node("Ocean")
 	var home: IslandShape = main.get_node("Terrain/MainIsland")
@@ -51,4 +55,4 @@ func _init() -> void:
 	shark.take_damage(400.0)
 	assert(zone.defeated and not boat.locked, "killing it unlocks the boat")
 	print("PASS test_level2")
-	quit()
+	tree.quit()

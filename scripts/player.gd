@@ -153,10 +153,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("toggle_fullscreen"):
 		var full := DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if full else DisplayServer.WINDOW_MODE_FULLSCREEN)
-	elif event.is_action_pressed("ui_cancel"):
-		var captured := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if captured else Input.MOUSE_MODE_CAPTURED
-	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED and not PauseMenu.is_open():
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	elif is_physics_processing() and event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(-event.relative.x * mouse_sensitivity)
@@ -396,10 +393,8 @@ func _select(slot: int) -> void:
 
 
 func _pick_up(world_item: WorldItem) -> void:
-	if not items.has(null):
-		return
-	give(world_item.item, world_item.weight)
-	world_item.queue_free()
+	if items.has(null):
+		ItemService.request_pickup(world_item)  # the host decides who gets it; then give()
 
 
 ## Puts an item in the selected slot if free, else the first free one, else drops it at your feet.
@@ -437,11 +432,16 @@ func _toss_velocity(from: Vector3) -> Vector3:
 
 
 func _spawn_item(item: ItemData, weight: float, at: Vector3, toss: Vector3) -> void:
-	var dropped: WorldItem = load(item.scene_path).instantiate()
-	dropped.weight = weight
-	_world.add_child(dropped)
-	dropped.global_position = at
-	dropped.linear_velocity = toss
+	ItemService.spawn(item, weight, at, toss)
+
+
+## Head tilt (radians), for our avatar.
+func look_pitch() -> float:
+	return _head.rotation.x
+
+
+func held_item() -> ItemData:
+	return items[selected_slot] if not items.is_empty() else null
 
 
 func add_money(amount: int) -> void:

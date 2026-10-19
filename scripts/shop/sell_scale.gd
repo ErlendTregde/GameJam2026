@@ -55,16 +55,24 @@ func get_prompt() -> String:
 	return "[E] sell $%d" % sum if sum > 0 else ""
 
 
-func interact(player: Node) -> void:
-	var sum := total()
-	if sum == 0:
-		return
+func interact(_player: Node) -> void:
+	if total() > 0:
+		ItemService.request_sell(self)  # the host counts its copy of the table and pays the seller
+
+
+## Host: everything sellable on the table, as [total, has a big catch, items] (ItemService removes them).
+func take_all() -> Array:
 	var big := false
-	for it in _on_tray():
+	var items := _on_tray()
+	for it in items:
 		big = big or it.item.value(it.weight) >= big_value
-		it.queue_free()
-	player.add_money(sum)
-	sign_label.text = "+$%d" % sum
+	return [total(), big, items]
+
+
+## The seller's side of a sale: money in, ka-ching, Coco's line.
+func pay(player: Node, amount: int, big: bool) -> void:
+	player.add_money(amount)
+	sign_label.text = "+$%d" % amount
 	_sold = 1.5
 	if coco:
 		coco.say(big)

@@ -16,7 +16,12 @@ extends RigidBody3D
 @export var locked_text := "Locked: beat the boss in the deep water"
 
 var driving := false
+## Multiplayer: the peer at the helm (0 = nobody). The driver simulates the boat, or the host
+## when nobody drives; everyone else follows the transform they stream (WorldEvents).
+var driver := 0
 var _player: Player
+var _follow_to := Transform3D()
+var _following := false
 
 @onready var _probes := $Probes.get_children()
 @onready var _propeller: Marker3D = $Propeller
@@ -27,7 +32,49 @@ var _player: Player
 @onready var _prompt: Label = $HUD/Prompt
 
 
-func _physics_process(_delta: float) -> void:
+func _ready() -> void:
+	add_to_group(&"boats")
+
+
+func authority_peer() -> int:
+	return driver if driver != 0 else 1
+
+
+func is_authority() -> bool:
+	return not P2P.is_online() or authority_peer() == P2P.local_peer_id()
+
+
+## Someone took (or left) the helm; only the authority simulates, the rest follow.
+func set_driver(peer_id: int) -> void:
+	driver = peer_id
+	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+	freeze = not is_authority()
+	_following = false
+	var mine := peer_id != 0 and peer_id == P2P.local_peer_id()
+	if mine and not driving and _player:
+		_set_driving(true)
+	elif not mine and driving:
+		_set_driving(false)
+
+
+## A transform from the authority (the driver, or the host).
+func follow(xform: Transform3D, velocity: Vector3, snap := false) -> void:
+	if is_authority():
+		return
+	_follow_to = xform
+	_following = true
+	linear_velocity = velocity
+	if snap:
+		global_transform = xform
+
+
+func _physics_process(delta: float) -> void:
+	_pivot.global_position = global_position
+	if not is_authority():
+		if _following:
+			var k := minf(10.0 * delta, 1.0)
+			global_transform = Transform3D(global_basis.slerp(_follow_to.basis, k).orthonormalized(), global_position.lerp(_follow_to.origin, k))
+		return
 	var lift := float_force * get_gravity().length() * mass / _probes.size()
 	for probe: Marker3D in _probes:
 		var depth := ocean.get_height(probe.global_position) - probe.global_position.y
@@ -43,15 +90,13 @@ func _physics_process(_delta: float) -> void:
 			apply_force(-global_basis.z * throttle * engine_force, _propeller.global_position - global_position)
 		apply_torque(global_basis.y * Input.get_axis("move_right", "move_left") * turn_torque)
 
-	_pivot.global_position = global_position
-
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		if driving:
-			_set_driving(false)
+			WorldEvents.release_helm(self)  # set_driver() then lets go everywhere
 		elif _player and not locked:
-			_set_driving(true)
+			WorldEvents.request_helm(self)
 	elif driving and event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		_pivot.rotate_y(-event.relative.x * mouse_sensitivity)
 		_arm.rotation.x = clampf(_arm.rotation.x - event.relative.y * mouse_sensitivity, -1.3, 0.2)

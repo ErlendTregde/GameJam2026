@@ -11,7 +11,28 @@ extends RigidBody3D
 ## Size in kg (caught fish and crabs); 0 = the normal size. Set before adding to the tree.
 @export var weight := 0.0
 
+## Network id (ItemService): set by whoever spawns it, or from the scene path for scene items.
+var uid := 0
+
 var _settling := false
+
+
+func _enter_tree() -> void:
+	ItemService.register(self)
+
+
+func _exit_tree() -> void:
+	ItemService.unregister(self)
+
+
+## Snaps to where the host's copy came to rest and stays there.
+func rest_at(xform: Transform3D) -> void:
+	_settling = true
+	global_transform = xform
+	linear_velocity = Vector3.ZERO
+	angular_velocity = Vector3.ZERO
+	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+	freeze = true
 
 
 func _ready() -> void:
@@ -42,6 +63,7 @@ func _on_landed(body: Node) -> void:
 	angular_velocity = Vector3.ZERO
 	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	freeze = true
+	ItemService.settled(self)
 	var ground := body
 	if ground is Node3D and ground.is_in_group("platform"):
 		reparent(ground)

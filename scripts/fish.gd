@@ -1,8 +1,6 @@
 class_name Fish
 extends CharacterBody3D
 
-## Killed; `drop` is the fish item it left (a speargun spear carries it back).
-signal killed(drop: WorldItem)
 ## A fish swimming around under water near where it started. Wanders between the sea floor and
 ## the surface, darts away when hit, and leaves `item` (a fish of its size) behind when killed.
 ## The spawner sets `ocean` and `terrain`.
@@ -27,6 +25,8 @@ signal killed(drop: WorldItem)
 @export var item: ItemData
 
 var weight := 0.0
+## Peer whose speargun spear hit it last: if it dies of that, the catch rides back to them.
+var caught_by := 0
 
 var ocean: Ocean
 var terrain: Terrain
@@ -42,15 +42,23 @@ var _turning := false  # blocked by the shallows or the drop-off: turning around
 
 func _ready() -> void:
 	if item:
-		weight = item.roll_weight(RandomNumberGenerator.new())
+		if CreatureService.simulates():  # a client's puppet gets its size from the host
+			weight = item.roll_weight(RandomNumberGenerator.new())
 		$Model.scale *= item.size_scale(weight)
 	_home = global_position
 	_floor = _floor_y()
 	_pick_target()
 	_model.swim()
+	CreatureService.register(self)
+
+
+func _exit_tree() -> void:
+	CreatureService.unregister(self)
 
 
 func _physics_process(delta: float) -> void:
+	if not CreatureService.simulates():
+		return  # a puppet: CreatureService moves it
 	_flee = maxf(_flee - delta, 0.0)
 	var current_speed := flee_speed if _flee > 0.0 else speed
 	var to := _target - global_position
@@ -110,12 +118,13 @@ func _path_is_deep(x: float, z: float) -> bool:
 func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 	health -= amount
 	HitFlash.flash(_model)
+	CreatureService.flashed(self)
 	if health <= 0.0:
 		_die()
 		return
-	# Dart away from whoever is looking at it (the player).
-	var camera := get_viewport().get_camera_3d()
-	var away := (global_position - camera.global_position) * Vector3(1, 0, 1) if camera else Vector3.FORWARD
+	# Dart away from the nearest player.
+	var player := WorldService.nearest_player(global_position)
+	var away := (global_position - player.global_position) * Vector3(1, 0, 1) if player else Vector3.FORWARD
 	_target = global_position + away.normalized() * 8.0
 	_target.y = clampf(_target.y, _floor_y() + floor_margin, _surface_y() - surface_margin)
 	_flee = 2.5
@@ -123,14 +132,13 @@ func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 
 func _die() -> void:
 	if item:
-		var dropped: WorldItem = load(item.scene_path).instantiate()
-		dropped.weight = weight
-		var world: Node = get_tree().current_scene if get_tree().current_scene else get_parent()
-		world.add_child(dropped)  # not the spawner: it removes its children when you swim away
-		dropped.global_transform = global_transform
-		dropped.linear_velocity = Vector3.UP * 1.0
-		HitFlash.flash(dropped.get_node("Model"), 1.0, 0.5)  # dead: redder, then back to normal
-		killed.emit(dropped)
+		if caught_by != 0:
+			CreatureService.deliver_catch(caught_by, item, weight)  # speared: rides back on the line
+		else:
+			var dropped := ItemService.spawn(item, weight, global_position, Vector3.UP * 1.0)
+			if dropped:
+				dropped.global_basis = global_basis
+				HitFlash.flash(dropped.get_node("Model"), 1.0, 0.5)  # dead: redder, then back to normal
 	queue_free()
 
 

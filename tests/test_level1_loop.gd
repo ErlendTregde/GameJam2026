@@ -1,10 +1,14 @@
-extends SceneTree
+extends RefCounted
 ## Earn $40 from catch, buy the spear, kill the shark with it.
 
-func _init() -> void:
+var tree: SceneTree
+
+
+func run(scene_tree: SceneTree) -> void:
+	tree = scene_tree
 	var main: Node = load("res://scenes/main.tscn").instantiate()
-	get_root().add_child(main)
-	await create_timer(1.5).timeout
+	tree.root.add_child(main)
+	await tree.create_timer(1.5).timeout
 	var p: Player = main.get_node("Player")
 	var scale: SellScale = main.find_child("SellScale", true, false)
 	var fish: ItemData = load("res://items/blue_fish.tres")
@@ -14,7 +18,7 @@ func _init() -> void:
 		it.weight = 2.5
 		main.add_child(it)
 		it.global_position = scale.get_node("Tray").global_position + Vector3(randf_range(-0.2, 0.2), 0.3, randf_range(-0.1, 0.1))
-		await create_timer(0.4).timeout
+		await tree.create_timer(0.4).timeout
 	scale.interact(p)
 	assert(p.money >= 40, "earned enough for a spear")
 	var hook: ShopItem
@@ -31,4 +35,4 @@ func _init() -> void:
 		hits += 1
 	assert(hits == 10, "spear kills the shark in 10 hits")
 	print("PASS test_level1_loop")
-	quit()
+	tree.quit()

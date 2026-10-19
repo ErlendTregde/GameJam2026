@@ -97,7 +97,7 @@ func attack() -> void:
 		var target := _damageable(cast.get_collider(i))
 		if target and target not in hit:
 			hit.append(target)
-			target.take_damage(weapon.damage, cast.get_collision_point(i))
+			WorldService.hit(target, weapon.damage, cast.get_collision_point(i))
 
 
 func _charge() -> float:
@@ -119,6 +119,15 @@ func _throw(charge: float) -> void:
 	thrown.linear_velocity = -camera.global_basis.z * lerpf(min_throw_speed, max_throw_speed, charge)
 	thrown.look_at(thrown.global_position + thrown.linear_velocity, Vector3.UP)
 	thrown.returned.connect(func() -> void: thrown_item = null)
+
+
+## A catch the host sent us (our spear killed it): it rides back on the spear if one is still
+## out, otherwise straight into the hotbar.
+func receive_catch(item: ItemData, weight: float) -> void:
+	if is_instance_valid(_shot):
+		_shot.carry(item, weight)
+	else:
+		get_parent().give(item, weight)
 
 
 ## Gun: fires the spear straight at the crosshair; it comes back on its line, then reloads.

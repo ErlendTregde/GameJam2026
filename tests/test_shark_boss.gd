@@ -1,4 +1,4 @@
-extends SceneTree
+extends RefCounted
 ## The shark comes in deep water, keeps hunting even when you reach land, leaves only when it
 ## kills you, keeps its damage for the next fight, and stays dead once killed.
 
@@ -7,15 +7,19 @@ func _wait_for(cond: Callable, seconds: float) -> bool:
 	while t < seconds:
 		if cond.call():
 			return true
-		await physics_frame
+		await tree.physics_frame
 		t += 1.0 / 60.0
 	return cond.call()
 
 
-func _init() -> void:
+var tree: SceneTree
+
+
+func run(scene_tree: SceneTree) -> void:
+	tree = scene_tree
 	var main: Node = load("res://scenes/main.tscn").instantiate()
-	get_root().add_child(main)
-	await create_timer(1.0).timeout
+	tree.root.add_child(main)
+	await tree.create_timer(1.0).timeout
 	var zone: SharkZone = main.get_node("SharkZone")
 	var p: Player = main.get_node("Player")
 	var spear: ItemData = load("res://items/spear.tres")
@@ -31,7 +35,7 @@ func _init() -> void:
 	shark.take_damage(60.0)
 	# Back on land: it keeps hunting.
 	p.global_position = land
-	await create_timer(3.0).timeout
+	await tree.create_timer(3.0).timeout
 	assert(is_instance_valid(shark) and not shark.is_leaving(), "reaching land doesn't make it give up")
 	# It kills you: it leaves, keeping its damage.
 	p.take_damage(9999.0)
@@ -45,11 +49,11 @@ func _init() -> void:
 	for i in 7:
 		shark.take_damage(spear.damage)
 	assert(zone.defeated, "killed")
-	await create_timer(3.0).timeout
+	await tree.create_timer(3.0).timeout
 	assert(zone._shark == null, "dead shark removed")
 	zone._danger_time = 99.0
 	for i in 30:
-		await physics_frame
+		await tree.physics_frame
 	assert(zone._shark == null, "defeated zone never spawns again")
 	print("PASS test_shark_boss")
-	quit()
+	tree.quit()

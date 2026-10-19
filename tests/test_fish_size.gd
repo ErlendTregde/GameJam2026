@@ -1,4 +1,4 @@
-extends SceneTree
+extends RefCounted
 ## A big fish looks clearly bigger than a small one: swimming, in the hand and in the hotbar.
 
 func _held_size(p: Player) -> float:
@@ -14,27 +14,31 @@ func _slot_size(p: Player, i: int) -> float:
 	return ItemData.model_bounds(model).size.length() * model.scale.x / cam.size
 
 
-func _init() -> void:
+var tree: SceneTree
+
+
+func run(scene_tree: SceneTree) -> void:
+	tree = scene_tree
 	var main: Node = load("res://scenes/main.tscn").instantiate()
-	get_root().add_child(main)
-	await create_timer(1.0).timeout
+	tree.root.add_child(main)
+	await tree.create_timer(1.0).timeout
 	var fish: ItemData = load("res://items/yellow_fish.tres")
 	assert(fish.size_scale(fish.weight_range.y) / fish.size_scale(fish.weight_range.x) > 2.5, "biggest yellow fish is much bigger than the smallest")
 	var p: Player = main.get_node("Player")
 	p.items.fill(null)
 	p.give(fish, fish.weight_range.x)
 	p._select(p.items.find(fish))
-	await process_frame
+	await tree.process_frame
 	var small_hand := _held_size(p)
 	var small_slot := _slot_size(p, p.selected_slot)
 	p.items.fill(null)
 	p.weights.fill(0.0)
 	p._refresh_hotbar()
-	await process_frame
+	await tree.process_frame
 	p.give(fish, fish.weight_range.y)
 	p._select(p.items.find(fish))
-	await process_frame
+	await tree.process_frame
 	assert(_held_size(p) > small_hand * 2.0, "big fish is bigger in the hand (%.2f vs %.2f)" % [_held_size(p), small_hand])
 	assert(_slot_size(p, p.selected_slot) > small_slot * 1.5, "big fish is bigger in the hotbar")
 	print("PASS test_fish_size")
-	quit()
+	tree.quit()

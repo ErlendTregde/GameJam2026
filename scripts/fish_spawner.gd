@@ -24,10 +24,13 @@ var _active := false
 
 
 func _physics_process(_delta: float) -> void:
-	var camera := get_viewport().get_camera_3d()
-	if camera == null:
+	if not CreatureService.simulates():
+		return  # the host spawns; clients get its fish
+	# Active while any player is near (the host simulates fish for everyone).
+	var nearest: Node3D = WorldService.nearest_player(global_position) if WorldService.in_world() else get_viewport().get_camera_3d()
+	if nearest == null:
 		return
-	var d := Vector2(camera.global_position.x - global_position.x, camera.global_position.z - global_position.z).length() - radius
+	var d := Vector2(nearest.global_position.x - global_position.x, nearest.global_position.z - global_position.z).length() - radius
 	if not _active and d < active_distance:
 		_active = true
 		_spawn_all()

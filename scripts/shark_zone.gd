@@ -67,60 +67,107 @@ func _ready() -> void:
 		return
 	for area in get_children():
 		if area is Area3D:
-			area.collision_mask |= 8  # detect the player (layer 4)
-	if player:
-		player.died.connect(func() -> void:
-			_danger_time = 0.0
-			if _shark:
-				_shark.leave())
+			area.collision_mask |= 8  # detect players (layer 4), local and remote
+	WorldService.player_died.connect(_on_player_died)
 
 
 func _physics_process(delta: float) -> void:
-	if Engine.is_editor_hint() or player == null:
+	if Engine.is_editor_hint():
 		return
-	var showing := _shark != null and not _shark.is_leaving() and not _shark.is_dead()
+	if not CreatureService.simulates():
+		_update_bar(_puppet())  # the host hunts; we only show its boss bar
+		return
+	_update_bar(_shark)
+	if defeated:
+		return
+	var victim := _in_danger()
+	_danger_time = _danger_time + delta if victim else 0.0
+	if _shark == null and _danger_time >= spawn_delay:
+		_spawn(victim)
+	elif _shark and _shark.is_leaving() and victim:
+		_shark.target = victim  # back in before it was gone
+		_shark.hunt()
+
+
+## The first player swimming in shark water (and deep enough, for a dive zone), except [param skip].
+func _in_danger(skip: Node3D = null) -> Node3D:
+	var bodies := WorldService.player_bodies()
+	if bodies.is_empty() and player:
+		bodies = [player]
+	for body in bodies:
+		if body == null or body == skip or not body.exposed_to_sea:
+			continue
+		var dove := dive_depth <= 0.0 or (ocean and body.global_position.y < ocean.sea_level - dive_depth)
+		if dove and in_zone(body.global_position, body):
+			return body
+	return null
+
+
+## A player died: the shark that killed them goes after the next player in the water, if any.
+func _on_player_died(body: Node3D) -> void:
+	_danger_time = 0.0
+	if not CreatureService.simulates() or _shark == null or _shark.target != body:
+		return
+	var next := _in_danger(body)
+	if next == null:
+		for other in WorldService.player_bodies():
+			if other != body and other.exposed_to_sea:
+				next = other
+				break
+	if next:
+		_shark.target = next
+		_shark.hunt()
+	else:
+		_shark.leave()
+
+
+## A client's copy of this zone's shark (its puppet child), for the boss bar.
+func _puppet() -> Shark:
+	for child in get_children():
+		if child is Shark:
+			return child
+	return null
+
+
+func _update_bar(shark: Shark) -> void:
+	var showing := shark != null and not shark.is_leaving() and not shark.is_dead()
 	if boss_bar and (showing or _bar_mine):  # several zones share one bar: only touch it for our shark
 		_bar_mine = showing
 		boss_bar.visible = showing
 		if showing:
-			boss_bar.max_value = _shark.max_health
-			boss_bar.value = _shark.health
-			(boss_bar.get_node("Name") as Label).text = _shark.display_name
-	if defeated:
-		return
-	var dove := dive_depth <= 0.0 or (ocean and player.global_position.y < ocean.sea_level - dive_depth)
-	var deep := player.exposed_to_sea and dove and in_zone(player.global_position)
-	_danger_time = _danger_time + delta if deep else 0.0
-	if _shark == null and _danger_time >= spawn_delay:
-		_spawn()
-	elif _shark and _shark.is_leaving() and deep:
-		_shark.hunt()  # back in before it was gone
+			boss_bar.max_value = shark.max_health
+			boss_bar.value = shark.health
+			(boss_bar.get_node("Name") as Label).text = shark.display_name
 
 
 ## Whether `pos` is in shark water: deep, or inside one of the Area3D zones.
-func in_zone(pos: Vector3) -> bool:
+## Whether `pos` is in shark water: deep, or [param body] inside one of the Area3D zones.
+func in_zone(pos: Vector3, body: Node3D = null) -> bool:
 	if use_depth and ocean and terrain and ocean.sea_level - terrain.get_floor_height(pos.x, pos.z) > danger_depth:
 		return true
+	if body == null:
+		body = player
 	for area in get_children():
-		if area is Area3D and area.overlaps_body(player):
+		if area is Area3D and body and area.overlaps_body(body):
 			return true
 	return false
 
 
-func _spawn() -> void:
+func _spawn(victim: Node3D = null) -> void:
+	if victim == null:
+		victim = player
 	_shark = shark_scene.instantiate()
-	_shark.target = player
+	_shark.target = victim
 	_shark.ocean = ocean
 	_shark.terrain = terrain
 	_shark.warning_time = warning_time
 	add_child(_shark)
 	if _boss_health > 0.0:
 		_shark.health = _boss_health
-	var camera := get_viewport().get_camera_3d()
-	var back := camera.global_basis.z if camera else Vector3.BACK
+	var back := victim.global_basis.z  # behind them, out of sight
 	back.y = 0.0
-	_shark.global_position = _spawn_point(back.normalized(), _shark.min_depth + 2.0)
-	_shark.look_at(player.global_position, Vector3.UP)
+	_shark.global_position = _spawn_point(victim.global_position, back.normalized(), _shark.min_depth + 2.0)
+	_shark.look_at(victim.global_position, Vector3.UP)
 	_shark.gone.connect(func() -> void:
 		_boss_health = _shark.health
 		_shark = null)
@@ -128,6 +175,14 @@ func _spawn() -> void:
 
 
 func _on_shark_died() -> void:
+	defeat()
+	WorldEvents.zone_defeated(self)
+
+
+## The boss is dead (here, and on every peer when the host says so): safe for good.
+func defeat() -> void:
+	if defeated:
+		return
 	defeated = true
 	for node in unlocks:
 		node.locked = false
@@ -140,8 +195,7 @@ func _on_shark_died() -> void:
 
 ## Out of sight where possible: behind the player first, then further around, skipping islands
 ## and water shallower than `depth`; between the sea floor and the surface.
-func _spawn_point(back: Vector3, depth: float) -> Vector3:
-	var pos := player.global_position
+func _spawn_point(pos: Vector3, back: Vector3, depth: float) -> Vector3:
 	for dist: float in [spawn_distance, spawn_distance * 0.6]:
 		for k in 12:
 			var turn := ceili(k / 2.0) * TAU / 12.0 * (1.0 if k % 2 == 0 else -1.0)  # 0, -30, +30, -60, ...

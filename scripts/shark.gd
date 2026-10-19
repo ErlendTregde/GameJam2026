@@ -63,6 +63,18 @@ func _ready() -> void:
 	_mouth.position *= size
 	_animations.get_animation("Swim").loop_mode = Animation.LOOP_LINEAR
 	_animations.play("Swim")
+	CreatureService.register(self)
+
+
+func _exit_tree() -> void:
+	CreatureService.unregister(self)
+
+
+## A client's puppet: the host's health and mood, for the boss bar.
+func mirror(new_health: float, leaving: bool, dead: bool) -> void:
+	health = new_health
+	_leaving = leaving
+	_dead = dead
 
 
 ## Hunt `target` again (after leaving).
@@ -92,6 +104,7 @@ func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 	if _dead:
 		return
 	health = maxf(health - amount, 0.0)
+	CreatureService.flashed(self)
 	if health == 0.0:
 		_die()
 		return
@@ -102,10 +115,7 @@ func _die() -> void:
 	_dead = true
 	died.emit()
 	if trophy:
-		var drop: WorldItem = load(trophy.scene_path).instantiate()
-		var world := get_tree().current_scene if get_tree().current_scene else get_tree().root.get_child(-1)
-		world.add_child(drop)  # tests run without a current_scene: main is the root's last child
-		drop.global_position = global_position + Vector3.UP
+		ItemService.spawn(trophy, 0.0, global_position + Vector3.UP)
 	_animations.speed_scale = 0.2
 	var tween := create_tween().set_parallel()
 	tween.tween_property(self, "rotation:z", PI, 1.2)  # belly up
@@ -116,7 +126,7 @@ func _die() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if _dead:
+	if _dead or not CreatureService.simulates():
 		return
 	if target == null or not is_instance_valid(target):
 		_leaving = true

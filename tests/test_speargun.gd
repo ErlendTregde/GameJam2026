@@ -1,4 +1,4 @@
-extends SceneTree
+extends RefCounted
 ## Speargun: right mouse scopes (zooms); a shot spears a fish and the line pulls it back into the
 ## hotbar; a miss comes back on its own; it can't fire again until it has reloaded.
 
@@ -7,19 +7,23 @@ func _wait_for(cond: Callable, seconds: float) -> bool:
 	while t < seconds:
 		if cond.call():
 			return true
-		await physics_frame
+		await tree.physics_frame
 		t += 1.0 / 60.0
 	return cond.call()
 
 
 func _harpoons() -> int:
-	return get_root().find_children("*", "Harpoon", true, false).size()
+	return tree.root.find_children("*", "Harpoon", true, false).size()
 
 
-func _init() -> void:
+var tree: SceneTree
+
+
+func run(scene_tree: SceneTree) -> void:
+	tree = scene_tree
 	var main: Node = load("res://scenes/main.tscn").instantiate()
-	get_root().add_child(main)
-	await create_timer(1.0).timeout
+	tree.root.add_child(main)
+	await tree.create_timer(1.0).timeout
 	var p: Player = main.get_node("Player")
 	p.get_node("Head").rotation = Vector3.ZERO  # standing at the spawn, looking out to sea
 	var gun: ItemData = load("res://items/speargun.tres")
@@ -30,17 +34,17 @@ func _init() -> void:
 	# Scope: hold right mouse to zoom in.
 	var fov := cam.fov
 	Input.action_press("aim")
-	await create_timer(0.6).timeout
+	await tree.create_timer(0.6).timeout
 	assert(cam.fov < fov * 0.8, "scoping zooms in (%.0f -> %.0f)" % [fov, cam.fov])
 	Input.action_release("aim")
-	await create_timer(0.6).timeout
+	await tree.create_timer(0.6).timeout
 	# A fish straight ahead.
 	var fish: Fish = load("res://scenes/fish/yellow_fish.tscn").instantiate()
 	fish.get_node("PauseOffScreen").free()
 	main.add_child(fish)
 	fish.set_physics_process(false)
 	fish.global_position = cam.global_position - cam.global_basis.z * 5.0
-	await physics_frame
+	await tree.physics_frame
 	combat._fire()
 	assert(_harpoons() == 1, "fired a spear")
 	combat._fire()
@@ -52,10 +56,10 @@ func _init() -> void:
 	# Reload before the next shot.
 	combat._fire()
 	assert(_harpoons() == 0, "can't fire while reloading")
-	await create_timer(gun.reload_time + 0.1).timeout
+	await tree.create_timer(gun.reload_time + 0.1).timeout
 	combat._fire()
 	assert(_harpoons() == 1, "fires again after reloading")
 	# That one misses and comes back on its own.
 	assert(await _wait_for(func() -> bool: return combat.thrown_item == null, 3.0), "a miss comes back too")
 	print("PASS test_speargun")
-	quit()
+	tree.quit()

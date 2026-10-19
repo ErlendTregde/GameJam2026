@@ -46,7 +46,7 @@ func _on_hit(body: Node) -> void:
 	while target and not target.has_method("take_damage"):
 		target = target.get_parent()
 	if target:
-		target.take_damage(damage, global_position)
+		WorldService.hit(target, damage, global_position)
 	_return()
 
 

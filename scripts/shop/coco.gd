@@ -33,6 +33,8 @@ extends Node3D
 @export var watch_distance := 8.0
 @export var turn_speed := 6.0
 
+## When set, Coco looks at this point (e.g. the cursor on the main menu) instead of the player.
+var look_target: Variant = null
 var _hide: SceneTreeTimer
 var _tip := 0
 var _tip_wait := 0.0
@@ -43,10 +45,16 @@ var _tip_wait := 0.0
 func _process(delta: float) -> void:
 	var camera := get_viewport().get_camera_3d()
 	var yaw := 0.0  # facing forward when nobody is near
-	if camera and global_position.distance_to(camera.global_position) < watch_distance:
-		var to := to_local(camera.global_position)
+	var pitch := 0.0
+	if look_target != null:
+		var to := to_local(look_target) - _head.position
 		yaw = atan2(to.x, to.z)  # the face is on +Z
+		pitch = clampf(-atan2(to.y, Vector2(to.x, to.z).length()), -0.6, 0.6)
+	elif camera and global_position.distance_to(camera.global_position) < watch_distance:
+		var to := to_local(camera.global_position)
+		yaw = atan2(to.x, to.z)
 	_head.rotation.y = lerp_angle(_head.rotation.y, yaw, minf(turn_speed * delta, 1.0))
+	_head.rotation.x = lerpf(_head.rotation.x, pitch, minf(turn_speed * delta, 1.0))
 	_tip_wait -= delta
 	var near := camera != null and global_position.distance_to(camera.global_position) < tip_distance
 	if near and not tips.is_empty() and _tip_wait <= 0.0 and not bubble.visible:

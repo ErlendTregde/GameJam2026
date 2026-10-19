@@ -1,8 +1,8 @@
 class_name Harpoon
 extends RigidBody3D
 ## A speargun shot: the spear flies on a line, slowed by the water. It damages what it hits; a
-## fish it kills stays on the spear. Then (or when the line runs out) the line pulls it back to
-## `catcher`, and whatever it carries goes to `player` (into the hotbar).
+## fish it kills stays on the spear (the host sends the catch: carry()). Then (or when the line
+## runs out) the line pulls it back to `catcher`, and what it carries goes to `player` (the hotbar).
 
 signal returned
 
@@ -20,7 +20,8 @@ var player: Node
 var muzzle := Vector3(0.15, -0.15, -0.5)
 
 var _reeling := false
-var _catch: WorldItem
+var _catch: ItemData
+var _catch_weight := 0.0
 var _line := ImmediateMesh.new()
 var _line_material := StandardMaterial3D.new()
 
@@ -62,20 +63,18 @@ func _on_hit(body: Node) -> void:
 	while target and not target.has_method("take_damage"):
 		target = target.get_parent()
 	if target:
-		if target.has_signal("killed"):
-			target.killed.connect(_grab, CONNECT_ONE_SHOT)
-		target.take_damage(damage, global_position)
+		WorldService.hit(target, damage, global_position, true)
 	_reel()
 
 
-## A fish (or crab) killed by the spear: it rides back on the tip.
-func _grab(drop: WorldItem) -> void:
-	_catch = drop
-	drop.freeze = true
-	drop.collision_layer = 0
-	drop.collision_mask = 0
-	drop.reparent.call_deferred(self)
-	drop.set_deferred("position", _tip.position)
+## A fish (or crab) killed by the spear: it rides back on the tip, then goes into the hotbar.
+func carry(item: ItemData, weight: float) -> void:
+	_catch = item
+	_catch_weight = weight
+	var model := item.make_model()
+	add_child(model)
+	model.position = _tip.position
+	model.scale *= item.size_scale(weight)
 
 
 func _reel() -> void:
@@ -85,9 +84,8 @@ func _reel() -> void:
 
 
 func _deliver() -> void:
-	if is_instance_valid(_catch) and player:
-		player.give(_catch.item, _catch.weight)
-		_catch.queue_free()
+	if _catch and player:
+		player.give(_catch, _catch_weight)
 	returned.emit()
 	queue_free()
 

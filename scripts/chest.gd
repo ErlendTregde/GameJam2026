@@ -54,19 +54,35 @@ func get_prompt() -> String:
 func interact(player: Node) -> void:
 	if opened or (cost > 0 and not player.spend(cost)):
 		return
-	opened = true
-	($Model/AnimationPlayer as AnimationPlayer).play(KIT[tier][2])
+	if P2P.acts_as_host():
+		open()
+	else:
+		WorldEvents.request_open_chest(self, cost)  # refunded if someone else got there first
+
+
+## Host only: opens it for everyone and throws the loot out (closes again for a gamble chest).
+func open() -> void:
+	if opened:
+		return
+	WorldEvents.set_chest_lid(self, true)
 	await get_tree().create_timer(0.3).timeout  # lid is up
 	var rng := RandomNumberGenerator.new()
 	for item in loot.roll(rng) if loot else []:
-		var dropped: RigidBody3D = load(item.scene_path).instantiate()
-		get_parent().add_child(dropped)
-		dropped.global_position = _spawn.global_position
 		var sideways := global_basis.x * rng.randf_range(-1.2, 1.2)
-		dropped.linear_velocity = global_basis.z * toss.x + Vector3.UP * toss.y + sideways
-		dropped.angular_velocity = Vector3(rng.randf(), rng.randf(), rng.randf()) * 4.0
+		ItemService.spawn(item, 0.0, _spawn.global_position, global_basis.z * toss.x + Vector3.UP * toss.y + sideways)
 		await get_tree().create_timer(item_interval).timeout
 	if reset_time > 0.0:
 		await get_tree().create_timer(reset_time).timeout
-		($Model/AnimationPlayer as AnimationPlayer).play_backwards(KIT[tier][2])
-		opened = false
+		WorldEvents.set_chest_lid(self, false)
+
+
+## Opens or closes the lid (every peer); `opened` follows it, so the prompt matches.
+func show_lid(open_lid: bool) -> void:
+	if open_lid == opened:
+		return
+	opened = open_lid
+	var animation := $Model/AnimationPlayer as AnimationPlayer
+	if open_lid:
+		animation.play(KIT[tier][2])
+	else:
+		animation.play_backwards(KIT[tier][2])

@@ -1,0 +1,95 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/pause_menu/pause_menu.gd" id="1_pause"]
+[ext_resource type="Theme" path="res://scenes/ui/ui_theme.tres" id="2_theme"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_pause")
+
+[node name="Root" type="Control" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+
+[node name="Dim" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.35)
+
+[node name="Center" type="CenterContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Root/Center"]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Root/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="List" type="VBoxContainer" parent="Root/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Root/Center/Panel/Margin/List"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="RoomRow" type="HBoxContainer" parent="Root/Center/Panel/Margin/List"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RoomLabel" type="Label" parent="Root/Center/Panel/Margin/List/RoomRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Lobby ID: 0"
+
+[node name="CopyButton" type="Button" parent="Root/Center/Panel/Margin/List/RoomRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Copy"
+
+[node name="InviteButton" type="Button" parent="Root/Center/Panel/Margin/List"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Invite friend"
+
+[node name="MuteCheck" type="CheckBox" parent="Root/Center/Panel/Margin/List"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Mute microphone  [M]"
+
+[node name="ResumeButton" type="Button" parent="Root/Center/Panel/Margin/List"]
+layout_mode = 2
+text = "Resume"
+
+[node name="LeaveButton" type="Button" parent="Root/Center/Panel/Margin/List"]
+layout_mode = 2
+text = "Leave game"
+
+[connection signal="pressed" from="Root/Center/Panel/Margin/List/RoomRow/CopyButton" to="." method="_on_copy_pressed"]
+[connection signal="pressed" from="Root/Center/Panel/Margin/List/InviteButton" to="." method="_on_invite_pressed"]
+[connection signal="toggled" from="Root/Center/Panel/Margin/List/MuteCheck" to="." method="_on_mute_toggled"]
+[connection signal="pressed" from="Root/Center/Panel/Margin/List/ResumeButton" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="Root/Center/Panel/Margin/List/LeaveButton" to="." method="_on_leave_pressed"]

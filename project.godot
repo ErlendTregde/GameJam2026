@@ -10,10 +10,23 @@ config_version=5
 
 [application]
 
-config/name="GameJam2026"
-run/main_scene="res://scenes/main.tscn"
+config/name="Spearfish with me"
+run/main_scene="res://scenes/ui/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+AppFlow="*res://autoloads/session/app_flow.gd"
+SteamState="*res://autoloads/network/steam_state.gd"
+P2P="*res://autoloads/network/p2p.gd"
+SteamManager="*res://autoloads/network/steam_manager.gd"
+RoomService="*res://autoloads/session/room_service.gd"
+VoiceChatService="*res://autoloads/voice/voice_chat_service.gd"
+WorldService="*res://autoloads/gameplay/world_service.gd"
+ItemService="*res://autoloads/gameplay/item_service.gd"
+CreatureService="*res://autoloads/gameplay/creature_service.gd"
+WorldEvents="*res://autoloads/gameplay/world_events.gd"
 
 [display]
 
@@ -88,6 +101,16 @@ slot_5={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":53,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+voice_toggle_mute={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":77,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+voice_push_to_talk={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":86,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
 attack={
 "deadzone": 0.2,
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":false,"double_click":false,"script":null)
@@ -148,3 +171,7 @@ style_saturation={
 "type": "float",
 "value": 1.1
 }
+
+[steam]
+
+initialization/app_data/app_id=480

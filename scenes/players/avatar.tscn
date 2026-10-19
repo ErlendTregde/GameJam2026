@@ -3,38 +3,12 @@
 [ext_resource type="Script" path="res://scripts/players/avatar.gd" id="1_avatar"]
 
 [sub_resource type="CapsuleShape3D" id="Shape"]
-radius = 0.35
-height = 1.75
+radius = 0.25
+height = 1.4
 
 [sub_resource type="CapsuleMesh" id="BodyMesh"]
-radius = 0.32
-height = 1.3
-
-[sub_resource type="StandardMaterial3D" id="Skin"]
-albedo_color = Color(0.93, 0.74, 0.6, 1)
-
-[sub_resource type="SphereMesh" id="HeadMesh"]
-material = SubResource("Skin")
-radius = 0.2
-height = 0.4
-
-[sub_resource type="StandardMaterial3D" id="Glass"]
-albedo_color = Color(0.1, 0.12, 0.15, 1)
-metallic = 0.6
-roughness = 0.2
-
-[sub_resource type="BoxMesh" id="GogglesMesh"]
-material = SubResource("Glass")
-size = Vector3(0.3, 0.11, 0.08)
-
-[sub_resource type="StandardMaterial3D" id="Yellow"]
-albedo_color = Color(1, 0.8, 0.2, 1)
-
-[sub_resource type="CylinderMesh" id="SnorkelMesh"]
-material = SubResource("Yellow")
-top_radius = 0.025
-bottom_radius = 0.025
-height = 0.45
+radius = 0.25
+height = 1.4
 
 [sub_resource type="StandardMaterial3D" id="Talk"]
 shading_mode = 0
@@ -51,7 +25,7 @@ collision_mask = 0
 script = ExtResource("1_avatar")
 
 [node name="Collision" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
 shape = SubResource("Shape")
 
 [node name="Body" type="MeshInstance3D" parent="."]
@@ -59,24 +33,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
 mesh = SubResource("BodyMesh")
 
 [node name="Head" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.52, 0)
-
-[node name="HeadMesh" type="MeshInstance3D" parent="Head"]
-mesh = SubResource("HeadMesh")
-
-[node name="Goggles" type="MeshInstance3D" parent="Head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -0.17)
-mesh = SubResource("GogglesMesh")
-
-[node name="Snorkel" type="MeshInstance3D" parent="Head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17, 0.15, -0.05)
-mesh = SubResource("SnorkelMesh")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
 
 [node name="Hand" type="Node3D" parent="Head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, -0.5, -0.3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, -0.35, -0.3)
 
 [node name="NameLabel" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 billboard = 1
 render_priority = 10
 outline_render_priority = 9
@@ -85,6 +48,6 @@ outline_size = 12
 text = "Diver"
 
 [node name="TalkIndicator" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
 visible = false
 mesh = SubResource("TalkMesh")

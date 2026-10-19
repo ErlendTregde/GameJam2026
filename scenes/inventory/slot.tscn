@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/inventory/slot.gd" id="1_slot"]
 
 [sub_resource type="StyleBoxFlat" id="Normal"]
-bg_color = Color(0.15, 0.13, 0.15, 0.35)
+bg_color = Color(0.55, 0.55, 0.57, 0.4)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -22,7 +22,7 @@ shadow_size = 3
 shadow_offset = Vector2(0, 2)
 
 [sub_resource type="StyleBoxFlat" id="Selected"]
-bg_color = Color(1, 1, 1, 0.22)
+bg_color = Color(1, 1, 1, 0.35)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4

@@ -1,7 +1,9 @@
 # Spearfish with me
 
 A co-op spearfishing game for the "Hold your breath" game jam (Godot 4.7). Catch fish and crabs,
-sell them to Coco, buy better gear, and beat each island's shark boss to reach the next island.
+sell them to Coco, buy better weapons and swim gear (goggles, flippers) to dive deeper, and find
+the glowing chest at the bottom of the blue hole. Sharks patrol the deep water; beating them is
+optional. The ground is a Terrain3D: sculpt it in the editor.
 
 ## Playing together
 
@@ -14,8 +16,8 @@ sell them to Coco, buy better gear, and beat each island's shark boss to reach t
 - **Play solo**: no network at all.
 
 Everyone shares the world (fish, crabs, sharks, items on the ground, chests, the boat, beaten
-bosses); money and hotbars are your own. When a shark kills a player it goes after the next player
-in the water. Voice chat is proximity voice over Steam (**M** mutes, **V** push-to-talk if enabled).
+bosses); money, hotbars and worn gear are your own. When a shark kills a player it goes after the next player
+nearby, or back to its patrol. Voice chat is proximity voice over Steam (**M** mutes, **V** push-to-talk if enabled).
 
 Steam App ID is 480 (Valve's test app) in Project Settings → `steam/initialization/app_data/app_id`;
 use your own before releasing.

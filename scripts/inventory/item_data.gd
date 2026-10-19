@@ -49,6 +49,16 @@ enum HoldStyle { FLOAT, POLEARM, GUN }
 ## What is left in the hand afterwards (a cracked coconut); empty = used up.
 @export var becomes: ItemData
 
+@export_group("Gear")
+## Worn, not held: buying it puts it on at once (no hotbar slot) and it stays on.
+@export var worn := false
+## Seconds added to how long you can hold your breath.
+@export var extra_breath := 0.0
+## Multiplies swimming, diving and rising speed.
+@export var swim_multiplier := 1.0
+## Multiplies the underwater fog (below 1 = see further).
+@export var underwater_fog_multiplier := 1.0
+
 @export_group("Selling")
 ## What the scale pays: per item, or per kg when sold_by_weight. 0 = can't be sold.
 @export var price := 0

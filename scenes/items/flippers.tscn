@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/inventory/world_item.gd" id="1_world_item"]
+[ext_resource type="Resource" path="res://items/flippers.tres" id="2_item"]
+[ext_resource type="PackedScene" path="res://assets/flippers/flippers.glb" id="3_model"]
+
+[sub_resource type="BoxShape3D" id="Box"]
+size = Vector3(0.45, 0.12, 0.55)
+
+[node name="Flippers" type="RigidBody3D"]
+collision_layer = 16
+collision_mask = 7
+mass = 0.6
+continuous_cd = true
+script = ExtResource("1_world_item")
+item = ExtResource("2_item")
+
+[node name="Model" parent="." instance=ExtResource("3_model")]
+transform = Transform3D(0.024, 0, 0, 0, 0.024, 0, 0, 0, 0.024, 0.246, -0.029, 0.172)
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("Box")

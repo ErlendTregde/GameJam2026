@@ -63,9 +63,12 @@ func get_prompt() -> String:
 
 
 func interact(player: Node) -> void:
-	if item == null or not player.spend(price):
+	if item == null or (item.worn and player.wears(item)) or not player.spend(price):
 		if label:
-			label.modulate = Color(1, 0.3, 0.3)  # can't afford: flash red
+			label.modulate = Color(1, 0.3, 0.3)  # can't afford (or already wearing it): flash red
 			create_tween().tween_property(label, "modulate", Color.WHITE, 0.6)
 		return
-	player.give(item)
+	if item.worn:
+		player.wear(item)
+	else:
+		player.give(item)

@@ -88,6 +88,8 @@ var items: Array[ItemData] = []
 ## Weight (kg) of the item in each slot; 0 = no size.
 var weights: Array[float] = []
 var money := 0
+## Gear being worn (goggles, flippers): kept for good, also through death.
+var worn: Array[ItemData] = []
 var selected_slot := 0
 var health := 0.0
 ## True while swimming (not walking on land or a deck); read by the SharkZone.
@@ -126,6 +128,7 @@ var _drown_timer := 0.0
 @onready var _item_use: ItemUse = $ItemUse
 @onready var _stamina_bar: ProgressBar = $HUD/Status/StaminaBar
 @onready var _money_label: Label = $HUD/Status/Money
+@onready var _gear_label: Label = $HUD/Status/Gear
 @onready var _world := get_parent()
 @onready var _surface_environment := world_environment.environment if world_environment else null
 
@@ -454,6 +457,24 @@ func spend(amount: int) -> bool:
 		return false
 	add_money(-amount)
 	return true
+
+
+func wears(item: ItemData) -> bool:
+	return worn.has(item)
+
+
+## Puts on gear: its effects apply right away.
+func wear(item: ItemData) -> void:
+	if worn.is_empty() and underwater_environment:
+		underwater_environment = underwater_environment.duplicate()  # our own fog, not every player's
+	worn.append(item)
+	breath_time += item.extra_breath
+	swim_speed *= item.swim_multiplier
+	dive_speed *= item.swim_multiplier
+	rise_speed *= item.swim_multiplier
+	if underwater_environment:
+		underwater_environment.fog_density *= item.underwater_fog_multiplier
+	_gear_label.text = "  ".join(worn.map(func(g: ItemData) -> String: return g.name))
 
 
 func _refresh_hotbar() -> void:

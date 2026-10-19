@@ -20,6 +20,9 @@ extends CharacterBody3D
 ## ...or deeper than this (m): fish stay on the island shelf, out of the sharks' deep water.
 ## Set by the spawner.
 @export var max_depth := 9.0
+## Its layer: swims only between these depths below the surface (m). Deeper fish are worth more.
+@export var swim_top := 0.0
+@export var swim_bottom := 100.0
 ## Left behind when it dies (a fish WorldItem scene).
 ## What it leaves behind when killed (a fish item); its weight range sets this fish's size.
 @export var item: ItemData
@@ -81,7 +84,8 @@ func _physics_process(delta: float) -> void:
 		_turning = false
 		global_position = next
 		_floor = next_floor
-	global_position.y = clampf(global_position.y, _floor + floor_margin, maxf(_floor + floor_margin, _surface_y() - surface_margin))
+	var band := _band(_floor)
+	global_position.y = clampf(global_position.y, band.x, band.y)
 	# Too far to see: don't spend time animating it.
 	var camera := get_viewport().get_camera_3d()
 	var seen: bool = camera == null or camera.global_position.distance_squared_to(global_position) < _model.visible_distance * _model.visible_distance
@@ -93,17 +97,24 @@ func _pick_target() -> void:
 		var offset := Vector2.from_angle(randf() * TAU) * randf_range(3.0, wander_radius)
 		var x := _home.x + offset.x
 		var z := _home.z + offset.y
-		var low := _floor_y_at(x, z) + floor_margin
-		var high := _surface_y() - surface_margin
-		if high - low > 0.5 and _depth_ok(_surface_y() - _floor_y_at(x, z)) and _path_is_deep(x, z):
-			_target = Vector3(x, randf_range(low, high), z)
+		var band := _band(_floor_y_at(x, z))
+		if band.y - band.x > 0.5 and _depth_ok(_surface_y() - _floor_y_at(x, z)) and _path_is_deep(x, z):
+			_target = Vector3(x, randf_range(band.x, band.y), z)
 			return
 	# Nowhere reachable found: head home, or turn around if already there.
 	_target = _home if _home.distance_to(global_position) > 2.0 else global_position + global_basis.z * 4.0
 
 
+## Where the water is `depth` deep: deep enough to reach its layer, and not past max_depth.
 func _depth_ok(depth: float) -> bool:
-	return depth >= min_depth and depth <= max_depth
+	return depth >= maxf(min_depth, swim_top + floor_margin + 0.5) and depth <= max_depth
+
+
+## Lowest and highest y it may swim at above a sea floor at [param floor_y]: its layer, in the water.
+func _band(floor_y: float) -> Vector2:
+	var low := maxf(floor_y + floor_margin, _surface_y() - swim_bottom)
+	var high := minf(_surface_y() - surface_margin, _surface_y() - swim_top)
+	return Vector2(low, maxf(high, low))
 
 
 ## Whether the straight swim from here to x/z stays in water of the right depth.
@@ -126,7 +137,8 @@ func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 	var player := WorldService.nearest_player(global_position)
 	var away := (global_position - player.global_position) * Vector3(1, 0, 1) if player else Vector3.FORWARD
 	_target = global_position + away.normalized() * 8.0
-	_target.y = clampf(_target.y, _floor_y() + floor_margin, _surface_y() - surface_margin)
+	var band := _band(_floor_y())
+	_target.y = clampf(_target.y, band.x, band.y)
 	_flee = 2.5
 
 

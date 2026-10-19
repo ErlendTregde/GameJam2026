@@ -296,7 +296,7 @@ collision_height = 0.7
 
 [node name="MainIslandFish" type="Node3D" parent="Fish" unique_id=1185023257 node_paths=PackedStringArray("ocean", "terrain")]
 script = ExtResource("27_spawner")
-fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish"), ExtResource("29_blue_fish")])
+fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish")])
 count = 5
 radius = 50.0
 ocean = NodePath("../../Ocean")
@@ -305,7 +305,7 @@ terrain = NodePath("../../Terrain")
 [node name="SmallIslandFish" type="Node3D" parent="Fish" unique_id=928944438 node_paths=PackedStringArray("ocean", "terrain")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 0, -60)
 script = ExtResource("27_spawner")
-fish_scenes = Array[PackedScene]([ExtResource("l2_red_snapper"), ExtResource("l2_deep_grouper"), ExtResource("29_blue_fish")])
+fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish")])
 count = 6
 radius = 40.0
 ocean = NodePath("../../Ocean")
@@ -314,7 +314,7 @@ terrain = NodePath("../../Terrain")
 [node name="BigIslandFish" type="Node3D" parent="Fish" unique_id=1982352970 node_paths=PackedStringArray("ocean", "terrain")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, -130)
 script = ExtResource("27_spawner")
-fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish"), ExtResource("29_blue_fish")])
+fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish")])
 count = 5
 radius = 55.0
 ocean = NodePath("../../Ocean")
@@ -323,9 +323,42 @@ terrain = NodePath("../../Terrain")
 [node name="BoatStartFish" type="Node3D" parent="Fish" unique_id=740429104 node_paths=PackedStringArray("ocean", "terrain")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
 script = ExtResource("27_spawner")
-fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish"), ExtResource("29_blue_fish")])
+fish_scenes = Array[PackedScene]([ExtResource("28_yellow_fish")])
 count = 3
 radius = 12.0
+ocean = NodePath("../../Ocean")
+terrain = NodePath("../../Terrain")
+
+[node name="MainIslandSlopeFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+script = ExtResource("27_spawner")
+fish_scenes = Array[PackedScene]([ExtResource("29_blue_fish")])
+count = 5
+radius = 60.0
+min_depth = 7.0
+max_depth = 22.0
+ocean = NodePath("../../Ocean")
+terrain = NodePath("../../Terrain")
+
+[node name="SmallIslandSlopeFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 0, -60)
+script = ExtResource("27_spawner")
+fish_scenes = Array[PackedScene]([ExtResource("29_blue_fish")])
+count = 5
+radius = 50.0
+min_depth = 7.0
+max_depth = 22.0
+ocean = NodePath("../../Ocean")
+terrain = NodePath("../../Terrain")
+
+[node name="BigIslandSlopeFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, -130)
+script = ExtResource("27_spawner")
+fish_scenes = Array[PackedScene]([ExtResource("29_blue_fish")])
+count = 5
+radius = 65.0
+min_depth = 7.0
+max_depth = 22.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 
@@ -343,11 +376,11 @@ terrain = NodePath("../../Terrain")
 [node name="TrailFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50)
 script = ExtResource("27_spawner")
-fish_scenes = Array[PackedScene]([ExtResource("l2_red_snapper")])
+fish_scenes = Array[PackedScene]([ExtResource("29_blue_fish")])
 count = 3
 radius = 7.0
-min_depth = 8.0
-max_depth = 30.0
+min_depth = 7.0
+max_depth = 22.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 

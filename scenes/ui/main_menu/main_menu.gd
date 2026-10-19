@@ -14,7 +14,6 @@ extends Node3D
 @onready var _camera: Camera3D = $Camera
 @onready var _status: Label = %Status
 @onready var _join_code: LineEdit = %JoinCode
-@onready var _host_button: Button = %HostButton
 
 var _coco: Coco
 

@@ -42,6 +42,10 @@ func _ready() -> void:
 	add_child(_shape, false, INTERNAL_MODE_FRONT)
 	if terrain3d:
 		terrain3d.material.show_checkered = false  # Terrain3D turns it on when it has no textures; we colour by height
+		var mouse_view := terrain3d.get_node_or_null("MouseViewport") as SubViewport
+		if mouse_view and not Engine.is_editor_hint():
+			# Only for picking the ground under the mouse while sculpting; in game its 2x2 view errors with our glow.
+			mouse_view.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	build()
 
 

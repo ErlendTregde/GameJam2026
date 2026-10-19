@@ -35,9 +35,9 @@ func take_damage(_amount: float, at := Vector3.ZERO) -> void:
 	var picks := loot.roll(_rng)
 	if picks.is_empty():
 		return
-	var scale: float = (tree[3] as Transform3D).basis.get_scale().x
+	var size: float = (tree[3] as Transform3D).basis.get_scale().x
 	var side := Vector3(_rng.randf_range(-1, 1), 0, _rng.randf_range(-1, 1)).normalized() * 0.8
-	ItemService.spawn(picks[_rng.randi() % picks.size()], 0.0, tree[0] + Vector3.UP * crown_height * scale + side, side * 0.5)
+	ItemService.spawn(picks[_rng.randi() % picks.size()], 0.0, tree[0] + Vector3.UP * crown_height * size + side, side * 0.5)
 
 
 func _nearest(at: Vector3) -> Array:

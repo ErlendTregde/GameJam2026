@@ -384,9 +384,9 @@ func _update_underwater() -> void:
 func _target() -> Node:
 	var hit := _ray.get_collider(0) if _ray.is_colliding() else null
 	if hit is WorldItem:
-		for scale: SellScale in get_tree().get_nodes_in_group("sell_scale"):
-			if scale.holds(hit):
-				return scale  # catch on the scale: E sells it instead of picking it back up
+		for table: SellScale in get_tree().get_nodes_in_group("sell_scale"):
+			if table.holds(hit):
+				return table  # catch on the scale: E sells it instead of picking it back up
 	return hit if hit is WorldItem or (hit and hit.has_method("interact")) else null
 
 

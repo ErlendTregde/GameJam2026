@@ -34,8 +34,8 @@ func _ready() -> void:
 	rng.randomize()
 	lan_id = rng.randi() + 1
 	user_data.steam_id = lan_id
-	var name := OS.get_environment("USERNAME") if OS.has_environment("USERNAME") else OS.get_environment("USER")
-	user_data.steam_username = name.left(16) if not name.is_empty() else "Diver"
+	var user := OS.get_environment("USERNAME") if OS.has_environment("USERNAME") else OS.get_environment("USER")
+	user_data.steam_username = user.left(16) if not user.is_empty() else "Diver"
 
 ## A LAN game identifies players per running game, not per Steam account (two copies of the game on
 ## one computer, signed into the same Steam account, are still two players).

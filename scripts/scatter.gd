@@ -94,10 +94,10 @@ func build() -> void:
 			if y < min_height or y > max_height or normal.y < min_flatness:
 				continue
 			var s := rng.randf_range(scale_range.x, scale_range.y)
-			var basis := Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * s)
+			var turn := Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * s)
 			if follow_ground:
-				basis = Basis(Quaternion(Vector3.UP, normal)) * basis
-			placed[rng.randi() % kinds].append(Transform3D(basis, Vector3(x, y - sink * s, z)))
+				turn = Basis(Quaternion(Vector3.UP, normal)) * turn
+			placed[rng.randi() % kinds].append(Transform3D(turn, Vector3(x, y - sink * s, z)))
 		for i in scenes.size():
 			for t: Transform3D in placed[meshes.size() + i]:
 				var node: Node3D = scenes[i].instantiate()

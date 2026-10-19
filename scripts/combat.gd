@@ -123,11 +123,11 @@ func _throw(charge: float) -> void:
 
 ## A catch the host sent us (our spear killed it): it rides back on the spear if one is still
 ## out, otherwise straight into the hotbar.
-func receive_catch(item: ItemData, weight: float) -> void:
+func receive_catch(catch: ItemData, weight: float) -> void:
 	if is_instance_valid(_shot):
-		_shot.carry(item, weight)
+		_shot.carry(catch, weight)
 	else:
-		get_parent().give(item, weight)
+		get_parent().give(catch, weight)
 
 
 ## Gun: fires the spear straight at the crosshair; it comes back on its line, then reloads.

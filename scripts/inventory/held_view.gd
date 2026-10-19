@@ -176,9 +176,9 @@ func muzzle() -> Vector3:
 
 
 ## Hides the item while it is away (thrown).
-func set_hidden(hidden: bool) -> void:
-	if _holder.visible == hidden:
-		_holder.visible = not hidden
+func set_hidden(away: bool) -> void:
+	if _holder.visible == away:
+		_holder.visible = not away
 		_update_rendering()
 
 

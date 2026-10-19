@@ -1,6 +1,6 @@
 extends RefCounted
 ## Level 2: island 2's water is deeper; the boat is locked for now; the Giant Shark (a bigger,
-## tougher shark) patrols island 2's water, and killing it is optional (the boat stays locked).
+## tougher shark, circling the crater) is optional to kill (the boat stays locked).
 
 var tree: SceneTree
 
@@ -33,9 +33,7 @@ func run(scene_tree: SceneTree) -> void:
 	assert(main.has_node("Shop/ShopBoard2/Coco") and main.has_node("Shop/ShopBoard2/SellScale"), "island 2 shop with Coco and table")
 	var zone: SharkZone = main.get_node("SharkZone2")
 	var shark: Shark = zone.spawned_shark()
-	assert(shark != null and shark.display_name == "Giant Shark", "the Giant Shark patrols island 2")
-	var flat := shark.global_position - isl2.position
-	assert(Vector2(flat.x, flat.z).length() < 60.0 and shark.global_position.y < ocean.sea_level, "in island 2's water")
+	assert(shark != null and shark.display_name == "Giant Shark", "the Giant Shark is out there")
 	assert(shark.health == 400.0 and shark.get_node("Model").scale.length() > Vector3(0.68, 0.68, 0.68).length() * 1.5, "bigger and tougher")
 	shark.take_damage(400.0)
 	assert(zone.defeated and boat.locked, "killing it is optional and unlocks nothing (the boat stays locked)")

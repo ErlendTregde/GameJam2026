@@ -32,6 +32,20 @@ extends StaticBody3D
 @export var deep_variation := 10.0
 @export var deep_from := 85.0
 
+@export_group("Crater")
+## A bowl in the sea floor, deepest (crater_depth m below 0) in the middle; 0 radius = none.
+@export var crater_center := Vector2.ZERO
+@export var crater_radius := 0.0
+@export var crater_depth := 42.0
+
+@export_group("Mountain ring")
+## Mountains in a ring around everything: the edge of the world; 0 radius = none.
+@export var ring_center := Vector2.ZERO
+@export var ring_radius := 0.0
+## How far (m) they take to rise to full height.
+@export var ring_width := 45.0
+@export var ring_height := 55.0
+
 var _islands: Array[IslandShape] = []
 var _chunks: Array[MeshInstance3D] = []
 var _shape := CollisionShape3D.new()
@@ -56,8 +70,24 @@ func get_floor_height(x: float, z: float) -> float:
 	return procedural_height(x, z)
 
 
-## The height from the island shapes, profile and noise (what "Bake to Terrain3D" copies).
+## The height from the island shapes, profile, noise, crater and mountain ring (what
+## "Bake to Terrain3D" copies).
 func procedural_height(x: float, z: float) -> float:
+	var h := _shore_height(x, z)
+	if crater_radius > 0.0:
+		# A smooth bowl that evens out the bumps on its way down, with a flat floor in the middle.
+		var t := clampf((1.0 - Vector2(x, z).distance_to(crater_center) / crater_radius) * 1.25, 0.0, 1.0)
+		h = minf(h, lerpf(h, -crater_depth, t * t * (3.0 - 2.0 * t)))
+	if ring_radius > 0.0:
+		var up := smoothstep(ring_radius, ring_radius + ring_width, Vector2(x, z).distance_to(ring_center))
+		if up > 0.0:
+			var peaks := 0.75 + 0.45 * (noise.get_noise_2d(x * 2.5, z * 2.5) if noise else 0.0)
+			h = lerpf(h, ring_height * peaks, up)
+	return h
+
+
+## Islands and the sea floor around them.
+func _shore_height(x: float, z: float) -> float:
 	if _islands.is_empty():
 		_islands.assign(find_children("*", "IslandShape", false))
 	var shore := INF  # distance to the nearest shoreline; negative = on an island

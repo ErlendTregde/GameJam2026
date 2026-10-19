@@ -1,7 +1,7 @@
 [gd_resource type="Theme" format=3]
 
 [sub_resource type="StyleBoxFlat" id="Normal"]
-bg_color = Color(0.25, 0.22, 0.24, 0.85)
+bg_color = Color(0.36, 0.66, 0.86, 0.88)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -20,7 +20,7 @@ shadow_size = 4
 shadow_offset = Vector2(0, 2)
 
 [sub_resource type="StyleBoxFlat" id="Hover"]
-bg_color = Color(0.36, 0.33, 0.35, 0.9)
+bg_color = Color(0.48, 0.77, 0.94, 0.92)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -58,7 +58,7 @@ shadow_size = 4
 shadow_offset = Vector2(0, 2)
 
 [sub_resource type="StyleBoxFlat" id="Disabled"]
-bg_color = Color(0.25, 0.22, 0.24, 0.45)
+bg_color = Color(0.36, 0.66, 0.86, 0.4)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -89,7 +89,7 @@ corner_radius_bottom_right = 9
 corner_radius_bottom_left = 9
 
 [sub_resource type="StyleBoxFlat" id="Panel"]
-bg_color = Color(0.2, 0.18, 0.2, 0.8)
+bg_color = Color(0.3, 0.6, 0.82, 0.82)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3

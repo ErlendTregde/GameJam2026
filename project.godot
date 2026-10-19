@@ -134,6 +134,7 @@ dive={
 
 [layer_names]
 
+3d_render/layer_10="coco_face"
 3d_physics/layer_1="world"
 3d_physics/layer_2="boat_hull"
 3d_physics/layer_3="boat_deck"

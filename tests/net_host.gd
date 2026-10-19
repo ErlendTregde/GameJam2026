@@ -33,6 +33,10 @@ func run(scene_tree: SceneTree) -> void:
 	await _wait_for(func() -> bool: return world_service.in_world(), 20.0)
 	var main: Node = world_service.world
 	var me: Player = world_service.local_player
+	# Before the client joins: a scene item is taken and a new one dropped (late join must show both).
+	var items: Node = tree.root.get_node("ItemService")
+	items.request_pickup(main.get_node("Items/Rocks/MainIslandRock2"))
+	items.spawn(load("res://items/bottle.tres"), 0.0, Vector3(2, 4, 16))
 	_check("client joined (its avatar appears)", await _wait_for(func() -> bool: return main.has_node("Avatar_1"), 40.0))
 	var them: Node3D = main.get_node_or_null("Avatar_1")
 	_check("client avatar follows the client", await _wait_for(func() -> bool:
@@ -76,6 +80,16 @@ func run(scene_tree: SceneTree) -> void:
 	# Gamble chest opened by the client.
 	var chest: Chest = main.get_node("Chests/WoodenChest")
 	_check("chest opened by the client", await _wait_for(func() -> bool: return chest.opened, 20.0))
+	# The boat: beat island 2's boss so it unlocks; the client drives it and our copy follows.
+	var zone2: SharkZone = main.get_node("SharkZone2")
+	zone2.defeat()
+	tree.root.get_node("WorldEvents").zone_defeated(zone2)
+	var boat: Boat = main.get_node("Boat")
+	var start := boat.global_position
+	_check("the client takes the helm", await _wait_for(func() -> bool: return boat.driver > 1, 20.0))
+	_check("our boat follows the client's driving", await _wait_for(func() -> bool:
+		return boat.global_position.distance_to(start) > 4.0, 15.0))
+	_check("the client lets go of the helm", await _wait_for(func() -> bool: return boat.driver == 0, 15.0))
 	# Money is per player: the client's sale pays the client, not us.
 	await _wait_for(func() -> bool: return tree.root.multiplayer.get_peers().is_empty(), 60.0)
 	_check("host money untouched by the client's sale", me.money == 0)

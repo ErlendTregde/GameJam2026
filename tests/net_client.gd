@@ -43,6 +43,13 @@ func run(scene_tree: SceneTree) -> void:
 	var main: Node = world_service.world
 	var me: Player = world_service.local_player
 	_check("host avatar is here", await _wait_for(func() -> bool: return main.has_node("Avatar_0"), 15.0))
+	# Late join: what happened before we came is here too.
+	await tree.create_timer(1.0).timeout
+	_check("late join: the rock the host took is gone", not main.has_node("Items/Rocks/MainIslandRock2"))
+	var dropped_bottle := false
+	for n in main.get_children():
+		dropped_bottle = dropped_bottle or (n is WorldItem and n.item.name == "Water Bottle")
+	_check("late join: the bottle the host dropped is here", dropped_bottle)
 	await _hold(me, Vector3(4, 8, 12), 3.0)
 	# Pick up a rock: the host decides, then it lands in our hotbar.
 	var rock_data: ItemData = load("res://items/rock.tres")
@@ -85,6 +92,21 @@ func run(scene_tree: SceneTree) -> void:
 	chest.interact(me)
 	_check("chest opens for us", await _wait_for(func() -> bool: return chest.opened, 10.0))
 	_check("we paid for it", me.money == 5)
+	# Drive the boat once the host has beaten island 2's boss.
+	var boat: Boat = main.get_node("Boat")
+	_check("boat unlocked for us too", await _wait_for(func() -> bool: return not boat.locked, 20.0))
+	boat._on_helm_body_entered(me)
+	tree.root.get_node("WorldEvents").request_helm(boat)
+	_check("we are at the helm", await _wait_for(func() -> bool: return boat.driving, 10.0))
+	var start := boat.global_position
+	var t2 := 0.0
+	while t2 < 3.0:
+		boat.global_position = start + Vector3(6, 0, 0) * (t2 / 3.0)
+		await tree.physics_frame
+		t2 += 1.0 / 60.0
+	await tree.create_timer(1.0).timeout
+	tree.root.get_node("WorldEvents").release_helm(boat)
+	_check("we let go of the helm", await _wait_for(func() -> bool: return not boat.driving and boat.driver == 0, 10.0))
 	# Sell a fish at the table: our money, not the host's.
 	var table: SellScale = main.find_child("SellScale", true, false)
 	items.spawn(fish_data, 2.0, table.get_node("Tray").global_position + Vector3.UP * 0.3)

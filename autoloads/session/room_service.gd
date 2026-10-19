@@ -116,6 +116,7 @@ func _start_hosted_game() -> void:
 	if SteamState.lobby_data.id != 0:
 		SteamManager.start_session_for_all()
 	_rebuild_host_room_state()
+	_set_status("In game")
 	AppFlow.open_world()
 
 ## Host only. Reconciles the roster (the Steam lobby, or the LAN peers) and broadcasts it.

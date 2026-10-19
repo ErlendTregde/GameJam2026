@@ -28,10 +28,19 @@ signal died
 @export var back_off_time := 0.9
 ## Stays at least this far under the surface (m).
 @export var surface_margin := 0.8
-## Never swims into water shallower than this (m): it waits at the shore instead.
+## Only appears where the water is deeper than this (m) plus a margin (the SharkZone picks the spot).
 @export var min_depth := 1.5
 ## Gone once it is this far from the target while leaving (m).
 @export var despawn_distance := 45.0
+@export_group("On land")
+## Water shallower than this (m) counts as land: the shark flops after you in hops.
+@export var beach_depth := 0.8
+@export var land_speed := 3.5
+## How high each hop goes (m), and hops per second.
+@export var hop_height := 0.9
+@export var hop_rate := 1.6
+## Side-to-side rock while flopping (radians).
+@export var flop_roll := 0.35
 @export_group("Warning")
 ## Circles this far from the swimmer before attacking (m), this fast (m/s).
 @export var circle_radius := 9.0
@@ -49,6 +58,7 @@ var terrain: Terrain
 var _leaving := false
 var _back_off := 0.0
 var _circled := 0.0
+var _hop := 0.0  # hop phase while on land
 var health := 0.0
 var _dead := false
 
@@ -163,20 +173,34 @@ func _physics_process(delta: float) -> void:
 		if Vector2(reach.x, reach.z).length() < bite_range and reach.y < breach_height:
 			target.take_damage(bite_damage, global_position)
 			_back_off = back_off_time
+	var floor_here := terrain.get_floor_height(global_position.x, global_position.z) if terrain else -50.0
+	var beached := ocean != null and ocean.sea_level - floor_here < beach_depth
+	if beached:
+		want.y = 0.0  # level, nose along the ground
+		speed = minf(speed, land_speed)
 	if want.length() > 0.01:
 		var turn := Basis.looking_at(want.normalized())
 		global_basis = global_basis.slerp(turn, minf(turn_speed * delta, 1.0)).orthonormalized()
-	var next := global_position - global_basis.z * speed * delta
-	if terrain == null or ocean == null:
-		global_position = next
-	else:
-		var depth_next := ocean.sea_level - terrain.get_floor_height(next.x, next.z)
-		# Shallow water is off limits, but it may always swim toward deeper water (never trapped).
-		if depth_next >= min_depth or depth_next > ocean.sea_level - terrain.get_floor_height(global_position.x, global_position.z):
-			global_position = next
-	# Stay in the water: under the surface, above the sea floor.
+	global_position -= global_basis.z * speed * delta
+	if beached:
+		_flop(delta)
+		return
+	_hop = 0.0
+	# In the water: under the surface, above the sea floor.
 	var margin := circle_depth if is_circling() else surface_margin
 	var surface := ocean.get_height(global_position) - margin if ocean else 0.0
 	var floor_y := terrain.get_floor_height(global_position.x, global_position.z) + 0.8 if terrain else -50.0
 	global_position.y = clampf(global_position.y, minf(floor_y, surface), surface)
 	_animations.speed_scale = speed / chase_speed * 1.6
+
+
+## Out of the water: it hops along the ground after its target, rocking from side to side.
+func _flop(delta: float) -> void:
+	_hop += delta * hop_rate
+	var ground := terrain.get_floor_height(global_position.x, global_position.z) if terrain else global_position.y
+	global_position.y = ground + 0.6 * size + absf(sin(_hop * PI)) * hop_height
+	# Level with the ground, facing where it goes, rocking (set fresh each frame, so it never builds up).
+	var heading := -global_basis.z * Vector3(1, 0, 1)
+	if heading.length() > 0.01:
+		global_basis = Basis.looking_at(heading.normalized()) * Basis(Vector3.FORWARD, sin(_hop * TAU) * flop_roll)
+	_animations.speed_scale = 2.5

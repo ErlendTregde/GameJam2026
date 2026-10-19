@@ -75,7 +75,9 @@ func build() -> void:
 			body.drop_chance = harvest_chance
 			body.drops_per_tree = drops_per_copy
 			body.crown_height = drop_height
+		body.name = "Bodies"  # a fixed name: multiplayer hits find it by path on every peer
 		add_child(body, false, INTERNAL_MODE_FRONT)
+	var placed_count := 0
 	for island in terrain.find_children("*", "IslandShape", false):
 		var placed: Array[Array] = []  # one list of transforms per mesh / scene, on this island
 		placed.resize(kinds)
@@ -101,6 +103,9 @@ func build() -> void:
 				var node: Node3D = scenes[i].instantiate()
 				if node is RigidBody3D:
 					node.freeze = true  # lies where it was placed until picked up
+				# Fixed names (same seed, same order on every peer): items are identified by path.
+				node.name = "Placed%d" % placed_count
+				placed_count += 1
 				add_child(node, false, INTERNAL_MODE_FRONT)
 				node.global_transform = t
 		for m in meshes.size():

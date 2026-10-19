@@ -94,4 +94,6 @@ func run(scene_tree: SceneTree) -> void:
 	await _wait_for(func() -> bool: return tree.root.multiplayer.get_peers().is_empty(), 60.0)
 	_check("host money untouched by the client's sale", me.money == 0)
 	print("NET host DONE fails=%d" % _fails)
+	room.request_leave_room()
+	await tree.create_timer(1.0).timeout
 	tree.quit()

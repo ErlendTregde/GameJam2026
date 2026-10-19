@@ -24,6 +24,10 @@ func _ready() -> void:
 	multiplayer.connection_failed.connect(_connected_fail)
 	multiplayer.server_disconnected.connect(_host_disconnected)
 
+## Close the connection before the engine tears everything down (quitting while connected).
+func _exit_tree() -> void:
+	reset_transport_state()
+
 func is_host() -> bool:
 	return multiplayer.has_multiplayer_peer() and multiplayer.is_server()
 

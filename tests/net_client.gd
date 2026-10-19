@@ -57,7 +57,23 @@ func run(scene_tree: SceneTree) -> void:
 	me._refresh_hotbar()
 	me._pick_up(main.get_node("Items/Rocks/MainIslandRock1"))
 	_check("picked-up rock is in the hotbar", await _wait_for(func() -> bool: return me.items.has(rock_data), 5.0))
-	# Drop it again.
+	# A shell from the reef (placed by a Scatter): picked up through the host too.
+	var shell: WorldItem = main.get_node("Reef/Shells").get_children(true).filter(func(n: Node) -> bool: return n is WorldItem)[0]
+	tree.root.set_meta(&"net_shell", str(main.get_path_to(shell)))
+	var shell_data := shell.item
+	me._pick_up(shell)
+	_check("reef shell picked up", await _wait_for(func() -> bool: return me.items.has(shell_data), 5.0))
+	# Hit a palm until something falls (the host rolls the drop).
+	var palms: Node = main.get_node("Decor/Palms").get_node("Bodies")
+	var count_items := func() -> int:
+		return main.get_children().filter(func(n: Node) -> bool: return n is WorldItem).size()
+	var before_drop: int = count_items.call()
+	var tree_at: Vector3 = palms.get_child(0).global_position
+	for i in 30:
+		world_service.hit(palms, 10.0, tree_at)
+		await tree.create_timer(0.1).timeout
+	_check("hitting a palm drops something (from the host)", await _wait_for(func() -> bool: return count_items.call() > before_drop, 5.0))
+	# Drop the rock again.
 	me._select(me.items.find(rock_data))
 	me._drop()
 	await tree.create_timer(2.0).timeout

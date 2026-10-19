@@ -6,6 +6,7 @@
 [ext_resource type="Resource" path="res://loot/deep.tres" id="loot_deep"]
 [ext_resource type="PackedScene" path="res://scenes/statue.tscn" id="statue"]
 [ext_resource type="PackedScene" path="res://scenes/buoy.tscn" id="buoy"]
+[ext_resource type="PackedScene" path="res://scenes/items/red_coral.tscn" id="item_red_coral"]
 [ext_resource type="Resource" path="res://items/flippers.tres" id="shop_flippers"]
 [ext_resource type="Script" path="res://scripts/world.gd" id="net_world"]
 [ext_resource type="Script" path="res://scripts/players/player_spawner.gd" id="net_spawner"]
@@ -415,6 +416,43 @@ tier = 2
 loot = ExtResource("26_loot_gold")
 
 [node name="Reef" type="Node3D" parent="." unique_id=500509218]
+
+[node name="CraterCenter" type="Marker3D" parent="Reef"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -65, 0, -30)
+
+[node name="DeepCorals" type="Node3D" parent="Reef" node_paths=PackedStringArray("terrain", "around")]
+script = ExtResource("14_scatter")
+terrain = NodePath("../../Terrain")
+meshes = Array[Mesh]([ExtResource("reef_pink_coral"), ExtResource("reef_orange_coral"), ExtResource("reef_purple_coral"), ExtResource("reef_mushroom_coral"), ExtResource("reef_anemone"), ExtResource("reef_seaweed_bush")])
+count = 320
+random_seed = 41
+cast_shadows = false
+visible_distance = 60.0
+chunk_size = 30.0
+around = NodePath("../CraterCenter")
+around_radius = 55.0
+min_height = -43.0
+max_height = -16.0
+min_flatness = 0.5
+scale_range = Vector2(0.8, 1.8)
+sink = 0.05
+follow_ground = true
+
+[node name="ValuableCorals" type="Node3D" parent="Reef" node_paths=PackedStringArray("terrain", "around")]
+script = ExtResource("14_scatter")
+terrain = NodePath("../../Terrain")
+scenes = Array[PackedScene]([ExtResource("item_red_coral")])
+count = 30
+random_seed = 42
+cast_shadows = false
+visible_distance = 40.0
+around = NodePath("../CraterCenter")
+around_radius = 55.0
+min_height = -43.0
+max_height = -36.0
+min_flatness = 0.6
+scale_range = Vector2(0.9, 1.2)
+sink = 0.0
 
 [node name="Corals" type="Node3D" parent="Reef" unique_id=336322689 node_paths=PackedStringArray("terrain")]
 script = ExtResource("14_scatter")

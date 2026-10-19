@@ -27,6 +27,9 @@ extends Node3D
 ## Where around each island, in island radii from its center: (0, 1) = on the island,
 ## (1.1, 3) = a ring out on the reef.
 @export var area := Vector2(0.0, 1.0)
+## Set: places around this node instead (radius around_radius, e.g. the crater), not the islands.
+@export var around: Node3D
+@export var around_radius := 10.0
 ## Only on ground between these world heights (m).
 @export var min_height := 1.0
 @export var max_height := 50.0
@@ -78,13 +81,15 @@ func build() -> void:
 		body.name = "Bodies"  # a fixed name: multiplayer hits find it by path on every peer
 		add_child(body, false, INTERNAL_MODE_FRONT)
 	var placed_count := 0
-	for island in terrain.find_children("*", "IslandShape", false):
+	var spots: Array = [around] if around else terrain.find_children("*", "IslandShape", false)
+	for island: Node3D in spots:
+		var radius: float = around_radius if around else island.radius
 		var placed: Array[Array] = []  # one list of transforms per mesh / scene, on this island
 		placed.resize(kinds)
 		for i in placed.size():
 			placed[i] = []
 		for k in count:
-			var r: float = island.radius * sqrt(lerpf(area.x * area.x, area.y * area.y, rng.randf()))
+			var r: float = radius * sqrt(lerpf(area.x * area.x, area.y * area.y, rng.randf()))
 			var a := rng.randf() * TAU
 			var x: float = island.position.x + cos(a) * r
 			var z: float = island.position.z + sin(a) * r

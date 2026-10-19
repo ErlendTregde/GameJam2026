@@ -1,15 +1,6 @@
 extends RefCounted
-## Level 2: island 2's water is deeper; its boat is locked; swimming there is safe, but diving
-## deep brings the Giant Shark (a bigger, tougher shark); killing it unlocks the boat.
-
-func _hold(p: Player, pos: Vector3, seconds: float) -> void:
-	var t := 0.0
-	while t < seconds:
-		p.global_position = pos
-		p.velocity = Vector3.ZERO
-		await tree.physics_frame
-		t += 1.0 / 60.0
-
+## Level 2: island 2's water is deeper; the boat is locked for now; the Giant Shark (a bigger,
+## tougher shark) patrols island 2's water, and killing it is optional (the boat stays locked).
 
 var tree: SceneTree
 
@@ -40,19 +31,13 @@ func run(scene_tree: SceneTree) -> void:
 	boat._on_helm_body_exited(p)
 	# Island 2 has its own shop.
 	assert(main.has_node("Shop/ShopBoard2/Coco") and main.has_node("Shop/ShopBoard2/SellScale"), "island 2 shop with Coco and table")
-	# Level 1 done: its shark zone is cleared.
-	main.get_node("SharkZone").defeated = true
 	var zone: SharkZone = main.get_node("SharkZone2")
-	var water := isl2.position + Vector3(isl2.radius + 35.0, 0, 0)
-	# Swimming near the surface there is safe.
-	await _hold(p, Vector3(water.x, ocean.sea_level - 1.5, water.z), 3.0)
-	assert(zone._shark == null, "no boss while swimming near the surface")
-	# Diving deep brings the Giant Shark.
-	await _hold(p, Vector3(water.x, ocean.sea_level - 10.0, water.z), 2.0)
-	var shark: Shark = zone._shark
-	assert(shark != null and shark.display_name == "Giant Shark", "diving deep brings the Giant Shark")
+	var shark: Shark = zone.spawned_shark()
+	assert(shark != null and shark.display_name == "Giant Shark", "the Giant Shark patrols island 2")
+	var flat := shark.global_position - isl2.position
+	assert(Vector2(flat.x, flat.z).length() < 60.0 and shark.global_position.y < ocean.sea_level, "in island 2's water")
 	assert(shark.health == 400.0 and shark.get_node("Model").scale.length() > Vector3(0.68, 0.68, 0.68).length() * 1.5, "bigger and tougher")
 	shark.take_damage(400.0)
-	assert(zone.defeated and not boat.locked, "killing it unlocks the boat")
+	assert(zone.defeated and boat.locked, "killing it is optional and unlocks nothing (the boat stays locked)")
 	print("PASS test_level2")
 	tree.quit()

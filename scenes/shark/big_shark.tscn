@@ -12,6 +12,5 @@ bite_range = 3.8
 bite_damage = 50.0
 breach_height = 4.5
 surface_margin = 1.4
-min_depth = 2.5
 circle_radius = 13.0
 circle_depth = 0.8

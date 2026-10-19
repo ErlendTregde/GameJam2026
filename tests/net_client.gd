@@ -87,19 +87,22 @@ func run(scene_tree: SceneTree) -> void:
 		world_service.hit(puppet, 100.0, puppet.global_position, true)
 	_check("speared fish goes into our hotbar", await _wait_for(func() -> bool: return me.items.has(fish_data), 5.0))
 	_check("the fish is gone here too", await _wait_for(func() -> bool: return not is_instance_valid(puppet), 5.0))
-	# Swim in deep water until the shark has come and the host is in the water too.
+	# Swim up to the patrolling shark until it hunts us and the host is in the water near it too.
 	var host_avatar: Node3D = main.get_node("Avatar_0")
 	var zone: SharkZone = main.get_node("SharkZone")
+	_check("the patrolling shark is here (puppet)", await _wait_for(func() -> bool: return zone._puppet() != null, 10.0))
 	var t := 0.0
 	var both_in := false
 	while t < 40.0 and not both_in:
-		me.global_position = Vector3(60, -2, 60)
+		var shark_here: Node3D = zone._puppet()
+		if shark_here:
+			me.global_position = shark_here.global_position + Vector3(8, 0, 0)
 		me.velocity = Vector3.ZERO
 		await tree.physics_frame
 		t += 1.0 / 60.0
-		both_in = zone._puppet() != null and host_avatar.exposed_to_sea \
-				and host_avatar.global_position.distance_to(Vector3(64, -2, 60)) < 3.0
-	_check("the shark came (puppet + boss bar)", zone._puppet() != null and main.get_node("Player/HUD/BossBar").visible)
+		both_in = shark_here != null and main.get_node("Player/HUD/BossBar").visible and host_avatar.exposed_to_sea \
+				and host_avatar.global_position.distance_to(shark_here.global_position) < 40.0
+	_check("the shark hunts us (boss bar) with the host nearby", both_in)
 	me.take_damage(9999.0)  # killed: the host's shark should go for the host
 	_check("boss beaten here too", await _wait_for(func() -> bool: return zone.defeated, 25.0))
 	# Gamble at the chest.
@@ -108,21 +111,11 @@ func run(scene_tree: SceneTree) -> void:
 	chest.interact(me)
 	_check("chest opens for us", await _wait_for(func() -> bool: return chest.opened, 10.0))
 	_check("we paid for it", me.money == 5)
-	# Drive the boat once the host has beaten island 2's boss.
+	# The host beat island 2's boss: beaten here too, and the boat stays locked (for now).
 	var boat: Boat = main.get_node("Boat")
-	_check("boat unlocked for us too", await _wait_for(func() -> bool: return not boat.locked, 20.0))
-	boat._on_helm_body_entered(me)
-	tree.root.get_node("WorldEvents").request_helm(boat)
-	_check("we are at the helm", await _wait_for(func() -> bool: return boat.driving, 10.0))
-	var start := boat.global_position
-	var t2 := 0.0
-	while t2 < 3.0:
-		boat.global_position = start + Vector3(6, 0, 0) * (t2 / 3.0)
-		await tree.physics_frame
-		t2 += 1.0 / 60.0
-	await tree.create_timer(1.0).timeout
-	tree.root.get_node("WorldEvents").release_helm(boat)
-	_check("we let go of the helm", await _wait_for(func() -> bool: return not boat.driving and boat.driver == 0, 10.0))
+	var zone2: SharkZone = main.get_node("SharkZone2")
+	_check("island 2's boss beaten here too", await _wait_for(func() -> bool: return zone2.defeated, 20.0))
+	_check("the boat stays locked", boat.locked)
 	# Sell a fish at the table: our money, not the host's.
 	var table: SellScale = main.find_child("SellScale", true, false)
 	items.spawn(fish_data, 2.0, table.get_node("Tray").global_position + Vector3.UP * 0.3)

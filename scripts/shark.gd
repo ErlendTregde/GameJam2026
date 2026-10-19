@@ -1,10 +1,11 @@
 class_name Shark
 extends Node3D
-## A shark that hunts a swimmer: it comes in from out of sight and first circles them near the
-## surface with its fin showing (the warning), then chases, bites, backs off and comes around
-## again. When told to leave (the swimmer is safe), it swims away and disappears.
+## A shark that swims its `patrol` path until it is told to hunt a swimmer: it first circles
+## them near the surface with its fin showing (the warning), then chases, bites, backs off and
+## comes around again. When told to leave (the swimmer got away), it swims back to its patrol.
 ## Hitting it scares it off for a moment. Spawned and controlled by a SharkZone.
 
+## After it died and sank (then it is freed).
 signal gone
 signal died
 
@@ -28,10 +29,8 @@ signal died
 @export var back_off_time := 0.9
 ## Stays at least this far under the surface (m).
 @export var surface_margin := 0.8
-## Only appears where the water is deeper than this (m) plus a margin (the SharkZone picks the spot).
-@export var min_depth := 1.5
-## Gone once it is this far from the target while leaving (m).
-@export var despawn_distance := 45.0
+## Swimming its patrol path (m/s); it heads back to the path at `leave_speed`.
+@export var patrol_speed := 4.0
 @export_group("On land")
 ## Water shallower than this (m) counts as land: the shark flops after you in hops.
 @export var beach_depth := 0.8
@@ -52,6 +51,8 @@ signal died
 var warning_time := 5.0
 
 var target: Node3D
+## The loop it swims while not hunting; set by the SharkZone.
+var patrol: Path3D
 var ocean: Ocean
 var terrain: Terrain
 
@@ -87,12 +88,13 @@ func mirror(new_health: float, leaving: bool, dead: bool) -> void:
 	_dead = dead
 
 
-## Hunt `target` again (after leaving).
+## Hunt `target` (starting with the warning circle).
 func hunt() -> void:
 	_leaving = false
+	_circled = 0.0
 
 
-## Give up and swim away.
+## Give up and swim back to the patrol.
 func leave() -> void:
 	_leaving = true
 
@@ -144,13 +146,8 @@ func _physics_process(delta: float) -> void:
 	var speed := chase_speed
 	var want := to_target
 	if _leaving:
-		want = -to_target
-		want.y = 0.0
-		speed = leave_speed
-		if to_target.length() > despawn_distance:
-			gone.emit()
-			queue_free()
-			return
+		want = _patrol_heading()
+		speed = leave_speed if want.length() > 6.0 else patrol_speed
 	elif _circled < warning_time:
 		# Warning: circle the swimmer, near the surface.
 		_circled += delta
@@ -192,6 +189,16 @@ func _physics_process(delta: float) -> void:
 	var floor_y := terrain.get_floor_height(global_position.x, global_position.z) + 0.8 if terrain else -50.0
 	global_position.y = clampf(global_position.y, minf(floor_y, surface), surface)
 	_animations.speed_scale = speed / chase_speed * 1.6
+
+
+## Toward a point a little ahead along the patrol path, from the closest point on it (so far
+## off it heads back to the path, and on it, follows it round).
+func _patrol_heading() -> Vector3:
+	if patrol == null or patrol.curve.point_count < 2:
+		return -global_basis.z
+	var curve := patrol.curve
+	var along := curve.get_closest_offset(patrol.to_local(global_position)) + 4.0
+	return patrol.to_global(curve.sample_baked(fposmod(along, curve.get_baked_length()))) - global_position
 
 
 ## Out of the water: it hops along the ground after its target, rocking from side to side.

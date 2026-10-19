@@ -28,10 +28,10 @@ func run(scene_tree: SceneTree) -> void:
 	hook.interact(p)
 	assert(p.items.has(hook.item), "bought the spear")
 	var zone: SharkZone = main.get_node("SharkZone")
-	zone._spawn()
+	var shark := zone.spawned_shark()
 	var hits := 0
 	while not zone.defeated:
-		zone._shark.take_damage(hook.item.damage)
+		shark.take_damage(hook.item.damage)
 		hits += 1
 	assert(hits == 10, "spear kills the shark in 10 hits")
 	print("PASS test_level1_loop")

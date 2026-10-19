@@ -17,8 +17,10 @@ func run(scene_tree: SceneTree) -> void:
 	# The player stands on the beach, a few metres up from the water.
 	p.global_position = Vector3(0, 3, 17)
 	await tree.create_timer(1.0).timeout
-	zone._spawn(p)
-	var shark: Shark = zone._shark
+	var shark: Shark = zone.spawned_shark()
+	shark.global_position = Vector3(0, -3, 42)  # in the water off the beach
+	shark.target = p
+	shark.hunt()
 	shark._circled = shark.warning_time  # skip the warning: straight to the hunt
 	var on_land := false
 	var heights := []
@@ -33,5 +35,13 @@ func run(scene_tree: SceneTree) -> void:
 	assert(on_land, "the shark came up onto the land")
 	assert(not heights.is_empty() and heights.max() - heights.min() > 0.4, "it hops along the ground")
 	assert(p.health < p.max_health, "it bit the player on land")
+	# The player gets far away: it gives up.
+	var t2 := 0.0
+	while t2 < 3.0 and not shark.is_leaving():
+		p.global_position = Vector3(-130, 4, -60)  # island 2
+		p.velocity = Vector3.ZERO
+		await tree.physics_frame
+		t2 += 1.0 / 60.0
+	assert(shark.is_leaving(), "it gives up once you are far away")
 	print("PASS test_shark_land")
 	tree.quit()

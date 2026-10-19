@@ -1,124 +1,92 @@
-@tool
 class_name SharkZone
 extends Node
-## Keeps swimmers from crossing between islands. The shark zone is:
-##  - all water deeper than `danger_depth` (the deep channels between the islands' shelves), and
-##  - any Area3D you add as a child of this node (drag / resize it in the editor to add a zone).
-## Swimming there for `spawn_delay` seconds brings a shark. It first circles you near the surface
-## for `warning_time` (fin showing), then attacks. Once it hunts it doesn't give up, even if you
-## reach land (it waits at the shore); only killing you makes it leave. It keeps its damage, so
-## the next fight picks up where the last one ended.
-## In the editor the depth zone is previewed in red (never shown in the game).
-
-@export_tool_button("Refresh preview") var refresh_button := _build_preview
+## A boss's waters: its shark is always out there swimming the `patrol` path (a Path3D you draw
+## in the editor). A swimmer who comes within `aggro_radius` gets hunted: it circles them first
+## (fin showing), then attacks, even following them onto land. Once they are `give_up_distance`
+## away it gives up and swims back to its patrol. It keeps its damage, so the next fight picks up
+## where the last one ended. Killing it is optional: it drops its trophy and stays dead.
 
 @export var player: Player
 @export var ocean: Ocean
 @export var terrain: Terrain
 @export var shark_scene: PackedScene
-## Off: only the Area3D children are shark water (not all deep water).
-@export var use_depth := true:
-	set(value):
-		use_depth = value
-		if Engine.is_editor_hint() and is_inside_tree():
-			_build_preview()
-## > 0: the shark only comes once you dive this deep below the surface (m) in the zone.
-@export var dive_depth := 0.0
-## Water deeper than this (m below sea level) is shark water.
-@export var danger_depth := 10.0:
-	set(value):
-		danger_depth = value
-		if Engine.is_editor_hint() and is_inside_tree():
-			_build_preview()
-## Seconds in shark water before the shark comes.
-@export var spawn_delay := 1.0
+## The loop the shark swims (keep it in deep water, under the surface).
+@export var patrol: Path3D
+## A swimmer this close to the shark gets hunted (m).
+@export var aggro_radius := 18.0
+## It gives up once its target is this far away (m).
+@export var give_up_distance := 45.0
 ## Seconds it circles (the warning) before it attacks.
 @export var warning_time := 5.0
-## Where the shark appears: this far from the player, behind them (m).
-@export var spawn_distance := 25.0
 ## Boss health bar (HUD) shown while the shark hunts; its child Label shows the name.
 @export var boss_bar: ProgressBar
 ## Shown when the shark dies.
 @export var message: Label
-@export var defeated_text := "The way is open!"
-## Set when its shark is killed: the zone is safe for good.
+@export var defeated_text := "Boss beaten!"
+## Set when its shark is killed: it is gone for good.
 @export var defeated := false
-## Nodes with a `locked` property (e.g. the boat) unlocked when its shark is killed.
-@export var unlocks: Array[Node] = []
-@export_group("Editor preview")
-@export var show_preview := true:
-	set(value):
-		show_preview = value
-		if Engine.is_editor_hint() and is_inside_tree():
-			_build_preview()
-## Grid spacing of the preview (m).
-@export var preview_spacing := 5.0
 
 var _shark: Shark
-var _danger_time := 0.0
 var _bar_mine := false
-var _boss_health := -1.0  # what the shark had left when it last swam off; -1 = never met
-var _preview: MeshInstance3D
 
 
 func _ready() -> void:
-	if Engine.is_editor_hint():
-		_build_preview.call_deferred()  # after the Terrain has built its islands
-		return
-	for area in get_children():
-		if area is Area3D:
-			area.collision_mask |= 8  # detect players (layer 4), local and remote
 	WorldService.player_died.connect(_on_player_died)
 
 
-func _physics_process(delta: float) -> void:
-	if Engine.is_editor_hint():
-		return
+func _physics_process(_delta: float) -> void:
 	if not CreatureService.simulates():
-		_update_bar(_puppet())  # the host hunts; we only show its boss bar
+		_update_bar(_puppet())  # the host simulates it; we only show its boss bar
 		return
 	_update_bar(_shark)
 	if defeated:
 		return
-	var victim := _in_danger()
-	_danger_time = _danger_time + delta if victim else 0.0
-	if _shark == null and _danger_time >= spawn_delay:
-		_spawn(victim)
-	elif _shark and _shark.is_leaving() and victim:
-		_shark.target = victim  # back in before it was gone
-		_shark.hunt()
+	if _shark == null:
+		_spawn()
+		return
+	if _shark.is_dead():
+		return
+	if _shark.is_leaving():
+		var near := _nearest_swimmer(aggro_radius)
+		if near:
+			_shark.target = near
+			_shark.hunt()
+	elif not is_instance_valid(_shark.target) or _shark.target.global_position.distance_to(_shark.global_position) > give_up_distance:
+		_shark.leave()
 
 
-## The first player swimming in shark water (and deep enough, for a dive zone), except [param skip].
-func _in_danger(skip: Node3D = null) -> Node3D:
+## The nearest player in the sea within [param radius] of the shark, except [param skip].
+func _nearest_swimmer(radius: float, skip: Node3D = null) -> Node3D:
 	var bodies := WorldService.player_bodies()
 	if bodies.is_empty() and player:
 		bodies = [player]
+	var best: Node3D = null
+	var best_d := radius
 	for body in bodies:
 		if body == null or body == skip or not body.exposed_to_sea:
 			continue
-		var dove := dive_depth <= 0.0 or (ocean and body.global_position.y < ocean.sea_level - dive_depth)
-		if dove and in_zone(body.global_position, body):
-			return body
-	return null
+		var d := body.global_position.distance_to(_shark.global_position)
+		if d < best_d:
+			best = body
+			best_d = d
+	return best
 
 
-## A player died: the shark that killed them goes after the next player in the water, if any.
+## A player died: the shark that killed them goes after the next player nearby, or back to patrol.
 func _on_player_died(body: Node3D) -> void:
-	_danger_time = 0.0
 	if not CreatureService.simulates() or _shark == null or _shark.target != body:
 		return
-	var next := _in_danger(body)
-	if next == null:
-		for other in WorldService.player_bodies():
-			if other != body and other.exposed_to_sea:
-				next = other
-				break
+	var next := _nearest_swimmer(give_up_distance, body)
 	if next:
 		_shark.target = next
 		_shark.hunt()
 	else:
 		_shark.leave()
+
+
+## The shark (host), for tests and tools.
+func spawned_shark() -> Shark:
+	return _shark
 
 
 ## A client's copy of this zone's shark (its puppet child), for the boss bar.
@@ -140,37 +108,16 @@ func _update_bar(shark: Shark) -> void:
 			(boss_bar.get_node("Name") as Label).text = shark.display_name
 
 
-## Whether `pos` is in shark water: deep, or inside one of the Area3D zones.
-## Whether `pos` is in shark water: deep, or [param body] inside one of the Area3D zones.
-func in_zone(pos: Vector3, body: Node3D = null) -> bool:
-	if use_depth and ocean and terrain and ocean.sea_level - terrain.get_floor_height(pos.x, pos.z) > danger_depth:
-		return true
-	if body == null:
-		body = player
-	for area in get_children():
-		if area is Area3D and body and area.overlaps_body(body):
-			return true
-	return false
-
-
-func _spawn(victim: Node3D = null) -> void:
-	if victim == null:
-		victim = player
+func _spawn() -> void:
 	_shark = shark_scene.instantiate()
-	_shark.target = victim
+	_shark.patrol = patrol
 	_shark.ocean = ocean
 	_shark.terrain = terrain
 	_shark.warning_time = warning_time
 	add_child(_shark)
-	if _boss_health > 0.0:
-		_shark.health = _boss_health
-	var back := victim.global_basis.z  # behind them, out of sight
-	back.y = 0.0
-	_shark.global_position = _spawn_point(victim.global_position, back.normalized(), _shark.min_depth + 2.0)
-	_shark.look_at(victim.global_position, Vector3.UP)
-	_shark.gone.connect(func() -> void:
-		_boss_health = _shark.health
-		_shark = null)
+	_shark.global_position = patrol.to_global(patrol.curve.sample_baked(0.0))
+	_shark.leave()
+	_shark.gone.connect(func() -> void: _shark = null)
 	_shark.died.connect(_on_shark_died)
 
 
@@ -179,60 +126,13 @@ func _on_shark_died() -> void:
 	WorldEvents.zone_defeated(self)
 
 
-## The boss is dead (here, and on every peer when the host says so): safe for good.
+## The boss is dead (here, and on every peer when the host says so).
 func defeat() -> void:
 	if defeated:
 		return
 	defeated = true
-	for node in unlocks:
-		node.locked = false
 	if message:
 		message.text = defeated_text
 		message.visible = true
 		await get_tree().create_timer(4.0).timeout
 		message.visible = false
-
-
-## Out of sight where possible: behind the player first, then further around, skipping islands
-## and water shallower than `depth`; between the sea floor and the surface.
-func _spawn_point(pos: Vector3, back: Vector3, depth: float) -> Vector3:
-	for dist: float in [spawn_distance, spawn_distance * 0.6]:
-		for k in 12:
-			var turn := ceili(k / 2.0) * TAU / 12.0 * (1.0 if k % 2 == 0 else -1.0)  # 0, -30, +30, -60, ...
-			var p := pos + back.rotated(Vector3.UP, turn) * dist
-			var floor_y := terrain.get_floor_height(p.x, p.z)
-			if ocean.sea_level - floor_y >= depth:
-				return Vector3(p.x, clampf(pos.y - 2.5, floor_y + 1.0, ocean.sea_level - 1.5), p.z)
-	return pos + back * spawn_distance + Vector3.DOWN * 2.5  # nowhere deep enough nearby
-
-
-## Red overlay at sea level over the deep (shark) water, editor only.
-func _build_preview() -> void:
-	if _preview:
-		_preview.queue_free()
-		_preview = null
-	if not Engine.is_editor_hint() or not show_preview or not use_depth or terrain == null or ocean == null:
-		return
-	var half := terrain.size * 0.5
-	var n := int(terrain.size / preview_spacing)
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var y := ocean.sea_level + 0.3
-	for j in n:
-		for i in n:
-			var x := -half + (i + 0.5) * preview_spacing
-			var z := -half + (j + 0.5) * preview_spacing
-			if ocean.sea_level - terrain.get_floor_height(x, z) <= danger_depth:
-				continue
-			var h := preview_spacing * 0.5
-			for v in [Vector3(-h, 0, -h), Vector3(h, 0, -h), Vector3(-h, 0, h), Vector3(h, 0, -h), Vector3(h, 0, h), Vector3(-h, 0, h)]:
-				st.add_vertex(Vector3(x, y, z) + v)
-	var material := StandardMaterial3D.new()
-	material.albedo_color = Color(1, 0.1, 0.1, 0.3)
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	_preview = MeshInstance3D.new()
-	_preview.mesh = st.commit()
-	_preview.material_override = material
-	add_child(_preview, false, INTERNAL_MODE_FRONT)

@@ -145,8 +145,22 @@ point_count = 11
 
 [sub_resource type="WorldBoundaryShape3D" id="SeabedShape"]
 
-[sub_resource type="SphereShape3D" id="Level2Zone"]
-radius = 70.0
+[sub_resource type="Curve3D" id="Patrol1Curve"]
+closed = true
+_data = {
+"points": PackedVector3Array(0.000, 0.000, -4.774, -0.000, 0.000, 4.774, 18.000, -4.000, 0.000, 3.376, 0.000, -3.376, -3.376, 0.000, 3.376, 12.728, -4.000, 12.728, 4.774, 0.000, -0.000, -4.774, 0.000, 0.000, 0.000, -4.000, 18.000, 3.376, 0.000, 3.376, -3.376, 0.000, -3.376, -12.728, -4.000, 12.728, 0.000, 0.000, 4.774, -0.000, 0.000, -4.774, -18.000, -4.000, 0.000, -3.376, 0.000, 3.376, 3.376, 0.000, -3.376, -12.728, -4.000, -12.728, -4.774, 0.000, 0.000, 4.774, 0.000, -0.000, -0.000, -4.000, -18.000, -3.376, 0.000, -3.376, 3.376, 0.000, 3.376, 12.728, -4.000, -12.728),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 8
+
+[sub_resource type="Curve3D" id="Patrol2Curve"]
+closed = true
+_data = {
+"points": PackedVector3Array(0.000, 0.000, -9.283, -0.000, 0.000, 9.283, 35.000, -4.000, 0.000, 6.564, 0.000, -6.564, -6.564, 0.000, 6.564, 24.749, -4.000, 24.749, 9.283, 0.000, -0.000, -9.283, 0.000, 0.000, 0.000, -4.000, 35.000, 6.564, 0.000, 6.564, -6.564, 0.000, -6.564, -24.749, -4.000, 24.749, 0.000, 0.000, 9.283, -0.000, 0.000, -9.283, -35.000, -4.000, 0.000, -6.564, 0.000, 6.564, 6.564, 0.000, -6.564, -24.749, -4.000, -24.749, -9.283, 0.000, 0.000, 9.283, 0.000, -0.000, -0.000, -4.000, -35.000, -6.564, 0.000, -6.564, 6.564, 0.000, 6.564, 24.749, -4.000, -24.749),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 8
+
 
 [sub_resource type="Environment" id="Underwater"]
 background_mode = 1
@@ -486,6 +500,7 @@ freeze = true
 [node name="Boat" parent="." unique_id=2143456993 node_paths=PackedStringArray("ocean") instance=ExtResource("4_boat")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -103, 0.5, -47.5)
 locked = true
+locked_text = "The boat isn't ready yet"
 ocean = NodePath("../Ocean")
 
 [node name="Player" parent="." unique_id=1345830165 node_paths=PackedStringArray("ocean", "world_environment", "sun", "respawn_point") instance=ExtResource("5_player")]
@@ -497,7 +512,7 @@ sun = NodePath("../Sun")
 starting_items = Array[ExtResource("item_data_script")]([ExtResource("shop_speargun")])
 respawn_point = NodePath("../Spawn")
 
-[node name="SharkZone" type="Node" parent="." unique_id=1073233949 node_paths=PackedStringArray("player", "ocean", "terrain", "boss_bar", "message")]
+[node name="SharkZone" type="Node" parent="." unique_id=1073233949 node_paths=PackedStringArray("player", "ocean", "terrain", "boss_bar", "message", "patrol")]
 script = ExtResource("40_shark_zone")
 player = NodePath("../Player")
 ocean = NodePath("../Ocean")
@@ -505,6 +520,11 @@ terrain = NodePath("../Terrain")
 shark_scene = ExtResource("41_shark")
 boss_bar = NodePath("../Player/HUD/BossBar")
 message = NodePath("../Player/HUD/Message")
+patrol = NodePath("Patrol")
+
+[node name="Patrol" type="Path3D" parent="SharkZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0, -30)
+curve = SubResource("Patrol1Curve")
 
 [node name="Shop" type="Node3D" parent="." unique_id=1993667263]
 
@@ -541,27 +561,20 @@ crab_scene = ExtResource("crab_scene")
 [node name="Spawn" type="Marker3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.6, 19)
 
-[node name="SharkZone2" type="Node" parent="." node_paths=PackedStringArray("player", "ocean", "terrain", "boss_bar", "message", "unlocks")]
+[node name="SharkZone2" type="Node" parent="." node_paths=PackedStringArray("player", "ocean", "terrain", "boss_bar", "message", "patrol")]
 script = ExtResource("40_shark_zone")
 player = NodePath("../Player")
 ocean = NodePath("../Ocean")
 terrain = NodePath("../Terrain")
 shark_scene = ExtResource("l2_big_shark")
-use_depth = false
-dive_depth = 8.0
 warning_time = 4.0
 boss_bar = NodePath("../Player/HUD/BossBar")
 message = NodePath("../Player/HUD/Message")
-defeated_text = "The boat is unlocked!"
-unlocks = [NodePath("../Boat")]
+patrol = NodePath("Patrol")
 
-[node name="Island2Water" type="Area3D" parent="SharkZone2"]
+[node name="Patrol" type="Path3D" parent="SharkZone2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 0, -60)
-collision_layer = 0
-monitorable = false
-
-[node name="Shape" type="CollisionShape3D" parent="SharkZone2/Island2Water"]
-shape = SubResource("Level2Zone")
+curve = SubResource("Patrol2Curve")
 
 [node name="ShopBoard2" parent="Shop" instance=ExtResource("shop_board")]
 transform = Transform3D(0.42, 0, 0.91, 0, 1, 0, -0.91, 0, 0.42, -131, 4.35, -61)

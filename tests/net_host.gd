@@ -57,16 +57,16 @@ func run(scene_tree: SceneTree) -> void:
 	main.add_child(fish)
 	fish.set_physics_process(false)
 	_check("speared fish dies on the host", await _wait_for(func() -> bool: return not is_instance_valid(fish), 15.0))
-	# Shark: the client swims into deep water and the shark hunts the client.
+	# Shark: the client swims up to the patrolling shark and it hunts the client.
 	var zone: SharkZone = main.get_node("SharkZone")
-	_check("shark hunts the client in deep water", await _wait_for(func() -> bool:
-		return zone._shark != null and zone._shark.target == them, 25.0))
-	# Host goes in too; when the shark kills the client, it comes for the host.
-	var shark: Shark = zone._shark
+	var shark: Shark = zone.spawned_shark()
+	_check("shark hunts the client who swam close", await _wait_for(func() -> bool:
+		return shark.target == them and not shark.is_leaving(), 40.0))
+	# Host goes in nearby (out of its reach); when the shark kills the client, it comes for the host.
 	var retargeted := false
 	var t := 0.0
 	while t < 20.0 and not retargeted:
-		me.global_position = Vector3(64, -2, 60)
+		me.global_position = shark.global_position + Vector3(0, 0, 25)
 		me.velocity = Vector3.ZERO
 		await tree.physics_frame
 		t += 1.0 / 60.0
@@ -80,16 +80,11 @@ func run(scene_tree: SceneTree) -> void:
 	# Gamble chest opened by the client.
 	var chest: Chest = main.get_node("Chests/WoodenChest")
 	_check("chest opened by the client", await _wait_for(func() -> bool: return chest.opened, 20.0))
-	# The boat: beat island 2's boss so it unlocks; the client drives it and our copy follows.
+	# Island 2's boss beaten: every peer hears; the boat stays locked (for now).
 	var zone2: SharkZone = main.get_node("SharkZone2")
 	zone2.defeat()
 	tree.root.get_node("WorldEvents").zone_defeated(zone2)
-	var boat: Boat = main.get_node("Boat")
-	var start := boat.global_position
-	_check("the client takes the helm", await _wait_for(func() -> bool: return boat.driver > 1, 20.0))
-	_check("our boat follows the client's driving", await _wait_for(func() -> bool:
-		return boat.global_position.distance_to(start) > 4.0, 15.0))
-	_check("the client lets go of the helm", await _wait_for(func() -> bool: return boat.driver == 0, 15.0))
+	_check("the boat stays locked", main.get_node("Boat").locked)
 	# Money is per player: the client's sale pays the client, not us.
 	await _wait_for(func() -> bool: return tree.root.multiplayer.get_peers().is_empty(), 60.0)
 	_check("host money untouched by the client's sale", me.money == 0)

@@ -46,4 +46,5 @@ func set_item(item: ItemData, weight := 0.0) -> void:
 	bounds = Transform3D.IDENTITY.scaled(Vector3.ONE * grow) * bounds
 	var radius := maxf(bounds.size.length() * 0.5 * biggest / grow, 0.01)
 	_camera.size = radius * 2.2
+	_camera.far = radius * 8.0  # models in big units (e.g. the goggles) sit far away
 	_camera.look_at_from_position(bounds.get_center() + Vector3(1.0, 0.8, 1.0).normalized() * radius * 4.0, bounds.get_center())

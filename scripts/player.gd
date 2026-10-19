@@ -6,6 +6,8 @@ signal died
 ## First-person walker and swimmer. Standing on a "platform" body (the boat deck) makes it
 ## a child of that body, so it rides along with every roll and pitch of the boat.
 
+const GEAR_ICON := preload("res://scenes/inventory/slot.tscn")
+
 @export var speed := 4.0
 @export var jump_velocity := 4.5
 @export var mouse_sensitivity := 0.002
@@ -15,8 +17,6 @@ signal died
 @export var swim_speed := 2.5
 ## How quickly swimming reaches its speed and glides to a stop (m/s per s): water has momentum.
 @export var swim_acceleration := 5.0
-## Sinking speed when not holding jump.
-@export var sink_speed := 0.8
 @export var rise_speed := 2.0
 ## Swimming down while holding dive (Ctrl), m/s: about as fast as rising.
 @export var dive_speed := 2.0
@@ -26,8 +26,9 @@ signal died
 @export var chest_height := 0.9
 ## ...and ends again only this much lower, so bobbing on waves doesn't flip in and out of swimming.
 @export var swim_exit_margin := 0.35
-## Within this much below floating depth you float on the waves; deeper you sink slowly (m).
-@export var surface_band := 4.0
+## Within this much below floating depth you float on the waves; deeper you stay where you are
+## unless you swim (look up and swim to go up) (m).
+@export var surface_band := 0.6
 ## How fast you drift back up to the surface when floating (m/s): gentle, like real buoyancy.
 @export var float_up_speed := 1.0
 ## Pressing jump while floating gives a small hop this fast (you can't jump far out of water).
@@ -128,7 +129,7 @@ var _drown_timer := 0.0
 @onready var _item_use: ItemUse = $ItemUse
 @onready var _stamina_bar: ProgressBar = $HUD/Status/StaminaBar
 @onready var _money_label: Label = $HUD/Status/Money
-@onready var _gear_label: Label = $HUD/Status/Gear
+@onready var _gear_row: HBoxContainer = $HUD/Status/Gear
 @onready var _world := get_parent()
 @onready var _surface_environment := world_environment.environment if world_environment else null
 
@@ -276,7 +277,7 @@ func consume(item: ItemData) -> void:
 
 
 ## Swimming: move where you look (look down + forward to dive), with momentum. At the surface
-## you float on the waves; below it you sink slowly unless you swim or hold jump to rise.
+## you float on the waves; below it you stay where you are unless you swim or hold jump to rise.
 func _swim(delta: float, water_depth: float, input: Vector2, move_speed: float) -> void:
 	var at_surface := water_depth < chest_height + surface_band
 	_climb_timer -= delta
@@ -299,8 +300,6 @@ func _swim(delta: float, water_depth: float, input: Vector2, move_speed: float) 
 		want.y = float_y  # floating: ride the waves unless clearly diving
 	elif at_surface:
 		want.y = minf(want.y, float_y)
-	else:
-		want.y -= sink_speed * (1.0 - absf(input.y))  # drifting down slowly when not swimming
 	var flat := Vector2(velocity.x, velocity.z).move_toward(Vector2(want.x, want.z), swim_acceleration * delta)
 	var pushing_off := _climb_timer > climb_cooldown - 0.35 and velocity.y > 0.0  # just jumped: let it carry
 	var vy := velocity.y if pushing_off else move_toward(velocity.y, want.y, water_brake * delta)
@@ -474,7 +473,14 @@ func wear(item: ItemData) -> void:
 	rise_speed *= item.swim_multiplier
 	if underwater_environment:
 		underwater_environment.fog_density *= item.underwater_fog_multiplier
-	_gear_label.text = "  ".join(worn.map(func(g: ItemData) -> String: return g.name))
+	# Its picture on the HUD, drawn like a hotbar slot but without the frame or number.
+	var icon: Node = GEAR_ICON.instantiate()
+	icon.normal_style = StyleBoxEmpty.new()
+	_gear_row.add_child(icon)
+	icon.get_node("Frame").custom_minimum_size = Vector2(44, 44)
+	icon.get_node("Number").hide()
+	icon.set_selected(false)
+	icon.set_item(item)
 
 
 func _refresh_hotbar() -> void:

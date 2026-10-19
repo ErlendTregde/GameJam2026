@@ -41,5 +41,8 @@ func run(scene_tree: SceneTree) -> void:
 	var swim := p.swim_speed
 	flippers.interact(p)
 	assert(is_equal_approx(p.swim_speed, swim * 1.5), "flippers: faster swimming")
+	var shown: Node = p.get_node("HUD/Status/Gear")
+	assert(shown.get_child_count() == 2, "worn gear shows as two pictures on the HUD")
+	assert(shown.find_children("*", "Label", true, false).all(func(l: Label) -> bool: return not l.is_visible_in_tree()), "pictures only, no text")
 	print("PASS test_gear")
 	tree.quit()

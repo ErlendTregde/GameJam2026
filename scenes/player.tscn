@@ -301,11 +301,10 @@ theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 26
 text = "$ 0"
 
-[node name="Gear" type="Label" parent="HUD/Status"]
+[node name="Gear" type="HBoxContainer" parent="HUD/Status"]
 layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 18
+mouse_filter = 2
+theme_override_constants/separation = 2
 
 [node name="OxygenRow" type="HBoxContainer" parent="HUD/Status"]
 visible = false

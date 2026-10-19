@@ -3,6 +3,9 @@
 [ext_resource type="Script" uid="uid://cholbe3r5b1l2" path="res://scripts/ocean.gd" id="1_ocean"]
 [ext_resource type="Terrain3DMaterial" path="res://shaders/terrain3d_material.tres" id="t3d_material"]
 [ext_resource type="Resource" path="res://items/goggles.tres" id="shop_goggles"]
+[ext_resource type="Resource" path="res://loot/deep.tres" id="loot_deep"]
+[ext_resource type="PackedScene" path="res://scenes/statue.tscn" id="statue"]
+[ext_resource type="PackedScene" path="res://scenes/buoy.tscn" id="buoy"]
 [ext_resource type="Resource" path="res://items/flippers.tres" id="shop_flippers"]
 [ext_resource type="Script" path="res://scripts/world.gd" id="net_world"]
 [ext_resource type="Script" path="res://scripts/players/player_spawner.gd" id="net_spawner"]
@@ -325,6 +328,28 @@ radius = 12.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 
+[node name="DeepFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 62)
+script = ExtResource("27_spawner")
+fish_scenes = Array[PackedScene]([ExtResource("l2_deep_grouper"), ExtResource("l2_red_snapper")])
+count = 4
+radius = 8.0
+min_depth = 36.0
+max_depth = 50.0
+ocean = NodePath("../../Ocean")
+terrain = NodePath("../../Terrain")
+
+[node name="TrailFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50)
+script = ExtResource("27_spawner")
+fish_scenes = Array[PackedScene]([ExtResource("l2_red_snapper")])
+count = 3
+radius = 7.0
+min_depth = 8.0
+max_depth = 30.0
+ocean = NodePath("../../Ocean")
+terrain = NodePath("../../Terrain")
+
 [node name="Chests" type="Node3D" parent="." unique_id=2011558760]
 
 [node name="WoodenChest" parent="Chests" unique_id=1690178757 instance=ExtResource("23_chest")]
@@ -332,6 +357,18 @@ transform = Transform3D(-0.4997, 0, 0.8662, 0, 1, 0, -0.8662, 0, -0.4997, -3.241
 loot = ExtResource("loot_gamble_1")
 cost = 15
 reset_time = 4.0
+
+[node name="DeepChest" parent="Chests" instance=ExtResource("23_chest")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -42, 62)
+tier = 2
+loot = ExtResource("loot_deep")
+reset_time = 300.0
+
+[node name="Glow" type="OmniLight3D" parent="Chests/DeepChest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+light_color = Color(1, 0.8, 0.35, 1)
+light_energy = 3.0
+omni_range = 12.0
 
 [node name="SilverChest" parent="Chests" unique_id=1291231421 instance=ExtResource("23_chest")]
 transform = Transform3D(-0.6085, 0, 0.7935, 0, 1, 0, -0.7935, 0, -0.6085, -124.64, 3.97, -55.89)
@@ -527,6 +564,13 @@ patrol = NodePath("Patrol")
 [node name="Patrol" type="Path3D" parent="SharkZone"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0, -30)
 curve = SubResource("Patrol1Curve")
+
+[node name="Statue" parent="." instance=ExtResource("statue")]
+transform = Transform3D(-0.8, 0, -0.6, 0, 1, 0, 0.6, 0, -0.8, 3, -42.2, 60.5)
+
+[node name="DiveBuoy" parent="." node_paths=PackedStringArray("ocean") instance=ExtResource("buoy")]
+transform = Transform3D(0, 0, -2, 0, 2, 0, 2, 0, 0, 1.5, 0.5, 62)
+ocean = NodePath("../Ocean")
 
 [node name="Shop" type="Node3D" parent="." unique_id=1993667263]
 

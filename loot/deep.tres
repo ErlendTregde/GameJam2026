@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="LootTable" format=3]
+
+[ext_resource type="Script" path="res://scripts/loot_table.gd" id="1_loot"]
+[ext_resource type="Script" path="res://scripts/inventory/item_data.gd" id="2_itemdata"]
+[ext_resource type="Resource" path="res://items/shark_tooth.tres" id="item_tooth"]
+[ext_resource type="Resource" path="res://items/oyster.tres" id="item_oyster"]
+[ext_resource type="Resource" path="res://items/trident.tres" id="item_trident"]
+
+[resource]
+script = ExtResource("1_loot")
+always = Array[ExtResource("2_itemdata")]([ExtResource("item_tooth"), ExtResource("item_tooth")])
+pool = Array[ExtResource("2_itemdata")]([ExtResource("item_oyster"), ExtResource("item_oyster"), ExtResource("item_trident")])
+picks = Vector2i(1, 2)

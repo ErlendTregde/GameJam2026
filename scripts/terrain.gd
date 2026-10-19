@@ -39,12 +39,15 @@ extends StaticBody3D
 @export var crater_depth := 42.0
 
 @export_group("Mountain ring")
-## Mountains in a ring around everything: the edge of the world; 0 radius = none.
+## A ridge of mountains in a ring around everything: the edge of the world; 0 radius = none.
 @export var ring_center := Vector2.ZERO
 @export var ring_radius := 0.0
-## How far (m) they take to rise to full height.
+## How wide (m) the ridge is, from where it rises to where it is back down.
 @export var ring_width := 45.0
 @export var ring_height := 55.0
+## The canal: a gap in the ridge this wide (m), at this angle around the center (degrees).
+@export var ring_gap_angle := 0.0
+@export var ring_gap_width := 0.0
 
 var _islands: Array[IslandShape] = []
 var _chunks: Array[MeshInstance3D] = []
@@ -79,7 +82,12 @@ func procedural_height(x: float, z: float) -> float:
 		var t := clampf((1.0 - Vector2(x, z).distance_to(crater_center) / crater_radius) * 1.25, 0.0, 1.0)
 		h = minf(h, lerpf(h, -crater_depth, t * t * (3.0 - 2.0 * t)))
 	if ring_radius > 0.0:
-		var up := smoothstep(ring_radius, ring_radius + ring_width, Vector2(x, z).distance_to(ring_center))
+		var d := Vector2(x, z).distance_to(ring_center)
+		var mid := ring_radius + ring_width * 0.5
+		var up := smoothstep(ring_radius, mid, d) * (1.0 - smoothstep(mid, ring_radius + ring_width, d))
+		if ring_gap_width > 0.0:
+			var arc := absf(wrapf((Vector2(x, z) - ring_center).angle() - deg_to_rad(ring_gap_angle), -PI, PI)) * d
+			up *= smoothstep(ring_gap_width * 0.5, ring_gap_width * 0.5 + 10.0, arc)  # steep canal sides
 		if up > 0.0:
 			var peaks := 0.75 + 0.45 * (noise.get_noise_2d(x * 2.5, z * 2.5) if noise else 0.0)
 			h = lerpf(h, ring_height * peaks, up)

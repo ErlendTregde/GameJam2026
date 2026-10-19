@@ -13,15 +13,27 @@ func run(scene_tree: SceneTree) -> void:
 	await tree.create_timer(1.0).timeout
 	var terrain: Terrain = main.get_node("Terrain")
 	var ocean: Ocean = main.get_node("Ocean")
-	# Mountains: a closed wall all the way around, well above the water.
+	# Mountains: a ridge all the way around, well above the water, except for the canal (open
+	# water through the ridge); beyond the ridge it goes back down (no plateau to the edge).
 	var c := terrain.ring_center
+	var gap := deg_to_rad(terrain.ring_gap_angle)
 	for i in 72:
-		var dir := Vector2.from_angle(i * TAU / 72.0)
+		var a := i * TAU / 72.0
+		var dir := Vector2.from_angle(a)
 		var top := -INF
+		var low := INF
 		for r in range(int(terrain.ring_radius), int(terrain.ring_radius + terrain.ring_width) + 1, 2):
 			var p := c + dir * r
 			top = maxf(top, terrain.get_floor_height(p.x, p.y))
-		assert(top > ocean.sea_level + 15.0, "mountains block the way out at %d degrees (top %.1f)" % [i * 5, top])
+			low = minf(low, terrain.get_floor_height(p.x, p.y))
+		var arc := absf(wrapf(a - gap, -PI, PI)) * terrain.ring_radius
+		if arc > terrain.ring_gap_width:
+			assert(top > ocean.sea_level + 15.0, "mountains block the way out at %d degrees (top %.1f)" % [i * 5, top])
+		elif arc < terrain.ring_gap_width * 0.25:
+			assert(top < ocean.sea_level - 3.0, "the canal is open water at %d degrees (top %.1f)" % [i * 5, top])
+	var past := c + Vector2.from_angle(gap + 1.0) * (terrain.ring_radius + terrain.ring_width + 20.0)
+	assert(terrain.get_floor_height(past.x, past.y) < ocean.sea_level, "no plateau beyond the ridge")
+	assert(terrain.ring_height <= 40.0, "the mountains aren't huge")
 	for island: IslandShape in terrain.find_children("*", "IslandShape", false):
 		var at := Vector2(island.position.x, island.position.z)
 		assert(at.distance_to(c) + island.radius < terrain.ring_radius - 20.0, "%s is inside the ring" % island.name)

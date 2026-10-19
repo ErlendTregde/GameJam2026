@@ -6,6 +6,7 @@
 [ext_resource type="Resource" path="res://loot/deep.tres" id="loot_deep"]
 [ext_resource type="PackedScene" path="res://scenes/statue.tscn" id="statue"]
 [ext_resource type="PackedScene" path="res://scenes/buoy.tscn" id="buoy"]
+[ext_resource type="Script" path="res://scripts/canal_gate.gd" id="canal_gate"]
 [ext_resource type="PackedScene" path="res://scenes/items/red_coral.tscn" id="item_red_coral"]
 [ext_resource type="Resource" path="res://items/flippers.tres" id="shop_flippers"]
 [ext_resource type="Script" path="res://scripts/world.gd" id="net_world"]
@@ -222,6 +223,10 @@ crater_center = Vector2(-65, -30)
 crater_radius = 55.0
 ring_center = Vector2(-5, -63)
 ring_radius = 210.0
+ring_width = 50.0
+ring_height = 35.0
+ring_gap_angle = -28.2
+ring_gap_width = 16.0
 
 [node name="MainIsland" type="Marker3D" parent="Terrain" unique_id=1165964347]
 script = ExtResource("13_island_shape")
@@ -609,7 +614,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 107.73, 7.11, -125.19)
 freeze = true
 
 [node name="Boat" parent="." unique_id=2143456993 node_paths=PackedStringArray("ocean") instance=ExtResource("4_boat")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -103, 0.5, -47.5)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 158.8, 0.5, -150.8)
 locked = true
 locked_text = "The boat isn't ready yet"
 ocean = NodePath("../Ocean")
@@ -643,6 +648,11 @@ transform = Transform3D(-0.8, 0, -0.6, 0, 1, 0, 0.6, 0, -0.8, -62, -42.2, -31.5)
 [node name="DiveBuoy" parent="." node_paths=PackedStringArray("ocean") instance=ExtResource("buoy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0.5, -30)
 ocean = NodePath("../Ocean")
+
+[node name="CanalGate" type="Node3D" parent="." node_paths=PackedStringArray("player")]
+transform = Transform3D(0.4726, 0, -0.8813, 0, 1, 0, 0.8813, 0, 0.4726, 202.11, 0.5, -174.05)
+script = ExtResource("canal_gate")
+player = NodePath("../Player")
 
 [node name="Shop" type="Node3D" parent="." unique_id=1993667263]
 

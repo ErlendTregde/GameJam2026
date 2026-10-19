@@ -5,8 +5,12 @@ extends StaticBody3D
 ## child. Off the coast the height follows `profile` (height over distance from the nearest
 ## shoreline), roughened by `noise` into sandbars and holes. Builds its mesh and collision on
 ## load (click Rebuild in the inspector to preview changes).
+## With `terrain3d` set, that Terrain3D is the ground instead (sculpt it in the editor): heights
+## come from it and this node draws nothing. "Bake to Terrain3D" copies the island shapes into it.
 
 @export_tool_button("Rebuild") var rebuild_button := build
+@export_tool_button("Bake to Terrain3D") var bake_button := bake
+@export var terrain3d: Terrain3D
 
 @export var size := 1000.0
 ## Meters between grid points.
@@ -36,10 +40,20 @@ var _shape := CollisionShape3D.new()
 func _ready() -> void:
 	# Internal children: generated every load, never saved into the scene file.
 	add_child(_shape, false, INTERNAL_MODE_FRONT)
+	if terrain3d:
+		terrain3d.material.show_checkered = false  # Terrain3D turns it on when it has no textures; we colour by height
 	build()
 
 
 func get_floor_height(x: float, z: float) -> float:
+	if terrain3d:
+		var h: float = terrain3d.data.get_height(Vector3(x, 0.0, z))
+		return h if is_finite(h) else -100.0  # a hole or off the map: deep water
+	return procedural_height(x, z)
+
+
+## The height from the island shapes, profile and noise (what "Bake to Terrain3D" copies).
+func procedural_height(x: float, z: float) -> float:
 	if _islands.is_empty():
 		_islands.assign(find_children("*", "IslandShape", false))
 	var shore := INF  # distance to the nearest shoreline; negative = on an island
@@ -74,13 +88,19 @@ func get_floor_height(x: float, z: float) -> float:
 
 func build() -> void:
 	_islands.assign(find_children("*", "IslandShape", false))
+	if terrain3d:
+		for chunk in _chunks:
+			chunk.queue_free()
+		_chunks.clear()
+		_shape.shape = null
+		return
 	var n := int(size / spacing) + 1
 	var half := (n - 1) * spacing * 0.5
 	var heights := PackedFloat32Array()
 	heights.resize(n * n)
 	for j in n:
 		for i in n:
-			heights[j * n + i] = get_floor_height(i * spacing - half, j * spacing - half)
+			heights[j * n + i] = procedural_height(i * spacing - half, j * spacing - half)
 
 	var verts := PackedVector3Array()
 	var normals := PackedVector3Array()
@@ -109,6 +129,24 @@ func build() -> void:
 	shape.map_data = heights
 	_shape.shape = shape
 	_shape.scale = Vector3.ONE * spacing
+
+
+## Copies the island shapes into `terrain3d` (1 m apart, at least over `size`) and saves its data.
+## Overwrites any sculpting done there.
+func bake() -> void:
+	if terrain3d == null:
+		push_error("Terrain: set terrain3d first")
+		return
+	_islands.assign(find_children("*", "IslandShape", false))
+	# import_images snaps to Terrain3D's region grid, so start the image on it.
+	var half := ceilf(size * 0.5 / terrain3d.region_size) * terrain3d.region_size
+	var n := int(half * 2.0)
+	var img := Image.create_empty(n, n, false, Image.FORMAT_RF)
+	for j in n:
+		for i in n:
+			img.set_pixel(i, j, Color(procedural_height(i - half, j - half), 0, 0))
+	terrain3d.data.import_images([img, null, null], Vector3(-half, 0.0, -half), 0.0, 1.0)
+	terrain3d.data.save_directory(terrain3d.data_directory)
 
 
 ## One chunk of the ground mesh: grid points i0..i1 by j0..j1.

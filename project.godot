@@ -15,6 +15,10 @@ run/main_scene="res://scenes/ui/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
+[audio]
+
+buses/default_bus_layout="uid://b8oitybn870x1"
+
 [autoload]
 
 AppFlow="*res://autoloads/session/app_flow.gd"
@@ -33,6 +37,10 @@ WorldEvents="*res://autoloads/gameplay/world_events.gd"
 window/size/mode=3
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/terrain_3d/plugin.cfg")
 
 [input]
 

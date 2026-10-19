@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://baisnsavedux"]
 
 [ext_resource type="Script" uid="uid://cholbe3r5b1l2" path="res://scripts/ocean.gd" id="1_ocean"]
+[ext_resource type="Terrain3DMaterial" path="res://shaders/terrain3d_material.tres" id="t3d_material"]
 [ext_resource type="Script" path="res://scripts/world.gd" id="net_world"]
 [ext_resource type="Script" path="res://scripts/players/player_spawner.gd" id="net_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu/pause_menu.tscn" id="net_pause"]
@@ -180,9 +181,16 @@ sea_level = 0.5
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.022972584, -43.92312, -0.036201477)
 mesh = SubResource("SeabedPlane")
 
-[node name="Terrain" type="StaticBody3D" parent="." unique_id=51584632]
+[node name="Terrain3D" type="Terrain3D" parent="."]
+data_directory = "res://terrain_data"
+material = ExtResource("t3d_material")
+collision_mode = 3
+cast_shadows = 0
+
+[node name="Terrain" type="StaticBody3D" parent="." unique_id=51584632 node_paths=PackedStringArray("terrain3d")]
 collision_mask = 0
 script = ExtResource("8_terrain")
+terrain3d = NodePath("../Terrain3D")
 noise = SubResource("SeabedNoise")
 material = ExtResource("15_terrain_mat")
 profile = SubResource("SeabedProfile")

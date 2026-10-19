@@ -82,7 +82,7 @@ epiloguegaming.com and thexboxhub.com (Dave the Diver), GMTK (Zelda landmarks), 
 
 ### Gear
 - Gear is worn, not held. **(My call.)** Buying it equips it at once for that player. It takes no
-  hotbar slot and shows as a small icon in the HUD. It is a new kind of item resource, or a flag
+  hotbar slot and its name shows in the HUD (a label). It is a new kind of item resource, or a flag
   on `ItemData`.
 - **Goggles:** make the underwater view clearer, by lowering the fog density of
   `underwater_environment` for that player (now 0.06), so the deep chest and fish become
@@ -111,8 +111,8 @@ epiloguegaming.com and thexboxhub.com (Dave the Diver), GMTK (Zelda landmarks), 
   - It has a glow (an emissive material plus an `OmniLight3D`), so it can be seen through the
     surface at dusk.
   - The statue stands next to it as the landmark.
-- It is a one-time loot chest for each player **(my call: each player can open it once)**. It
-  holds a lot of money or a rare item.
+- **(My call.)** It is the existing chest with `cost = 0`: it opens for everyone and closes
+  again after 5 minutes (`reset_time`), so the loot comes back. It holds rare, valuable items.
 - Breadcrumbs lead from the shallows to it: shells, then bigger fish, then rarer fish.
 
 ### Terrain: switch to Terrain3D (user's choice, in scope now)

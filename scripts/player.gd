@@ -520,7 +520,18 @@ func take_damage(amount: float, _at := Vector3.ZERO) -> void:
 	_animations.play("hurt")  # red vignette, camera shake, health bar flash
 	if health == 0.0:
 		died.emit()
+		_drop_everything()
 		_respawn()
+
+
+## Dying: the hotbar spills out where you died, to dive back for.
+func _drop_everything() -> void:
+	for i in items.size():
+		if items[i]:
+			_spawn_item(items[i], weights[i], global_position + Vector3(randf_range(-0.5, 0.5), 0.5, randf_range(-0.5, 0.5)), Vector3.ZERO)
+			items[i] = null
+			weights[i] = 0.0
+	_refresh_hotbar()
 
 
 func _respawn() -> void:

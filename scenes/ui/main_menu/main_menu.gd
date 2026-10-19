@@ -7,6 +7,8 @@ extends Node3D
 ## looks at, a little to his right so the menu has the left side of the screen.
 @export var camera_offset := Vector3(-0.9, 0.55, 2.4)
 @export var look_offset := Vector3(-0.75, 0.35, 0.0)
+## How far along the camera-to-Coco distance the cursor point sits (small = he looks at the viewer).
+@export var cursor_depth := 0.3
 
 @onready var _world: Node3D = $World
 @onready var _camera: Camera3D = $Camera
@@ -39,10 +41,10 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if _coco == null:
 		return
-	# Coco looks at the point under the cursor, about as far away as he is.
+	# Coco looks out at us, toward the cursor: at the point under it, a little in front of the camera.
 	var mouse := get_viewport().get_mouse_position()
 	var origin := _camera.project_ray_origin(mouse)
-	var distance := origin.distance_to(_coco.global_position)
+	var distance := origin.distance_to(_coco.global_position) * cursor_depth
 	_coco.look_target = origin + _camera.project_ray_normal(mouse) * distance
 
 

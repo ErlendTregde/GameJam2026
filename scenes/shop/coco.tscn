@@ -12,12 +12,14 @@ bubble = NodePath("Bubble")
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 
 [node name="Coconut" type="MeshInstance3D" parent="Head" unique_id=984372375]
+layers = 2
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 mesh = ExtResource("2_coconut")
 
 [node name="Face" type="Decal" parent="Head" unique_id=1240539314]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.0006790161, 0.13887942, 0.15)
 size = Vector3(0.41735536, 0.3, 0.2313037)
+cull_mask = 2
 texture_albedo = ExtResource("4_face")
 upper_fade = 0.0
 lower_fade = 0.0

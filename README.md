@@ -2,7 +2,7 @@
 
 A co-op spearfishing game for the "Hold your breath" game jam (Godot 4.7). Catch fish and crabs,
 sell them to Coco, buy better weapons and swim gear (goggles, flippers) to dive deeper, and find
-the glowing chest at the bottom of the blue hole. Sharks patrol the deep water; beating them is
+the chest at the bottom of the blue hole. Sharks patrol the deep water; beating them is
 optional. The ground is a Terrain3D: sculpt it in the editor.
 
 ## Playing together

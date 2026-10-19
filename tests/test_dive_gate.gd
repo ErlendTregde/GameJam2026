@@ -1,5 +1,5 @@
 extends RefCounted
-## The deep chest (the glowing one by the statue, in the blue hole off island 1) is the reason to
+## The deep chest (the one by the statue, in the blue hole off island 1) is the reason to
 ## buy gear: diving down to it and back up as fast as you can, you drown without goggles and
 ## flippers, and make it with them. It can be seen from the spawn beach, and no boss guards it.
 
@@ -55,7 +55,7 @@ func run(scene_tree: SceneTree) -> void:
 	var chest: Chest = main.get_node_or_null("Chests/DeepChest")
 	assert(chest != null, "there is a deep chest")
 	assert(chest.cost == 0 and chest.reset_time > 0.0, "free, and it fills up again")
-	assert(main.has_node("Chests/DeepChest/Glow") and main.has_node("Statue"), "it glows, with the statue next to it")
+	assert(main.has_node("Statue"), "the statue stands next to it")
 	var beach := Vector3(0, 3, 17)
 	assert(Vector2(chest.global_position.x - beach.x, chest.global_position.z - beach.z).length() < 70.0, "close enough to see from the spawn beach")
 	for zone: SharkZone in [main.get_node("SharkZone"), main.get_node("SharkZone2")]:

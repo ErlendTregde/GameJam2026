@@ -364,12 +364,6 @@ tier = 2
 loot = ExtResource("loot_deep")
 reset_time = 300.0
 
-[node name="Glow" type="OmniLight3D" parent="Chests/DeepChest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
-light_color = Color(1, 0.8, 0.35, 1)
-light_energy = 3.0
-omni_range = 12.0
-
 [node name="SilverChest" parent="Chests" unique_id=1291231421 instance=ExtResource("23_chest")]
 transform = Transform3D(-0.6085, 0, 0.7935, 0, 1, 0, -0.7935, 0, -0.6085, -124.64, 3.97, -55.89)
 tier = 1

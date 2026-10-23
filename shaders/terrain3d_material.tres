@@ -1,6 +1,6 @@
-[gd_resource type="Terrain3DMaterial" format=3]
+[gd_resource type="Terrain3DMaterial" format=3 uid="uid://dqbscle1ittiv"]
 
-[ext_resource type="Shader" path="res://shaders/terrain3d.gdshader" id="1_shader"]
+[ext_resource type="Shader" uid="uid://s55myjlnlpnj" path="res://shaders/terrain3d.gdshader" id="1_shader"]
 
 [sub_resource type="FastNoiseLite" id="DetailNoise"]
 frequency = 0.03
@@ -12,9 +12,25 @@ seamless = true
 
 [resource]
 _shader_parameters = {
-"detail_tex": SubResource("Detail")
+&"detail": null,
+&"detail_scale": null,
+"detail_tex": SubResource("Detail"),
+&"flat_terrain_normals": null,
+&"grass": null,
+&"grass_blend": null,
+&"grass_color": null,
+&"grass_dark_color": null,
+&"grass_height": null,
+&"grass_min_flatness": null,
+&"rock": null,
+&"rock_color": null,
+&"rock_height": null,
+&"rock_max_flatness": null,
+&"sand": null,
+&"sand_color": null,
+&"wet_height": null,
+&"wet_sand_color": null
 }
+world_background = 0
 shader_override_enabled = true
 shader_override = ExtResource("1_shader")
-show_checkered = false
-world_background = 0

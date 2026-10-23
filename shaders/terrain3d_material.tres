@@ -28,6 +28,9 @@ _shader_parameters = {
 &"rock_max_flatness": null,
 &"sand": null,
 &"sand_color": null,
+&"stone_center": Vector2(120, -130),
+&"stone_island": null,
+&"stone_radius": 28.0,
 &"wet_height": null,
 &"wet_sand_color": null
 }

@@ -73,14 +73,14 @@ enum HoldStyle { FLOAT, POLEARM, GUN }
 func roll_weight(rng: RandomNumberGenerator) -> float:
 	if weight_range == Vector2.ZERO:
 		return 0.0
-	var t := clampf(rng.randfn(0.4, 0.18), 0.0, 1.0)
+	var t := clampf(rng.randfn(0.4, 0.26), 0.0, 1.0)
 	return clampf(snappedf(lerpf(weight_range.x, weight_range.y, t), 0.1), weight_range.x, weight_range.y)
 
 
 ## Model scale for a weight. Real mass grows with volume (cube root), but that makes sizes hard
-## to tell apart in game, so the square root: a fish twice as heavy looks ~1.4x as long.
+## to tell apart in game, so faster: a fish twice as heavy looks ~1.6x as long.
 func size_scale(weight: float) -> float:
-	return sqrt(weight / base_weight) if weight > 0.0 else 1.0
+	return pow(weight / base_weight, 0.7) if weight > 0.0 else 1.0
 
 
 func value(weight: float) -> int:

@@ -66,6 +66,7 @@ var sun: DirectionalLight3D
 var _item: ItemData
 var _model_item: ItemData  # whose model is shown; differs from _item while a drink shows its cracked form
 var _weight := 0.0  # the held item's size (kg): a big fish is held bigger
+var _model_weight := 0.0  # the weight the model in the hand was built for
 var _sway := Vector2.ZERO
 var _bob_time := 0.0
 var _walk := 0.0
@@ -102,7 +103,7 @@ func show_item(item: ItemData, weight := 0.0) -> void:
 	if item == _item and weight == _weight:
 		return
 	_weight = weight
-	if item != null and item == _model_item:
+	if item != null and item == _model_item and weight == _model_weight:
 		_item = item  # already showing it (e.g. the cracked coconut after a drink): no swap dip
 		_update_rendering()
 		return
@@ -121,6 +122,7 @@ func show_model(item: ItemData) -> void:
 
 func _set_model(item: ItemData) -> void:
 	_model_item = item
+	_model_weight = _weight
 	for child in _holder.get_children():
 		child.queue_free()
 	_spear = null
@@ -132,7 +134,8 @@ func _set_model(item: ItemData) -> void:
 		_spear_rest = _spear.position
 	_holder.add_child(model)
 	var bounds := ItemData.model_bounds(model)
-	var s := item.held_size / maxf(bounds.get_longest_axis_size(), 0.01) * item.size_scale(_weight)
+	# Bigger fish are held bigger, but less than they grow in the water, so they don't fill the view.
+	var s := item.held_size / maxf(bounds.get_longest_axis_size(), 0.01) * pow(item.size_scale(_weight), 0.6)
 	model.scale = Vector3.ONE * s
 	if item.hold_style == ItemData.HoldStyle.POLEARM:
 		# Shaft (model +Y) along the holder's -Z, gripped `grip` of the way up from the butt.

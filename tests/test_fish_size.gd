@@ -1,5 +1,7 @@
 extends RefCounted
-## A big fish looks clearly bigger than a small one: swimming, in the hand and in the hotbar.
+## A big fish looks clearly bigger than a small one when swimming and in the hand (also when you
+## switch straight from one fish to another of the same kind). In the hotbar every fish is drawn
+## the same size, framed to fit the slot.
 
 func _held_size(p: Player) -> float:
 	var holder: Node3D = p.get_node("HUD/HeldView/SubViewport/Camera3D/Holder")
@@ -24,21 +26,28 @@ func run(scene_tree: SceneTree) -> void:
 	await tree.create_timer(1.0).timeout
 	var fish: ItemData = load("res://items/yellow_fish.tres")
 	assert(fish.size_scale(fish.weight_range.y) / fish.size_scale(fish.weight_range.x) > 2.5, "biggest yellow fish is much bigger than the smallest")
+	# Swimming: the fish you meet differ visibly in size (not all near the same weight).
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	var sizes := []
+	for i in 60:
+		sizes.append(fish.size_scale(fish.roll_weight(rng)))
+	sizes.sort()
+	assert(sizes[48] / sizes[12] > 1.45, "a big swimming fish is clearly bigger than a small one (%.2f)" % (sizes[48] / sizes[12]))
+	# Hand and hotbar: a small and a big yellow fish side by side, switching straight between them.
 	var p: Player = main.get_node("Player")
 	p.items.fill(null)
+	p.weights.fill(0.0)
 	p.give(fish, fish.weight_range.x)
-	p._select(p.items.find(fish))
+	p.give(fish, fish.weight_range.y)
+	var small := p.weights.find(fish.weight_range.x)
+	var big := p.weights.find(fish.weight_range.y)
+	p._select(small)
 	await tree.process_frame
 	var small_hand := _held_size(p)
-	var small_slot := _slot_size(p, p.selected_slot)
-	p.items.fill(null)
-	p.weights.fill(0.0)
-	p._refresh_hotbar()
-	await tree.process_frame
-	p.give(fish, fish.weight_range.y)
-	p._select(p.items.find(fish))
+	p._select(big)
 	await tree.process_frame
 	assert(_held_size(p) > small_hand * 2.0, "big fish is bigger in the hand (%.2f vs %.2f)" % [_held_size(p), small_hand])
-	assert(_slot_size(p, p.selected_slot) > small_slot * 1.5, "big fish is bigger in the hotbar")
+	assert(absf(_slot_size(p, small) - _slot_size(p, big)) < 0.01, "the hotbar shows every fish the same size")
 	print("PASS test_fish_size")
 	tree.quit()

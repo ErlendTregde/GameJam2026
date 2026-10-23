@@ -30,7 +30,8 @@ extends Node3D
 enum Rocky { ANY, SKIP, ONLY }
 ## Which islands: all, all but the stone (rocky) ones, or only the stone ones.
 @export var rocky_islands := Rocky.ANY
-## Set: places around this node instead (radius around_radius, e.g. the crater), not the islands.
+## Set: places around this node instead (radius around_radius, e.g. the crater), not the islands;
+## if it has children, around each of them (e.g. every dive spot).
 @export var around: Node3D
 @export var around_radius := 10.0
 ## Only on ground between these world heights (m).
@@ -84,7 +85,7 @@ func build() -> void:
 		body.name = "Bodies"  # a fixed name: multiplayer hits find it by path on every peer
 		add_child(body, false, INTERNAL_MODE_FRONT)
 	var placed_count := 0
-	var spots: Array = [around] if around else terrain.find_children("*", "IslandShape", false).filter(
+	var spots: Array = (around.get_children() if around.get_child_count() > 0 else [around]) if around else terrain.find_children("*", "IslandShape", false).filter(
 			func(island: IslandShape) -> bool: return rocky_islands == Rocky.ANY or island.rocky == (rocky_islands == Rocky.ONLY))
 	for island: Node3D in spots:
 		var radius: float = around_radius if around else island.radius

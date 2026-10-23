@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/fish.gd" id="1_fish"]
+[ext_resource type="PackedScene" path="res://scenes/fish/fish_model.tscn" id="2_model"]
+[ext_resource type="Resource" path="res://items/pink_fish.tres" id="3_item"]
+
+[sub_resource type="CapsuleShape3D" id="Shape"]
+radius = 0.14
+height = 0.55
+
+[node name="PinkFish" type="CharacterBody3D"]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("1_fish")
+health = 30.0
+speed = 2.4
+item = ExtResource("3_item")
+swim_top = 28.0
+swim_bottom = 50.0
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
+variant = 1
+tint = Color(1, 0.45, 0.8, 1)
+
+[node name="PauseOffScreen" type="VisibleOnScreenEnabler3D" parent="."]
+aabb = AABB(-0.3, -0.3, -0.4, 0.6, 0.6, 0.8)
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+shape = SubResource("Shape")

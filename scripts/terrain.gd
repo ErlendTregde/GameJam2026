@@ -38,6 +38,11 @@ extends StaticBody3D
 @export var crater_radius := 0.0
 @export var crater_depth := 42.0
 
+@export_group("Dive spots")
+## Places where the sea floor is shaped to a set depth (raised or lowered, with a smooth slope),
+## for the dive spots: x, z, radius, depth below 0 (m).
+@export var dive_spots: Array[Vector4] = []
+
 @export_group("Mountain ring")
 ## A ridge of mountains in a ring around everything: the edge of the world; 0 radius = none.
 @export var ring_center := Vector2.ZERO
@@ -85,6 +90,9 @@ func procedural_height(x: float, z: float) -> float:
 		# A smooth bowl that evens out the bumps on its way down, with a flat floor in the middle.
 		var t := clampf((1.0 - Vector2(x, z).distance_to(crater_center) / crater_radius) * 1.25, 0.0, 1.0)
 		h = minf(h, lerpf(h, -crater_depth, t * t * (3.0 - 2.0 * t)))
+	for spot in dive_spots:
+		var t := clampf((1.0 - Vector2(x, z).distance_to(Vector2(spot.x, spot.y)) / spot.z) * 1.6, 0.0, 1.0)
+		h = lerpf(h, -spot.w, t * t * (3.0 - 2.0 * t))  # a flat floor at the depth, sloping out to the radius
 	if ring_radius > 0.0:
 		var d := Vector2(x, z).distance_to(ring_center)
 		var mid := ring_radius + ring_width * 0.5

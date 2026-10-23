@@ -25,7 +25,7 @@ func _ready() -> void:
 		var node := _world.get_node_or_null(path)
 		if node:
 			node.free()
-	_coco = _world.find_child("Coco", true, false) as Coco
+	_coco = _world.get_node_or_null("Shop/ShopBoard/Coco") as Coco  # island 1's Coco, by the spawn
 	if _coco:
 		_coco.tip_distance = 0.0
 		var face := _coco.global_transform

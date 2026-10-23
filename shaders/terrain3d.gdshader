@@ -59,6 +59,10 @@ group_uniforms rock;
 uniform vec3 rock_color : source_color = vec3(0.52, 0.5, 0.48);
 uniform float rock_height = 4.0;
 uniform float rock_max_flatness = 0.75;
+group_uniforms stone_island;
+// The stone island (set by the Terrain from its rocky IslandShape): rock all over, no sand or grass.
+uniform vec2 stone_center = vec2(0.0);
+uniform float stone_radius = 0.0;
 group_uniforms detail;
 uniform sampler2D detail_tex : filter_linear_mipmap, repeat_enable;
 uniform float detail_scale = 0.08;
@@ -244,6 +248,9 @@ void fragment() {
 	vec3 green = mix(grass_dark_color, grass_color, smoothstep(0.3, 0.7, n)) * (0.9 + 0.2 * fine);
 	float rock = smoothstep(rock_max_flatness + 0.05, rock_max_flatness - 0.1, w_normal.y) * smoothstep(rock_height - 1.0, rock_height + 1.0, v_vertex.y);
 	vec3 rocky = rock_color * (0.85 + 0.3 * fine);
+	float stone = (1.0 - smoothstep(stone_radius, stone_radius + 8.0, distance(v_vertex.xz, stone_center))) * step(0.001, stone_radius);
+	rocky *= mix(1.0, 0.72 + 0.3 * n, stone);  // the flat stone island catches full sun: darker, blotchy
+	rock = max(rock, stone);
 	ALBEDO = stylize(mix(mix(sand, green, grass), rocky, rock));
 	ROUGHNESS = 1.0;
 	SPECULAR = 0.1;

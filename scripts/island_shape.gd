@@ -15,3 +15,5 @@ extends Marker3D
 @export var depth_scale := 1.0
 ## Changes the coastline and hill shape without moving the island.
 @export var shape_seed := 0
+## A stone island: rock instead of sand and grass (one per Terrain), no palms or grass on it.
+@export var rocky := false

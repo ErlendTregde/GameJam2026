@@ -59,6 +59,10 @@ func _ready() -> void:
 	add_child(_shape, false, INTERNAL_MODE_FRONT)
 	if terrain3d:
 		terrain3d.material.show_checkered = false  # Terrain3D turns it on when it has no textures; we colour by height
+		for island in find_children("*", "IslandShape", false):
+			if island.rocky:  # the ground shader paints it stone
+				terrain3d.material.set_shader_param("stone_center", Vector2(island.position.x, island.position.z))
+				terrain3d.material.set_shader_param("stone_radius", island.radius)
 		var mouse_view := terrain3d.get_node_or_null("MouseViewport") as SubViewport
 		if mouse_view and not Engine.is_editor_hint():
 			# Only for picking the ground under the mouse while sculpting; in game its 2x2 view errors with our glow.

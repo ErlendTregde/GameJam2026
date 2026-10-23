@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/inventory/world_item.gd" id="1_world_item"]
+[ext_resource type="Resource" path="res://items/coin.tres" id="2_item"]
+[ext_resource type="PackedScene" path="res://assets/coin/stylized_coin.glb" id="3_model"]
+
+[sub_resource type="CylinderShape3D" id="Shape"]
+height = 0.05
+radius = 0.1
+
+[node name="Coin" type="RigidBody3D"]
+collision_layer = 16
+collision_mask = 7
+mass = 0.1
+continuous_cd = true
+script = ExtResource("1_world_item")
+item = ExtResource("2_item")
+
+[node name="Model" parent="." instance=ExtResource("3_model")]
+transform = Transform3D(0.25, 0, 0, 0, 0, 0.25, 0, -0.25, 0, 0, 0, 0.2)
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape")

@@ -1,18 +1,23 @@
 class_name SlotMachine
 extends StaticBody3D
 ## A slot machine: [E] pays `cost` and spins the four reels; they stop one after another, left to
-## right, and the middle row pays for matching symbols counted from the left (2, 3 or 4 of a
-## kind; rarer symbols pay more). Each reel is a curved panel over the model's painted reel whose
-## strip of symbols scrolls (shaders/slot_reel.gdshader). Played locally: your money, your spin.
+## right, and matching symbols on the middle row (counted from the left: 2, 3 or 4 of a kind)
+## drop those items out of the machine. Each reel is a curved panel over the model's painted reel
+## whose strip of symbols scrolls (shaders/slot_reel.gdshader). Played locally: your spin.
 
-## Symbols (atlas order): coconut, yellow fish, blue fish, red snapper, red coral, shark tooth.
-## The reel strip, top to bottom: how often a symbol is on it sets how often it lands.
-@export var strip := PackedInt32Array([0, 1, 2, 0, 3, 1, 0, 4, 2, 1, 0, 5, 3, 0, 2, 1, 0, 4, 3, 1, 2])
+## The symbols, in the icon atlas's order (assets/slot/reel_icons.png): what each one drops.
+@export var prizes: Array[ItemData] = []
+## The reel strip, top to bottom: how often a symbol is on it sets how often it lands, so the
+## valuable prizes are on it less.
+@export var strip := PackedInt32Array([0, 1, 0, 2, 1, 0, 3, 1, 0, 4, 1, 0, 2, 1, 0, 5, 1, 0, 3, 2, 4])
 @export var cost := 10
-## Win per symbol (atlas order) for 2, 3 and 4 of a kind from the left (about 89% comes back).
-@export var pay_two := PackedInt32Array([10, 15, 20, 25, 40, 60])
-@export var pay_three := PackedInt32Array([50, 70, 120, 200, 400, 800])
-@export var pay_four := PackedInt32Array([150, 250, 500, 1000, 2500, 6000])
+## How many of a symbol's item drop for 2, 3 and 4 of a kind from the left (prizes order).
+@export var drops_two := PackedInt32Array([1, 1, 1, 0, 0, 0])
+@export var drops_three := PackedInt32Array([2, 2, 3, 1, 1, 1])
+@export var drops_four := PackedInt32Array([4, 3, 6, 2, 1, 1])
+## Seconds between the prizes popping out, and how hard they are tossed (forward, up), m/s.
+@export var drop_interval := 0.15
+@export var toss := Vector2(1.6, 2.5)
 ## Seconds the first reel spins; each next reel stops this much later.
 @export var spin_time := 1.6
 @export var reel_delay := 0.45
@@ -29,6 +34,7 @@ var _spinning := false
 
 @onready var _reels: Array[Node] = $Reels.get_children()
 @onready var _result: Label3D = $Result
+@onready var _tray: Marker3D = $Tray
 
 
 func _ready() -> void:
@@ -66,12 +72,15 @@ func interact(player: Node) -> void:
 		_offsets[i] = end
 	await last.finished
 	_spinning = false
-	var won := payout(middle_symbols())
-	if won > 0:
-		player.add_money(won)
-	_result.text = "WIN $%d!" % won if won > 0 else "No luck"
+	var won := prize(middle_symbols())
+	_result.text = "%s x%d!" % [won[0].name, won.size()] if won else "No luck"
 	_result.visible = true
-	await get_tree().create_timer(2.5).timeout
+	var hide_at := Time.get_ticks_msec() + 2500
+	for item in won:  # out of the tray in front, one by one
+		var sideways := global_basis.z * randf_range(-0.6, 0.6)
+		ItemService.spawn(item, 0.0, _tray.global_position, global_basis.x * toss.x + Vector3.UP * toss.y + sideways)
+		await get_tree().create_timer(drop_interval).timeout
+	await get_tree().create_timer(maxf((hide_at - Time.get_ticks_msec()) / 1000.0, 0.0)).timeout
 	if not _spinning:
 		_result.visible = false
 
@@ -84,16 +93,20 @@ func middle_symbols() -> Array:
 	return shown
 
 
-## What a pay line wins: 2, 3 or 4 of the first symbol in a row from the left.
-func payout(line: Array) -> int:
+## What a pay line wins: the first symbol's item, as many as 2, 3 or 4 in a row from the left give.
+func prize(line: Array) -> Array[ItemData]:
 	var same := 1
 	while same < line.size() and line[same] == line[0]:
 		same += 1
+	var count := 0
 	match same:
-		2: return pay_two[line[0]]
-		3: return pay_three[line[0]]
-		4: return pay_four[line[0]]
-	return 0
+		2: count = drops_two[line[0]]
+		3: count = drops_three[line[0]]
+		4: count = drops_four[line[0]]
+	var won: Array[ItemData] = []
+	for i in count:
+		won.append(prizes[line[0]])
+	return won
 
 
 ## The reel strip to the shared reel material (its array holds up to 64 symbols).

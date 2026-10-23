@@ -1,18 +1,6 @@
 [gd_scene format=3 uid="uid://baisnsavedux"]
 
 [ext_resource type="Script" uid="uid://cholbe3r5b1l2" path="res://scripts/ocean.gd" id="1_ocean"]
-[ext_resource type="Terrain3DMaterial" path="res://shaders/terrain3d_material.tres" id="t3d_material"]
-[ext_resource type="Resource" path="res://items/goggles.tres" id="shop_goggles"]
-[ext_resource type="Resource" path="res://loot/deep.tres" id="loot_deep"]
-[ext_resource type="PackedScene" path="res://scenes/statue.tscn" id="statue"]
-[ext_resource type="PackedScene" path="res://scenes/buoy.tscn" id="buoy"]
-[ext_resource type="Script" path="res://scripts/canal_gate.gd" id="canal_gate"]
-[ext_resource type="PackedScene" path="res://scenes/slot_machine.tscn" id="slot_machine"]
-[ext_resource type="PackedScene" path="res://scenes/items/red_coral.tscn" id="item_red_coral"]
-[ext_resource type="Resource" path="res://items/flippers.tres" id="shop_flippers"]
-[ext_resource type="Script" path="res://scripts/world.gd" id="net_world"]
-[ext_resource type="Script" path="res://scripts/players/player_spawner.gd" id="net_spawner"]
-[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu/pause_menu.tscn" id="net_pause"]
 [ext_resource type="Material" uid="uid://j5s2b1e05i5v" path="res://shaders/ocean_material.tres" id="2_water"]
 [ext_resource type="PackedScene" path="res://scenes/boat.tscn" id="4_boat"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="5_player"]
@@ -32,29 +20,33 @@
 [ext_resource type="ArrayMesh" path="res://assets/stone/stone_04.res" id="20_stone_c"]
 [ext_resource type="ArrayMesh" path="res://assets/stone/stone_08.res" id="21_stone_d"]
 [ext_resource type="PackedScene" path="res://scenes/items/rock.tscn" id="22_rock"]
-[ext_resource type="PackedScene" path="res://scenes/chest.tscn" id="23_chest"]
-[ext_resource type="Resource" path="res://loot/silver.tres" id="25_loot_silver"]
-[ext_resource type="Resource" path="res://loot/gold.tres" id="26_loot_gold"]
+[ext_resource type="PackedScene" uid="uid://d4ksk78x4yg60" path="res://scenes/chest.tscn" id="23_chest"]
 [ext_resource type="Script" uid="uid://fiydosvp587" path="res://scripts/fish_spawner.gd" id="27_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/fish/yellow_fish.tscn" id="28_yellow_fish"]
 [ext_resource type="PackedScene" path="res://scenes/fish/blue_fish.tscn" id="29_blue_fish"]
-[ext_resource type="PackedScene" path="res://scenes/fish/red_snapper.tscn" id="l2_red_snapper"]
-[ext_resource type="PackedScene" path="res://scenes/fish/deep_grouper.tscn" id="l2_deep_grouper"]
-[ext_resource type="PackedScene" path="res://scenes/shark/big_shark.tscn" id="l2_big_shark"]
 [ext_resource type="Resource" path="res://loot/palm.tres" id="30_loot_palm"]
 [ext_resource type="Script" uid="uid://ddaus3rgj41k5" path="res://scripts/shark_zone.gd" id="40_shark_zone"]
 [ext_resource type="PackedScene" path="res://scenes/shark/shark.tscn" id="41_shark"]
+[ext_resource type="PackedScene" path="res://scenes/buoy.tscn" id="buoy"]
+[ext_resource type="Script" uid="uid://b58lrh1xbyr86" path="res://scripts/canal_gate.gd" id="canal_gate"]
 [ext_resource type="PackedScene" path="res://scenes/crab/crab.tscn" id="crab_scene"]
 [ext_resource type="Script" uid="uid://djqmio8emlabu" path="res://scripts/crab_spawner.gd" id="crab_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/items/circle_shell.tscn" id="item_circle_shell"]
 [ext_resource type="Script" uid="uid://cpugdrgpajuyg" path="res://scripts/inventory/item_data.gd" id="item_data_script"]
 [ext_resource type="PackedScene" path="res://scenes/items/oyster.tscn" id="item_oyster"]
+[ext_resource type="PackedScene" path="res://scenes/items/red_coral.tscn" id="item_red_coral"]
 [ext_resource type="PackedScene" path="res://scenes/items/seashell_blue.tscn" id="item_seashell_blue"]
 [ext_resource type="PackedScene" path="res://scenes/items/seashell_pink.tscn" id="item_seashell_pink"]
 [ext_resource type="PackedScene" path="res://scenes/items/seashell_purple.tscn" id="item_seashell_purple"]
 [ext_resource type="PackedScene" path="res://scenes/items/seashell_yellow.tscn" id="item_seashell_yellow"]
 [ext_resource type="PackedScene" path="res://scenes/items/spiral_shell.tscn" id="item_spiral_shell"]
-[ext_resource type="Resource" path="res://loot/gamble_1.tres" id="loot_gamble_1"]
+[ext_resource type="PackedScene" path="res://scenes/shark/big_shark.tscn" id="l2_big_shark"]
+[ext_resource type="PackedScene" path="res://scenes/fish/deep_grouper.tscn" id="l2_deep_grouper"]
+[ext_resource type="PackedScene" path="res://scenes/fish/red_snapper.tscn" id="l2_red_snapper"]
+[ext_resource type="Resource" path="res://loot/deep.tres" id="loot_deep"]
+[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu/pause_menu.tscn" id="net_pause"]
+[ext_resource type="Script" uid="uid://pvx8v2dv6uxm" path="res://scripts/players/player_spawner.gd" id="net_spawner"]
+[ext_resource type="Script" uid="uid://dm3tdm7sx5mi7" path="res://scripts/world.gd" id="net_world"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/anemone.res" id="reef_anemone"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/branch_coral.res" id="reef_branch_coral"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/mushroom_coral.res" id="reef_mushroom_coral"]
@@ -69,9 +61,17 @@
 [ext_resource type="PackedScene" path="res://scenes/items/starfish.tscn" id="reef_starfish"]
 [ext_resource type="PackedScene" path="res://scenes/shop/shop_board.tscn" id="shop_board"]
 [ext_resource type="Resource" path="res://items/bottle.tres" id="shop_bottle"]
+[ext_resource type="Resource" path="res://items/flippers.tres" id="shop_flippers"]
+[ext_resource type="Resource" path="res://items/goggles.tres" id="shop_goggles"]
 [ext_resource type="PackedScene" path="res://scenes/shop/shop_item.tscn" id="shop_item"]
 [ext_resource type="Resource" path="res://items/spear.tres" id="shop_spear"]
 [ext_resource type="Resource" path="res://items/speargun.tres" id="shop_speargun"]
+[ext_resource type="PackedScene" path="res://scenes/slot_machine.tscn" id="slot_machine"]
+[ext_resource type="PackedScene" path="res://assets/lighthouse/lighthouse.glb" id="lighthouse"]
+[ext_resource type="PackedScene" path="res://scenes/shop/sell_scale.tscn" id="sell_scale"]
+[ext_resource type="PackedScene" path="res://scenes/shop/coco.tscn" id="coco"]
+[ext_resource type="PackedScene" path="res://scenes/statue.tscn" id="statue"]
+[ext_resource type="Terrain3DMaterial" path="res://shaders/terrain3d_material.tres" id="t3d_material"]
 
 [sub_resource type="FastNoiseLite" id="CloudDetailNoise"]
 noise_type = 2
@@ -141,6 +141,27 @@ adjustment_saturation = 1.15
 material = ExtResource("9_sand")
 size = Vector2(800, 800)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gdvew"]
+transparency = 4
+cull_mode = 2
+vertex_color_use_as_albedo = true
+backlight_enabled = true
+backlight = Color(0.5, 0.5, 0.5, 1)
+distance_fade_mode = 1
+distance_fade_min_distance = 128.0
+distance_fade_max_distance = 96.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_kjtvk"]
+generated_type = 1
+height_offset = 0.5
+material_override = SubResource("StandardMaterial3D_gdvew")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DAssets" id="Terrain3DAssets_xrs0c"]
+mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_kjtvk")])
+
 [sub_resource type="FastNoiseLite" id="SeabedNoise"]
 seed = 11
 frequency = 0.008
@@ -153,24 +174,6 @@ point_count = 11
 
 [sub_resource type="WorldBoundaryShape3D" id="SeabedShape"]
 
-[sub_resource type="Curve3D" id="Patrol1Curve"]
-closed = true
-_data = {
-"points": PackedVector3Array(0.000, 0.000, -4.774, -0.000, 0.000, 4.774, 18.000, -4.000, 0.000, 3.376, 0.000, -3.376, -3.376, 0.000, 3.376, 12.728, -4.000, 12.728, 4.774, 0.000, -0.000, -4.774, 0.000, 0.000, 0.000, -4.000, 18.000, 3.376, 0.000, 3.376, -3.376, 0.000, -3.376, -12.728, -4.000, 12.728, 0.000, 0.000, 4.774, -0.000, 0.000, -4.774, -18.000, -4.000, 0.000, -3.376, 0.000, 3.376, 3.376, 0.000, -3.376, -12.728, -4.000, -12.728, -4.774, 0.000, 0.000, 4.774, 0.000, -0.000, -0.000, -4.000, -18.000, -3.376, 0.000, -3.376, 3.376, 0.000, 3.376, 12.728, -4.000, -12.728),
-"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
-}
-point_count = 8
-
-[sub_resource type="Curve3D" id="Patrol2Curve"]
-closed = true
-_data = {
-"points": PackedVector3Array(0.000, 0.000, -3.978, -0.000, 0.000, 3.978, 15.000, -28.000, 0.000, 2.813, 0.000, -2.813, -2.813, 0.000, 2.813, 10.607, -28.000, 10.607, 3.978, 0.000, -0.000, -3.978, 0.000, 0.000, 0.000, -28.000, 15.000, 2.813, 0.000, 2.813, -2.813, 0.000, -2.813, -10.607, -28.000, 10.607, 0.000, 0.000, 3.978, -0.000, 0.000, -3.978, -15.000, -28.000, 0.000, -2.813, 0.000, 2.813, 2.813, 0.000, -2.813, -10.607, -28.000, -10.607, -3.978, 0.000, 0.000, 3.978, 0.000, -0.000, -0.000, -28.000, -15.000, -2.813, 0.000, -2.813, 2.813, 0.000, 2.813, 10.607, -28.000, -10.607),
-"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
-}
-point_count = 8
-
-
-
 [sub_resource type="Environment" id="Underwater"]
 background_mode = 1
 background_color = Color(0.03, 0.2, 0.25, 1)
@@ -180,6 +183,27 @@ tonemap_mode = 4
 fog_enabled = true
 fog_light_color = Color(0.03, 0.2, 0.25, 1)
 fog_density = 0.06
+
+[sub_resource type="Curve3D" id="Patrol1Curve"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, -4.774, 0, 0, 4.774, 18, -4, 0, 3.376, 0, -3.376, -3.376, 0, 3.376, 12.728, -4, 12.728, 4.774, 0, 0, -4.774, 0, 0, 0, -4, 18, 3.376, 0, 3.376, -3.376, 0, -3.376, -12.728, -4, 12.728, 0, 0, 4.774, 0, 0, -4.774, -18, -4, 0, -3.376, 0, 3.376, 3.376, 0, -3.376, -12.728, -4, -12.728, -4.774, 0, 0, 4.774, 0, 0, 0, -4, -18, -3.376, 0, -3.376, 3.376, 0, 3.376, 12.728, -4, -12.728),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 8
+
+[sub_resource type="Curve3D" id="Patrol2Curve"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, -3.978, 0, 0, 3.978, 15, -28, 0, 2.813, 0, -2.813, -2.813, 0, 2.813, 10.607, -28, 10.607, 3.978, 0, 0, -3.978, 0, 0, 0, -28, 15, 2.813, 0, 2.813, -2.813, 0, -2.813, -10.607, -28, 10.607, 0, 0, 3.978, 0, 0, -3.978, -15, -28, 0, -2.813, 0, 2.813, 2.813, 0, -2.813, -10.607, -28, -10.607, -3.978, 0, 0, 3.978, 0, 0, 0, -28, -15, -2.813, 0, -2.813, 2.813, 0, 2.813, 10.607, -28, -10.607),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 8
+
+
+[sub_resource type="CylinderShape3D" id="LighthouseShape"]
+height = 4.0
+radius = 0.8
 
 [node name="Main" type="Node3D" unique_id=1039716545]
 script = ExtResource("net_world")
@@ -204,13 +228,16 @@ sea_level = 0.5
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.022972584, -43.92312, -0.036201477)
 mesh = SubResource("SeabedPlane")
 
-[node name="Terrain3D" type="Terrain3D" parent="."]
+[node name="Terrain3D" type="Terrain3D" parent="." unique_id=31159216]
 data_directory = "res://terrain_data"
 material = ExtResource("t3d_material")
+assets = SubResource("Terrain3DAssets_xrs0c")
 collision_mode = 3
+mesh_size = 32
 cast_shadows = 0
 free_editor_textures = false
-mesh_size = 32
+top_level = true
+metadata/_edit_lock_ = true
 
 [node name="Terrain" type="StaticBody3D" parent="." unique_id=51584632 node_paths=PackedStringArray("terrain3d")]
 collision_mask = 0
@@ -240,8 +267,8 @@ script = ExtResource("13_island_shape")
 radius = 15.0
 height = 3.5
 roughness = 0.35
-shape_seed = 3
 depth_scale = 2.0
+shape_seed = 3
 
 [node name="BigIsland" type="Marker3D" parent="Terrain" unique_id=1158074324]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, -130)
@@ -250,6 +277,7 @@ radius = 28.0
 height = 8.0
 roughness = 0.2
 shape_seed = 7
+rocky = true
 
 [node name="DeepFloor" type="StaticBody3D" parent="." unique_id=377799262]
 collision_mask = 0
@@ -264,6 +292,7 @@ shape = SubResource("SeabedShape")
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("16_palm")])
+rocky_islands = 1
 count = 8
 random_seed = 11
 min_height = 1.4
@@ -279,6 +308,7 @@ harvest_loot = ExtResource("30_loot_palm")
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("17_grass")])
+rocky_islands = 1
 count = 300
 random_seed = 5
 cast_shadows = false
@@ -304,6 +334,22 @@ sink = 0.25
 follow_ground = true
 collision_radius = 0.4
 collision_height = 0.7
+
+[node name="IslandStones" type="Node3D" parent="Decor" node_paths=PackedStringArray("terrain")]
+script = ExtResource("14_scatter")
+terrain = NodePath("../../Terrain")
+meshes = Array[Mesh]([ExtResource("18_stone_a"), ExtResource("19_stone_b"), ExtResource("20_stone_c"), ExtResource("21_stone_d")])
+count = 60
+random_seed = 51
+cast_shadows = false
+visible_distance = 120.0
+rocky_islands = 2
+area = Vector2(0.15, 1.05)
+min_height = 0.2
+min_flatness = 0.3
+scale_range = Vector2(0.25, 0.9)
+sink = 0.15
+follow_ground = true
 
 [node name="Fish" type="Node3D" parent="." unique_id=2049357584]
 
@@ -342,8 +388,7 @@ radius = 12.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 
-[node name="MainIslandSlopeFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+[node name="MainIslandSlopeFish" type="Node3D" parent="Fish" unique_id=888852217 node_paths=PackedStringArray("ocean", "terrain")]
 script = ExtResource("27_spawner")
 fish_scenes = Array[PackedScene]([ExtResource("29_blue_fish")])
 count = 5
@@ -353,7 +398,7 @@ max_depth = 22.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 
-[node name="SmallIslandSlopeFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
+[node name="SmallIslandSlopeFish" type="Node3D" parent="Fish" unique_id=223326911 node_paths=PackedStringArray("ocean", "terrain")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 0, -60)
 script = ExtResource("27_spawner")
 fish_scenes = Array[PackedScene]([ExtResource("29_blue_fish")])
@@ -364,7 +409,7 @@ max_depth = 22.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 
-[node name="BigIslandSlopeFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
+[node name="BigIslandSlopeFish" type="Node3D" parent="Fish" unique_id=1181113234 node_paths=PackedStringArray("ocean", "terrain")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, -130)
 script = ExtResource("27_spawner")
 fish_scenes = Array[PackedScene]([ExtResource("29_blue_fish")])
@@ -375,7 +420,7 @@ max_depth = 22.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 
-[node name="DeepFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
+[node name="DeepFish" type="Node3D" parent="Fish" unique_id=978837960 node_paths=PackedStringArray("ocean", "terrain")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -65, 0, -30)
 script = ExtResource("27_spawner")
 fish_scenes = Array[PackedScene]([ExtResource("l2_deep_grouper"), ExtResource("l2_red_snapper")])
@@ -386,7 +431,7 @@ max_depth = 50.0
 ocean = NodePath("../../Ocean")
 terrain = NodePath("../../Terrain")
 
-[node name="TrailFish" type="Node3D" parent="Fish" node_paths=PackedStringArray("ocean", "terrain")]
+[node name="TrailFish" type="Node3D" parent="Fish" unique_id=1836113936 node_paths=PackedStringArray("ocean", "terrain")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, -14)
 script = ExtResource("27_spawner")
 fish_scenes = Array[PackedScene]([ExtResource("29_blue_fish")])
@@ -399,34 +444,18 @@ terrain = NodePath("../../Terrain")
 
 [node name="Chests" type="Node3D" parent="." unique_id=2011558760]
 
-[node name="WoodenChest" parent="Chests" unique_id=1690178757 instance=ExtResource("23_chest")]
-transform = Transform3D(-0.4997, 0, 0.8662, 0, 1, 0, -0.8662, 0, -0.4997, -3.2411509, 7.089722, 3.6114578)
-loot = ExtResource("loot_gamble_1")
-cost = 15
-reset_time = 4.0
-
-[node name="DeepChest" parent="Chests" instance=ExtResource("23_chest")]
+[node name="DeepChest" parent="Chests" unique_id=2090641825 instance=ExtResource("23_chest")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -65, -42, -30)
 tier = 2
 loot = ExtResource("loot_deep")
 reset_time = 300.0
 
-[node name="SilverChest" parent="Chests" unique_id=1291231421 instance=ExtResource("23_chest")]
-transform = Transform3D(-0.6085, 0, 0.7935, 0, 1, 0, -0.7935, 0, -0.6085, -124.64, 3.97, -55.89)
-tier = 1
-loot = ExtResource("25_loot_silver")
-
-[node name="GoldChest" parent="Chests" unique_id=1728112706 instance=ExtResource("23_chest")]
-transform = Transform3D(-0.2592, 0, 0.9658, 0, 1, 0, -0.9658, 0, -0.2592, 132.17, 7.41, -126.74)
-tier = 2
-loot = ExtResource("26_loot_gold")
-
 [node name="Reef" type="Node3D" parent="." unique_id=500509218]
 
-[node name="CraterCenter" type="Marker3D" parent="Reef"]
+[node name="CraterCenter" type="Marker3D" parent="Reef" unique_id=145144690]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -65, 0, -30)
 
-[node name="DeepCorals" type="Node3D" parent="Reef" node_paths=PackedStringArray("terrain", "around")]
+[node name="DeepCorals" type="Node3D" parent="Reef" unique_id=1636259076 node_paths=PackedStringArray("terrain", "around")]
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("reef_pink_coral"), ExtResource("reef_orange_coral"), ExtResource("reef_purple_coral"), ExtResource("reef_mushroom_coral"), ExtResource("reef_anemone"), ExtResource("reef_seaweed_bush")])
@@ -444,7 +473,7 @@ scale_range = Vector2(0.8, 1.8)
 sink = 0.05
 follow_ground = true
 
-[node name="ValuableCorals" type="Node3D" parent="Reef" node_paths=PackedStringArray("terrain", "around")]
+[node name="ValuableCorals" type="Node3D" parent="Reef" unique_id=388800870 node_paths=PackedStringArray("terrain", "around")]
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 scenes = Array[PackedScene]([ExtResource("item_red_coral")])
@@ -616,9 +645,9 @@ freeze = true
 
 [node name="Boat" parent="." unique_id=2143456993 node_paths=PackedStringArray("ocean") instance=ExtResource("4_boat")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 158.8, 0.5, -150.8)
+ocean = NodePath("../Ocean")
 locked = true
 locked_text = "The boat isn't ready yet"
-ocean = NodePath("../Ocean")
 
 [node name="Player" parent="." unique_id=1345830165 node_paths=PackedStringArray("ocean", "world_environment", "sun", "respawn_point") instance=ExtResource("5_player")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.6, 19)
@@ -629,31 +658,53 @@ sun = NodePath("../Sun")
 starting_items = Array[ExtResource("item_data_script")]([ExtResource("shop_speargun")])
 respawn_point = NodePath("../Spawn")
 
-[node name="SharkZone" type="Node" parent="." unique_id=1073233949 node_paths=PackedStringArray("player", "ocean", "terrain", "boss_bar", "message", "patrol")]
+[node name="SharkZone" type="Node" parent="." unique_id=1073233949 node_paths=PackedStringArray("player", "ocean", "terrain", "patrol", "boss_bar", "message")]
 script = ExtResource("40_shark_zone")
 player = NodePath("../Player")
 ocean = NodePath("../Ocean")
 terrain = NodePath("../Terrain")
 shark_scene = ExtResource("41_shark")
+patrol = NodePath("Patrol")
 boss_bar = NodePath("../Player/HUD/BossBar")
 message = NodePath("../Player/HUD/Message")
-patrol = NodePath("Patrol")
 
-[node name="Patrol" type="Path3D" parent="SharkZone"]
+[node name="Patrol" type="Path3D" parent="SharkZone" unique_id=92901157]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 0, 20)
 curve = SubResource("Patrol1Curve")
 
-[node name="Statue" parent="." instance=ExtResource("statue")]
+[node name="Statue" parent="." unique_id=397092806 instance=ExtResource("statue")]
 transform = Transform3D(-0.8, 0, -0.6, 0, 1, 0, 0.6, 0, -0.8, -62, -42.2, -31.5)
 
-[node name="DiveBuoy" parent="." node_paths=PackedStringArray("ocean") instance=ExtResource("buoy")]
+[node name="DiveBuoy" parent="." unique_id=120260564 node_paths=PackedStringArray("ocean") instance=ExtResource("buoy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0.5, -30)
 ocean = NodePath("../Ocean")
 
-[node name="SlotMachine" parent="." instance=ExtResource("slot_machine")]
+[node name="SlotMachine" parent="." unique_id=908394380 instance=ExtResource("slot_machine")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 114, 8.18, -130)
 
-[node name="CanalGate" type="Node3D" parent="." node_paths=PackedStringArray("player")]
+[node name="Lighthouse" parent="." instance=ExtResource("lighthouse")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 124, 6.75, -126)
+
+[node name="Cylinder_000" parent="Lighthouse/Sketchfab_model/6ea747e8ec8b44eb8d320cb1eaaf7e7b_fbx/RootNode" index="2"]
+visible = false
+
+[node name="Body" type="StaticBody3D" parent="Lighthouse"]
+
+[node name="Shape" type="CollisionShape3D" parent="Lighthouse/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
+shape = SubResource("LighthouseShape")
+
+[node name="IslandThreeShop" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 7.75, -140)
+
+[node name="SellScale" parent="IslandThreeShop" node_paths=PackedStringArray("coco") instance=ExtResource("sell_scale")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
+coco = NodePath("../Coco")
+
+[node name="Coco" parent="IslandThreeShop" instance=ExtResource("coco")]
+transform = Transform3D(0.94, 0, -0.34, 0, 1, 0, 0.34, 0, 0.94, 0.85, 0.79, 0.35)
+
+[node name="CanalGate" type="Node3D" parent="." unique_id=144657794 node_paths=PackedStringArray("player")]
 transform = Transform3D(0.4726, 0, -0.8813, 0, 1, 0, 0.8813, 0, 0.4726, 202.11, 0.5, -174.05)
 script = ExtResource("canal_gate")
 player = NodePath("../Player")
@@ -683,6 +734,42 @@ item = ExtResource("shop_bottle")
 price = 8
 display_size = 0.35
 
+[node name="ShopBoard2" parent="Shop" unique_id=788817988 instance=ExtResource("shop_board")]
+transform = Transform3D(0.42, 0, 0.91, 0, 1, 0, -0.91, 0, 0.42, -131, 4.35, -61)
+
+[node name="Spear" parent="Shop/ShopBoard2" unique_id=1738175500 instance=ExtResource("shop_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 1.3, 0.12)
+item = ExtResource("shop_spear")
+price = 40
+display_size = 1.4
+model_rotation = Vector3(0, 0, -12)
+
+[node name="Speargun" parent="Shop/ShopBoard2" unique_id=661886549 instance=ExtResource("shop_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.72, 0.12)
+item = ExtResource("shop_speargun")
+price = 60
+display_size = 0.9
+model_rotation = Vector3(0, 90, 0)
+
+[node name="Bottle" parent="Shop/ShopBoard2" unique_id=727151275 instance=ExtResource("shop_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.25, 0.12)
+item = ExtResource("shop_bottle")
+price = 8
+display_size = 0.35
+
+[node name="Goggles" parent="Shop/ShopBoard2" unique_id=2077518907 instance=ExtResource("shop_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.85, 0.12)
+item = ExtResource("shop_goggles")
+price = 120
+display_size = 0.4
+
+[node name="Flippers" parent="Shop/ShopBoard2" unique_id=827242278 instance=ExtResource("shop_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.9, 0.12)
+item = ExtResource("shop_flippers")
+price = 100
+display_size = 0.45
+model_rotation = Vector3(90, 0, 0)
+
 [node name="Crabs" type="Node3D" parent="." unique_id=1134087308 node_paths=PackedStringArray("terrain", "island", "player")]
 script = ExtResource("crab_spawner")
 terrain = NodePath("../Terrain")
@@ -690,62 +777,26 @@ island = NodePath("../Terrain/MainIsland")
 player = NodePath("../Player")
 crab_scene = ExtResource("crab_scene")
 
-[node name="Spawn" type="Marker3D" parent="."]
+[node name="Spawn" type="Marker3D" parent="." unique_id=362750876]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.6, 19)
 
-[node name="SharkZone2" type="Node" parent="." node_paths=PackedStringArray("player", "ocean", "terrain", "boss_bar", "message", "patrol")]
+[node name="SharkZone2" type="Node" parent="." unique_id=1534158825 node_paths=PackedStringArray("player", "ocean", "terrain", "patrol", "boss_bar", "message")]
 script = ExtResource("40_shark_zone")
 player = NodePath("../Player")
 ocean = NodePath("../Ocean")
 terrain = NodePath("../Terrain")
 shark_scene = ExtResource("l2_big_shark")
+patrol = NodePath("Patrol")
 warning_time = 4.0
 boss_bar = NodePath("../Player/HUD/BossBar")
 message = NodePath("../Player/HUD/Message")
-patrol = NodePath("Patrol")
 
-[node name="Patrol" type="Path3D" parent="SharkZone2"]
+[node name="Patrol" type="Path3D" parent="SharkZone2" unique_id=35601590]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -65, 0, -30)
 curve = SubResource("Patrol2Curve")
 
-[node name="ShopBoard2" parent="Shop" instance=ExtResource("shop_board")]
-transform = Transform3D(0.42, 0, 0.91, 0, 1, 0, -0.91, 0, 0.42, -131, 4.35, -61)
-
-[node name="Spear" parent="Shop/ShopBoard2" instance=ExtResource("shop_item")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 1.3, 0.12)
-item = ExtResource("shop_spear")
-price = 40
-display_size = 1.4
-model_rotation = Vector3(0, 0, -12)
-
-[node name="Speargun" parent="Shop/ShopBoard2" instance=ExtResource("shop_item")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.72, 0.12)
-item = ExtResource("shop_speargun")
-price = 60
-display_size = 0.9
-model_rotation = Vector3(0, 90, 0)
-
-[node name="Bottle" parent="Shop/ShopBoard2" instance=ExtResource("shop_item")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.25, 0.12)
-item = ExtResource("shop_bottle")
-price = 8
-display_size = 0.35
-
-[node name="Goggles" parent="Shop/ShopBoard2" instance=ExtResource("shop_item")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.85, 0.12)
-item = ExtResource("shop_goggles")
-price = 120
-display_size = 0.4
-
-[node name="Flippers" parent="Shop/ShopBoard2" instance=ExtResource("shop_item")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.9, 0.12)
-item = ExtResource("shop_flippers")
-price = 100
-display_size = 0.45
-model_rotation = Vector3(90, 0, 0)
-
-[node name="Players" type="Node3D" parent="."]
+[node name="Players" type="Node3D" parent="." unique_id=1883158414]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.6, 19)
 script = ExtResource("net_spawner")
 
-[node name="PauseMenu" parent="." instance=ExtResource("net_pause")]
+[node name="PauseMenu" parent="." unique_id=834787862 instance=ExtResource("net_pause")]

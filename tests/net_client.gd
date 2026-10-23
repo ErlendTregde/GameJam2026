@@ -105,12 +105,10 @@ func run(scene_tree: SceneTree) -> void:
 	_check("the shark hunts us (boss bar) with the host nearby", both_in)
 	me.take_damage(9999.0)  # killed: the host's shark should go for the host
 	_check("boss beaten here too", await _wait_for(func() -> bool: return zone.defeated, 25.0))
-	# Gamble at the chest.
-	me.add_money(20)
-	var chest: Chest = main.get_node("Chests/WoodenChest")
+	# Open the deep chest (free): the host opens it for everyone.
+	var chest: Chest = main.get_node("Chests/DeepChest")
 	chest.interact(me)
 	_check("chest opens for us", await _wait_for(func() -> bool: return chest.opened, 10.0))
-	_check("we paid for it", me.money == 5)
 	# The host beat island 2's boss: beaten here too, and the boat stays locked (for now).
 	var boat: Boat = main.get_node("Boat")
 	var zone2: SharkZone = main.get_node("SharkZone2")

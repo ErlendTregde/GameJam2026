@@ -4,6 +4,13 @@
 [ext_resource type="PackedScene" path="res://assets/slot/low_poly_slot_machine.glb" id="2_model"]
 [ext_resource type="Shader" path="res://shaders/slot_reel.gdshader" id="3_reel"]
 [ext_resource type="Texture2D" path="res://assets/slot/reel_icons.png" id="4_icons"]
+[ext_resource type="Script" path="res://scripts/inventory/item_data.gd" id="5_item"]
+[ext_resource type="Resource" path="res://items/rock.tres" id="6_rock"]
+[ext_resource type="Resource" path="res://items/coconut.tres" id="7_coconut"]
+[ext_resource type="Resource" path="res://items/coin.tres" id="8_coin"]
+[ext_resource type="Resource" path="res://items/spear.tres" id="9_spear"]
+[ext_resource type="Resource" path="res://items/speargun.tres" id="10_speargun"]
+[ext_resource type="Resource" path="res://items/trident.tres" id="11_trident"]
 
 [sub_resource type="BoxShape3D" id="Box"]
 size = Vector3(1.12, 1.99, 0.88)
@@ -16,6 +23,7 @@ shader_parameter/icons = ExtResource("4_icons")
 collision_layer = 17
 collision_mask = 0
 script = ExtResource("1_slot")
+prizes = Array[ExtResource("5_item")]([ExtResource("6_rock"), ExtResource("7_coconut"), ExtResource("8_coin"), ExtResource("9_spear"), ExtResource("10_speargun"), ExtResource("11_trident")])
 
 [node name="Model" parent="." instance=ExtResource("2_model")]
 
@@ -40,6 +48,9 @@ cast_shadow = 0
 [node name="Reel4" type="MeshInstance3D" parent="Reels"]
 material_override = SubResource("Reel")
 cast_shadow = 0
+
+[node name="Tray" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.0, 0)
 
 [node name="Result" type="Label3D" parent="."]
 visible = false

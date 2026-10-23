@@ -1,0 +1,53 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/slot_machine.gd" id="1_slot"]
+[ext_resource type="PackedScene" path="res://assets/slot/low_poly_slot_machine.glb" id="2_model"]
+[ext_resource type="Shader" path="res://shaders/slot_reel.gdshader" id="3_reel"]
+[ext_resource type="Texture2D" path="res://assets/slot/reel_icons.png" id="4_icons"]
+
+[sub_resource type="BoxShape3D" id="Box"]
+size = Vector3(1.12, 1.99, 0.88)
+
+[sub_resource type="ShaderMaterial" id="Reel"]
+shader = ExtResource("3_reel")
+shader_parameter/icons = ExtResource("4_icons")
+
+[node name="SlotMachine" type="StaticBody3D"]
+collision_layer = 17
+collision_mask = 0
+script = ExtResource("1_slot")
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.088, 0.995, 0)
+shape = SubResource("Box")
+
+[node name="Reels" type="Node3D" parent="."]
+
+[node name="Reel1" type="MeshInstance3D" parent="Reels"]
+material_override = SubResource("Reel")
+cast_shadow = 0
+
+[node name="Reel2" type="MeshInstance3D" parent="Reels"]
+material_override = SubResource("Reel")
+cast_shadow = 0
+
+[node name="Reel3" type="MeshInstance3D" parent="Reels"]
+material_override = SubResource("Reel")
+cast_shadow = 0
+
+[node name="Reel4" type="MeshInstance3D" parent="Reels"]
+material_override = SubResource("Reel")
+cast_shadow = 0
+
+[node name="Result" type="Label3D" parent="."]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 2.25, 0)
+billboard = 1
+no_depth_test = true
+modulate = Color(1, 0.86, 0.2, 1)
+outline_modulate = Color(0, 0, 0, 1)
+font_size = 72
+outline_size = 18
+text = "WIN!"

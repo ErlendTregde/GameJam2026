@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/statue.tscn" id="statue"]
 [ext_resource type="PackedScene" path="res://scenes/buoy.tscn" id="buoy"]
 [ext_resource type="Script" path="res://scripts/canal_gate.gd" id="canal_gate"]
+[ext_resource type="PackedScene" path="res://scenes/slot_machine.tscn" id="slot_machine"]
 [ext_resource type="PackedScene" path="res://scenes/items/red_coral.tscn" id="item_red_coral"]
 [ext_resource type="Resource" path="res://items/flippers.tres" id="shop_flippers"]
 [ext_resource type="Script" path="res://scripts/world.gd" id="net_world"]
@@ -648,6 +649,9 @@ transform = Transform3D(-0.8, 0, -0.6, 0, 1, 0, 0.6, 0, -0.8, -62, -42.2, -31.5)
 [node name="DiveBuoy" parent="." node_paths=PackedStringArray("ocean") instance=ExtResource("buoy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0.5, -30)
 ocean = NodePath("../Ocean")
+
+[node name="SlotMachine" parent="." instance=ExtResource("slot_machine")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 114, 8.18, -130)
 
 [node name="CanalGate" type="Node3D" parent="." node_paths=PackedStringArray("player")]
 transform = Transform3D(0.4726, 0, -0.8813, 0, 1, 0, 0.8813, 0, 0.4726, 202.11, 0.5, -174.05)

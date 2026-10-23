@@ -21,7 +21,7 @@ var _coco: Coco
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	# The island is only scenery here: no player, no sharks, no pause menu.
-	for path in ["Player", "SharkZone", "SharkZone2", "Players", "PauseMenu"]:
+	for path in ["Player", "SharkZone", "Players", "PauseMenu"]:
 		var node := _world.get_node_or_null(path)
 		if node:
 			node.free()

@@ -33,7 +33,6 @@ var _offsets: Array[float] = []
 var _spinning := false
 
 @onready var _reels: Array[Node] = $Reels.get_children()
-@onready var _result: Label3D = $Result
 @onready var _tray: Marker3D = $Tray
 
 
@@ -57,7 +56,6 @@ func interact(player: Node) -> void:
 	if _spinning or not player.spend(cost):
 		return
 	_spinning = true
-	_result.visible = false
 	_upload_strip()  # it may have been changed
 	var last: Tween
 	for i in _reels.size():
@@ -72,17 +70,10 @@ func interact(player: Node) -> void:
 		_offsets[i] = end
 	await last.finished
 	_spinning = false
-	var won := prize(middle_symbols())
-	_result.text = "%s x%d!" % [won[0].name, won.size()] if won else "No luck"
-	_result.visible = true
-	var hide_at := Time.get_ticks_msec() + 2500
-	for item in won:  # out of the tray in front, one by one
+	for item in prize(middle_symbols()):  # out of the tray in front, one by one
 		var sideways := global_basis.z * randf_range(-0.6, 0.6)
 		ItemService.spawn(item, 0.0, _tray.global_position, global_basis.x * toss.x + Vector3.UP * toss.y + sideways)
 		await get_tree().create_timer(drop_interval).timeout
-	await get_tree().create_timer(maxf((hide_at - Time.get_ticks_msec()) / 1000.0, 0.0)).timeout
-	if not _spinning:
-		_result.visible = false
 
 
 ## The symbols on the middle row (the pay line), left to right.

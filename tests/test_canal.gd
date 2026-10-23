@@ -17,6 +17,10 @@ func run(scene_tree: SceneTree) -> void:
 	var out := Vector2.from_angle(deg_to_rad(terrain.ring_gap_angle))
 	var at := Vector2(gate.global_position.x, gate.global_position.z)
 	assert(absf((at - terrain.ring_center).length() - terrain.ring_radius) < 30.0, "the gate is in the canal")
+	# The wall spans the whole canal: just past its ends there is land (no swimming around it).
+	for side in [-1.0, 1.0]:
+		var edge: Vector3 = gate.global_position + gate.global_basis.x * side * (gate.half_width + 1.0)
+		assert(terrain.get_floor_height(edge.x, edge.z) > ocean.sea_level, "land past the wall's %s end" % ("left" if side < 0 else "right"))
 	# A swimmer heading out through the canal gets stopped at the gate.
 	var start := at - out * 6.0
 	p.global_position = Vector3(start.x, ocean.sea_level - 1.0, start.y)

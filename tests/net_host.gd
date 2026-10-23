@@ -80,10 +80,6 @@ func run(scene_tree: SceneTree) -> void:
 	# The deep chest opened by the client.
 	var chest: Chest = main.get_node("Chests/DeepChest")
 	_check("chest opened by the client", await _wait_for(func() -> bool: return chest.opened, 20.0))
-	# Island 2's boss beaten: every peer hears; the boat stays locked (for now).
-	var zone2: SharkZone = main.get_node("SharkZone2")
-	zone2.defeat()
-	tree.root.get_node("WorldEvents").zone_defeated(zone2)
 	_check("the boat stays locked", main.get_node("Boat").locked)
 	# Money is per player: the client's sale pays the client, not us.
 	await _wait_for(func() -> bool: return tree.root.multiplayer.get_peers().is_empty(), 60.0)

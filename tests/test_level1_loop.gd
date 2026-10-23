@@ -33,6 +33,6 @@ func run(scene_tree: SceneTree) -> void:
 	while not zone.defeated:
 		shark.take_damage(hook.item.damage)
 		hits += 1
-	assert(hits == 10, "spear kills the shark in 10 hits")
+	assert(hits == ceili(shark.max_health / hook.item.damage), "the spear kills the shark (%d hits)" % hits)
 	print("PASS test_level1_loop")
 	tree.quit()

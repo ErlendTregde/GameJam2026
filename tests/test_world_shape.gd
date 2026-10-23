@@ -27,7 +27,7 @@ func run(scene_tree: SceneTree) -> void:
 			top = maxf(top, terrain.get_floor_height(p.x, p.y))
 			low = minf(low, terrain.get_floor_height(p.x, p.y))
 		var arc := absf(wrapf(a - gap, -PI, PI)) * terrain.ring_radius
-		if arc > terrain.ring_gap_width:
+		if arc > terrain.ring_gap_width * 0.5 + 20.0:  # past the canal's sloping sides
 			assert(top > ocean.sea_level + 15.0, "mountains block the way out at %d degrees (top %.1f)" % [i * 5, top])
 		elif arc < terrain.ring_gap_width * 0.25:
 			assert(top < ocean.sea_level - 3.0, "the canal is open water at %d degrees (top %.1f)" % [i * 5, top])
@@ -55,9 +55,11 @@ func run(scene_tree: SceneTree) -> void:
 	assert(chest_at.distance_to(cc) < 4.0, "the chest is in the middle of the crater")
 	assert(absf(chest.global_position.y - terrain.get_floor_height(chest_at.x, chest_at.y)) < 0.3, "on the floor")
 	assert(main.get_node("Statue").global_position.distance_to(chest.global_position) < 6.0, "the statue is next to it")
-	# The Giant Shark circles down in the crater.
-	var zone2: SharkZone = main.get_node("SharkZone2")
-	var loop := zone2.patrol.to_global(zone2.patrol.curve.sample_baked(0.0))
-	assert(Vector2(loop.x, loop.z).distance_to(cc) < terrain.crater_radius * 0.5 and loop.y < ocean.sea_level - 15.0, "the Giant Shark patrols down in the crater")
+	# The only boss, the Giant Shark, circles in the canal: leaving means getting past it.
+	var zone: SharkZone = main.get_node("SharkZone")
+	assert(not main.has_node("SharkZone2"), "one boss")
+	var gate: Node3D = main.get_node("CanalGate")
+	var loop := zone.patrol.to_global(zone.patrol.curve.sample_baked(0.0))
+	assert(loop.distance_to(gate.global_position) < 30.0 and loop.y < ocean.sea_level - 3.0, "the Giant Shark patrols the canal")
 	print("PASS test_world_shape")
 	tree.quit()

@@ -26,9 +26,9 @@
 [ext_resource type="PackedScene" path="res://scenes/fish/blue_fish.tscn" id="29_blue_fish"]
 [ext_resource type="Resource" path="res://loot/palm.tres" id="30_loot_palm"]
 [ext_resource type="Script" uid="uid://ddaus3rgj41k5" path="res://scripts/shark_zone.gd" id="40_shark_zone"]
-[ext_resource type="PackedScene" path="res://scenes/shark/shark.tscn" id="41_shark"]
 [ext_resource type="PackedScene" path="res://scenes/buoy.tscn" id="buoy"]
 [ext_resource type="Script" uid="uid://b58lrh1xbyr86" path="res://scripts/canal_gate.gd" id="canal_gate"]
+[ext_resource type="PackedScene" uid="uid://88isvsqsrxf4" path="res://scenes/shop/coco.tscn" id="coco"]
 [ext_resource type="PackedScene" path="res://scenes/crab/crab.tscn" id="crab_scene"]
 [ext_resource type="Script" uid="uid://djqmio8emlabu" path="res://scripts/crab_spawner.gd" id="crab_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/items/circle_shell.tscn" id="item_circle_shell"]
@@ -43,6 +43,7 @@
 [ext_resource type="PackedScene" path="res://scenes/shark/big_shark.tscn" id="l2_big_shark"]
 [ext_resource type="PackedScene" path="res://scenes/fish/deep_grouper.tscn" id="l2_deep_grouper"]
 [ext_resource type="PackedScene" path="res://scenes/fish/red_snapper.tscn" id="l2_red_snapper"]
+[ext_resource type="PackedScene" uid="uid://cx4lr22f8664x" path="res://assets/lighthouse/lighthouse.glb" id="lighthouse"]
 [ext_resource type="Resource" path="res://loot/deep.tres" id="loot_deep"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu/pause_menu.tscn" id="net_pause"]
 [ext_resource type="Script" uid="uid://pvx8v2dv6uxm" path="res://scripts/players/player_spawner.gd" id="net_spawner"]
@@ -59,6 +60,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/sea_stone.res" id="reef_sea_stone"]
 [ext_resource type="ArrayMesh" path="res://assets/coral/baked/sea_stone_2.res" id="reef_sea_stone_2"]
 [ext_resource type="PackedScene" path="res://scenes/items/starfish.tscn" id="reef_starfish"]
+[ext_resource type="PackedScene" path="res://scenes/shop/sell_scale.tscn" id="sell_scale"]
 [ext_resource type="PackedScene" path="res://scenes/shop/shop_board.tscn" id="shop_board"]
 [ext_resource type="Resource" path="res://items/bottle.tres" id="shop_bottle"]
 [ext_resource type="Resource" path="res://items/flippers.tres" id="shop_flippers"]
@@ -67,11 +69,8 @@
 [ext_resource type="Resource" path="res://items/spear.tres" id="shop_spear"]
 [ext_resource type="Resource" path="res://items/speargun.tres" id="shop_speargun"]
 [ext_resource type="PackedScene" path="res://scenes/slot_machine.tscn" id="slot_machine"]
-[ext_resource type="PackedScene" path="res://assets/lighthouse/lighthouse.glb" id="lighthouse"]
-[ext_resource type="PackedScene" path="res://scenes/shop/sell_scale.tscn" id="sell_scale"]
-[ext_resource type="PackedScene" path="res://scenes/shop/coco.tscn" id="coco"]
 [ext_resource type="PackedScene" path="res://scenes/statue.tscn" id="statue"]
-[ext_resource type="Terrain3DMaterial" path="res://shaders/terrain3d_material.tres" id="t3d_material"]
+[ext_resource type="Terrain3DMaterial" uid="uid://dqbscle1ittiv" path="res://shaders/terrain3d_material.tres" id="t3d_material"]
 
 [sub_resource type="FastNoiseLite" id="CloudDetailNoise"]
 noise_type = 2
@@ -187,15 +186,7 @@ fog_density = 0.06
 [sub_resource type="Curve3D" id="Patrol1Curve"]
 closed = true
 _data = {
-"points": PackedVector3Array(0, 0, -4.774, 0, 0, 4.774, 18, -4, 0, 3.376, 0, -3.376, -3.376, 0, 3.376, 12.728, -4, 12.728, 4.774, 0, 0, -4.774, 0, 0, 0, -4, 18, 3.376, 0, 3.376, -3.376, 0, -3.376, -12.728, -4, 12.728, 0, 0, 4.774, 0, 0, -4.774, -18, -4, 0, -3.376, 0, 3.376, 3.376, 0, -3.376, -12.728, -4, -12.728, -4.774, 0, 0, 4.774, 0, 0, 0, -4, -18, -3.376, 0, -3.376, 3.376, 0, 3.376, 12.728, -4, -12.728),
-"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
-}
-point_count = 8
-
-[sub_resource type="Curve3D" id="Patrol2Curve"]
-closed = true
-_data = {
-"points": PackedVector3Array(0, 0, -3.978, 0, 0, 3.978, 15, -28, 0, 2.813, 0, -2.813, -2.813, 0, 2.813, 10.607, -28, 10.607, 3.978, 0, 0, -3.978, 0, 0, 0, -28, 15, 2.813, 0, 2.813, -2.813, 0, -2.813, -10.607, -28, 10.607, 0, 0, 3.978, 0, 0, -3.978, -15, -28, 0, -2.813, 0, 2.813, 2.813, 0, -2.813, -10.607, -28, -10.607, -3.978, 0, 0, 3.978, 0, 0, 0, -28, -15, -2.813, 0, -2.813, 2.813, 0, 2.813, 10.607, -28, -10.607),
+"points": PackedVector3Array(0.000, 0.000, -2.387, -0.000, 0.000, 2.387, 9.000, -12.000, 0.000, 1.688, 0.000, -1.688, -1.688, 0.000, 1.688, 6.364, -12.000, 6.364, 2.387, 0.000, -0.000, -2.387, 0.000, 0.000, 0.000, -12.000, 9.000, 1.688, 0.000, 1.688, -1.688, 0.000, -1.688, -6.364, -12.000, 6.364, 0.000, 0.000, 2.387, -0.000, 0.000, -2.387, -9.000, -12.000, 0.000, -1.688, 0.000, 1.688, 1.688, 0.000, -1.688, -6.364, -12.000, -6.364, -2.387, 0.000, 0.000, 2.387, 0.000, -0.000, -0.000, -12.000, -9.000, -1.688, 0.000, -1.688, 1.688, 0.000, 1.688, 6.364, -12.000, -6.364),
 "tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
 }
 point_count = 8
@@ -292,9 +283,9 @@ shape = SubResource("SeabedShape")
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("16_palm")])
-rocky_islands = 1
 count = 8
 random_seed = 11
+rocky_islands = 1
 min_height = 1.4
 max_height = 9.0
 min_flatness = 0.75
@@ -308,11 +299,11 @@ harvest_loot = ExtResource("30_loot_palm")
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("17_grass")])
-rocky_islands = 1
 count = 300
 random_seed = 5
 cast_shadows = false
 visible_distance = 70.0
+rocky_islands = 1
 min_height = 2.6
 min_flatness = 0.8
 scale_range = Vector2(0.9, 1.6)
@@ -335,7 +326,7 @@ follow_ground = true
 collision_radius = 0.4
 collision_height = 0.7
 
-[node name="IslandStones" type="Node3D" parent="Decor" node_paths=PackedStringArray("terrain")]
+[node name="IslandStones" type="Node3D" parent="Decor" unique_id=1034670883 node_paths=PackedStringArray("terrain")]
 script = ExtResource("14_scatter")
 terrain = NodePath("../../Terrain")
 meshes = Array[Mesh]([ExtResource("18_stone_a"), ExtResource("19_stone_b"), ExtResource("20_stone_c"), ExtResource("21_stone_d")])
@@ -343,8 +334,8 @@ count = 60
 random_seed = 51
 cast_shadows = false
 visible_distance = 120.0
-rocky_islands = 2
 area = Vector2(0.15, 1.05)
+rocky_islands = 2
 min_height = 0.2
 min_flatness = 0.3
 scale_range = Vector2(0.25, 0.9)
@@ -663,13 +654,14 @@ script = ExtResource("40_shark_zone")
 player = NodePath("../Player")
 ocean = NodePath("../Ocean")
 terrain = NodePath("../Terrain")
-shark_scene = ExtResource("41_shark")
+shark_scene = ExtResource("l2_big_shark")
 patrol = NodePath("Patrol")
+warning_time = 4.0
 boss_bar = NodePath("../Player/HUD/BossBar")
 message = NodePath("../Player/HUD/Message")
 
 [node name="Patrol" type="Path3D" parent="SharkZone" unique_id=92901157]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 0, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 193.30, 0, -169.32)
 curve = SubResource("Patrol1Curve")
 
 [node name="Statue" parent="." unique_id=397092806 instance=ExtResource("statue")]
@@ -680,34 +672,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0.5, -30)
 ocean = NodePath("../Ocean")
 
 [node name="SlotMachine" parent="." unique_id=908394380 instance=ExtResource("slot_machine")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 114, 8.18, -130)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 124.60669, 8.18, -130)
 
-[node name="Lighthouse" parent="." instance=ExtResource("lighthouse")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 124, 6.75, -126)
+[node name="Lighthouse" parent="." unique_id=1396803398 instance=ExtResource("lighthouse")]
+transform = Transform3D(-1.1467235, 0, -2.7721877, 0, 3, 0, 2.7721877, 0, -1.1467235, 124, 5.3304615, -126)
 
 [node name="Cylinder_000" parent="Lighthouse/Sketchfab_model/6ea747e8ec8b44eb8d320cb1eaaf7e7b_fbx/RootNode" index="2"]
 visible = false
 
-[node name="Body" type="StaticBody3D" parent="Lighthouse"]
+[node name="Body" type="StaticBody3D" parent="Lighthouse" unique_id=1255261882]
 
-[node name="Shape" type="CollisionShape3D" parent="Lighthouse/Body"]
+[node name="Shape" type="CollisionShape3D" parent="Lighthouse/Body" unique_id=1650416436]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
 shape = SubResource("LighthouseShape")
 
-[node name="IslandThreeShop" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 7.75, -140)
+[node name="IslandThreeShop" type="Node3D" parent="." unique_id=1867071746]
+transform = Transform3D(0.76267034, 0, -0.6467874, 0, 1, 0, 0.6467874, 0, 0.76267034, 123.727135, 8.256605, -133.1296)
 
-[node name="SellScale" parent="IslandThreeShop" node_paths=PackedStringArray("coco") instance=ExtResource("sell_scale")]
+[node name="SellScale" parent="IslandThreeShop" unique_id=1308899479 node_paths=PackedStringArray("coco") instance=ExtResource("sell_scale")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
 coco = NodePath("../Coco")
 
-[node name="Coco" parent="IslandThreeShop" instance=ExtResource("coco")]
+[node name="Coco" parent="IslandThreeShop" unique_id=115256621 instance=ExtResource("coco")]
 transform = Transform3D(0.94, 0, -0.34, 0, 1, 0, 0.34, 0, 0.94, 0.85, 0.79, 0.35)
 
 [node name="CanalGate" type="Node3D" parent="." unique_id=144657794 node_paths=PackedStringArray("player")]
 transform = Transform3D(0.4726, 0, -0.8813, 0, 1, 0, 0.8813, 0, 0.4726, 202.11, 0.5, -174.05)
 script = ExtResource("canal_gate")
 player = NodePath("../Player")
+half_width = 22.0
 
 [node name="Shop" type="Node3D" parent="." unique_id=1993667263]
 
@@ -735,7 +728,7 @@ price = 8
 display_size = 0.35
 
 [node name="ShopBoard2" parent="Shop" unique_id=788817988 instance=ExtResource("shop_board")]
-transform = Transform3D(0.42, 0, 0.91, 0, 1, 0, -0.91, 0, 0.42, -131, 4.35, -61)
+transform = Transform3D(0.42, 0, 0.91, 0, 1, 0, -0.91, 0, 0.42, -130.996, 4.35, -59.7285)
 
 [node name="Spear" parent="Shop/ShopBoard2" unique_id=1738175500 instance=ExtResource("shop_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 1.3, 0.12)
@@ -779,21 +772,6 @@ crab_scene = ExtResource("crab_scene")
 
 [node name="Spawn" type="Marker3D" parent="." unique_id=362750876]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.6, 19)
-
-[node name="SharkZone2" type="Node" parent="." unique_id=1534158825 node_paths=PackedStringArray("player", "ocean", "terrain", "patrol", "boss_bar", "message")]
-script = ExtResource("40_shark_zone")
-player = NodePath("../Player")
-ocean = NodePath("../Ocean")
-terrain = NodePath("../Terrain")
-shark_scene = ExtResource("l2_big_shark")
-patrol = NodePath("Patrol")
-warning_time = 4.0
-boss_bar = NodePath("../Player/HUD/BossBar")
-message = NodePath("../Player/HUD/Message")
-
-[node name="Patrol" type="Path3D" parent="SharkZone2" unique_id=35601590]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -65, 0, -30)
-curve = SubResource("Patrol2Curve")
 
 [node name="Players" type="Node3D" parent="." unique_id=1883158414]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.6, 19)

@@ -1,7 +1,7 @@
 extends RefCounted
 ## The deep chest (by the statue, at the bottom of the crater between island 1 and 2) is the
 ## reason to buy gear: diving down to it and back up as fast as you can, you drown without goggles
-## and flippers, and make it with them. The Giant Shark circles the crater too.
+## and flippers, and make it with them.
 
 var tree: SceneTree
 
@@ -56,13 +56,10 @@ func run(scene_tree: SceneTree) -> void:
 	assert(chest != null, "there is a deep chest")
 	assert(chest.cost == 0 and chest.reset_time > 0.0, "free, and it fills up again")
 	assert(main.has_node("Statue"), "the statue stands next to it")
-	var zone2: SharkZone = main.get_node("SharkZone2")
-	var nearest := zone2.patrol.to_global(zone2.patrol.curve.get_closest_point(zone2.patrol.to_local(chest.global_position)))
-	assert(nearest.distance_to(chest.global_position) < 40.0, "the Giant Shark guards the chest")
-	# Only breath counts here: the sharks are left out of these dives.
-	for zone: SharkZone in [main.get_node("SharkZone"), zone2]:
-		zone.process_mode = Node.PROCESS_MODE_DISABLED
-		zone.spawned_shark().process_mode = Node.PROCESS_MODE_DISABLED
+	# Only breath counts here: the shark is left out of these dives.
+	var zone: SharkZone = main.get_node("SharkZone")
+	zone.process_mode = Node.PROCESS_MODE_DISABLED
+	zone.spawned_shark().process_mode = Node.PROCESS_MODE_DISABLED
 	assert(not await dive_round_trip(p, chest, ocean), "without gear the deep chest is out of reach")
 	p.wear(load("res://items/goggles.tres"))
 	p.wear(load("res://items/flippers.tres"))

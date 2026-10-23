@@ -109,11 +109,8 @@ func run(scene_tree: SceneTree) -> void:
 	var chest: Chest = main.get_node("Chests/DeepChest")
 	chest.interact(me)
 	_check("chest opens for us", await _wait_for(func() -> bool: return chest.opened, 10.0))
-	# The host beat island 2's boss: beaten here too, and the boat stays locked (for now).
-	var boat: Boat = main.get_node("Boat")
-	var zone2: SharkZone = main.get_node("SharkZone2")
-	_check("island 2's boss beaten here too", await _wait_for(func() -> bool: return zone2.defeated, 20.0))
-	_check("the boat stays locked", boat.locked)
+	# The boat stays locked (for now).
+	_check("the boat stays locked", main.get_node("Boat").locked)
 	# Sell a fish at the table: our money, not the host's.
 	var table: SellScale = main.find_child("SellScale", true, false)
 	items.spawn(fish_data, 2.0, table.get_node("Tray").global_position + Vector3.UP * 0.3)

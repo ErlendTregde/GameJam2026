@@ -51,14 +51,3 @@ cast_shadow = 0
 
 [node name="Tray" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.0, 0)
-
-[node name="Result" type="Label3D" parent="."]
-visible = false
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 2.25, 0)
-billboard = 1
-no_depth_test = true
-modulate = Color(1, 0.86, 0.2, 1)
-outline_modulate = Color(0, 0, 0, 1)
-font_size = 72
-outline_size = 18
-text = "WIN!"

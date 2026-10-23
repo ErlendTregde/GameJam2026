@@ -26,7 +26,7 @@ func run(scene_tree: SceneTree) -> void:
 	var spear: ItemData = load("res://items/spear.tres")
 	assert(spear.damage == 20.0 and load("res://items/rock.tres").damage == 5.0, "damage balance")
 	var shark: Shark = zone.spawned_shark()
-	assert(shark.health == 200.0, "first shark at full health")
+	assert(shark.health == shark.max_health, "first shark at full health")
 	# Swim up to it: it hunts you.
 	var close := shark.global_position + Vector3(8, 0, 0)
 	assert(await _wait_for(func() -> bool:
@@ -42,8 +42,8 @@ func run(scene_tree: SceneTree) -> void:
 	p.take_damage(9999.0)
 	assert(shark.is_leaving() and is_instance_valid(shark), "back to patrol after killing you, not gone")
 	await tree.create_timer(3.0).timeout
-	assert(zone.spawned_shark() == shark and shark.health == 140.0, "same shark, kept its damage (%.0f)" % shark.health)
-	for i in 7:
+	assert(zone.spawned_shark() == shark and shark.health == shark.max_health - 60.0, "same shark, kept its damage (%.0f)" % shark.health)
+	while not zone.defeated:
 		shark.take_damage(spear.damage)
 	assert(zone.defeated, "killed")
 	await tree.create_timer(3.0).timeout

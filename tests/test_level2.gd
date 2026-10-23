@@ -31,7 +31,7 @@ func run(scene_tree: SceneTree) -> void:
 	boat._on_helm_body_exited(p)
 	# Island 2 has its own shop.
 	assert(main.has_node("Shop/ShopBoard2/Coco") and main.has_node("Shop/ShopBoard2/SellScale"), "island 2 shop with Coco and table")
-	var zone: SharkZone = main.get_node("SharkZone2")
+	var zone: SharkZone = main.get_node("SharkZone")
 	var shark: Shark = zone.spawned_shark()
 	assert(shark != null and shark.display_name == "Giant Shark", "the Giant Shark is out there")
 	assert(shark.health == 400.0 and shark.get_node("Model").scale.length() > Vector3(0.68, 0.68, 0.68).length() * 1.5, "bigger and tougher")

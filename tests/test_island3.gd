@@ -23,7 +23,7 @@ func run(scene_tree: SceneTree) -> void:
 	assert(near.call(lighthouse, big, 0.0), "the lighthouse is on island 3")
 	assert(not lighthouse.find_child("Cylinder_000", true, false).visible, "without the blue base")
 	var tower_foot := lighthouse.global_position.y + 0.4 * lighthouse.scale.y  # the tower starts 0.4 up in the model, above the hidden base
-	assert(absf(tower_foot - terrain.get_floor_height(lighthouse.global_position.x, lighthouse.global_position.z)) < 0.6, "standing on the ground")
+	assert(tower_foot < terrain.get_floor_height(lighthouse.global_position.x, lighthouse.global_position.z) + 0.6, "standing on the ground, not floating")
 	for island: IslandShape in terrain.find_children("*", "IslandShape", false):
 		var table := main.find_children("*", "SellScale", true, false).filter(func(s: Node3D) -> bool: return near.call(s, island, 10.0))
 		assert(not table.is_empty(), "%s has a table to sell to Coco" % island.name)

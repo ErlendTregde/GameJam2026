@@ -91,7 +91,7 @@ func procedural_height(x: float, z: float) -> float:
 		var up := smoothstep(ring_radius, mid, d) * (1.0 - smoothstep(mid, ring_radius + ring_width, d))
 		if ring_gap_width > 0.0:
 			var arc := absf(wrapf((Vector2(x, z) - ring_center).angle() - deg_to_rad(ring_gap_angle), -PI, PI)) * d
-			up *= smoothstep(ring_gap_width * 0.5, ring_gap_width * 0.5 + 10.0, arc)  # steep canal sides
+			up *= smoothstep(ring_gap_width * 0.5, ring_gap_width * 0.5 + 20.0, arc)  # sloping canal sides
 		if up > 0.0:
 			var peaks := 0.75 + 0.45 * (noise.get_noise_2d(x * 2.5, z * 2.5) if noise else 0.0)
 			h = lerpf(h, ring_height * peaks, up)

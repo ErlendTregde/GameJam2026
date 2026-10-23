@@ -28,7 +28,7 @@ const GEAR_ICON := preload("res://scenes/inventory/slot.tscn")
 @export var swim_exit_margin := 0.35
 ## Within this much below floating depth you float on the waves; deeper you stay where you are
 ## unless you swim (look up and swim to go up) (m).
-@export var surface_band := 0.6
+@export var surface_band := 1.6
 ## How fast you drift back up to the surface when floating (m/s): gentle, like real buoyancy.
 @export var float_up_speed := 1.0
 ## Pressing jump while floating gives a small hop this fast (you can't jump far out of water).
@@ -279,7 +279,8 @@ func consume(item: ItemData) -> void:
 ## Swimming: move where you look (look down + forward to dive), with momentum. At the surface
 ## you float on the waves; below it you stay where you are unless you swim or hold jump to rise.
 func _swim(delta: float, water_depth: float, input: Vector2, move_speed: float) -> void:
-	var at_surface := water_depth < chest_height + surface_band
+	# Measured from the calm sea level, so a passing wave crest doesn't count as being dived under.
+	var at_surface := ocean.sea_level - global_position.y < chest_height + surface_band
 	_climb_timer -= delta
 	# Push out of the water (e.g. onto the boat) only when floating at the surface, not mid-plunge.
 	if Input.is_action_just_pressed("jump") and _climb_timer <= 0.0 and water_depth < chest_height + 0.8:

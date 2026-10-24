@@ -38,6 +38,8 @@ func set_item(item: ItemData, weight := 0.0) -> void:
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE  # icons don't move: draw on change only
 	if item == null:
 		return
+	# ...and once more a moment later: the first draw can come before the model's shaders are ready.
+	get_tree().create_timer(0.5).timeout.connect(func() -> void: _viewport.render_target_update_mode = SubViewport.UPDATE_ONCE)
 	_model = item.make_model()
 	_viewport.add_child(_model)
 	# Frame the model from its bounds, three-quarter view, so any item fills the slot.

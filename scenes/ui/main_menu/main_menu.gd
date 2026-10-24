@@ -69,5 +69,14 @@ func _on_solo_pressed() -> void:
 	RoomService.start_solo()
 
 
+func _on_credits_pressed() -> void:
+	$UI/Root/Menu.hide()
+	$UI/Root/Credits.show()
+
+
+func _on_credits_closed() -> void:
+	$UI/Root/Menu.show()
+
+
 func _on_quit_pressed() -> void:
 	get_tree().quit()

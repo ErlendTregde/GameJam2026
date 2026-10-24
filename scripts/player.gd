@@ -95,7 +95,8 @@ func _show_treasure(found: int, _total: int) -> void:
 	var icon: Node = $HUD/Treasure/Icon
 	if icon._item == null:
 		icon.normal_style = StyleBoxEmpty.new()
-		icon.get_node("Frame").custom_minimum_size = Vector2(52, 52)
+		icon.front_view = true
+		icon.get_node("Frame").custom_minimum_size = Vector2(56, 56)
 		icon.get_node("Number").hide()
 		icon.set_selected(false)
 		icon.set_item(TREASURE_COIN)

@@ -5,6 +5,8 @@ extends VBoxContainer
 
 @export var normal_style: StyleBox
 @export var selected_style: StyleBox
+## Seen straight from the front (e.g. a coin icon) instead of the three-quarter view.
+@export var front_view := false
 
 var _item: ItemData
 var _weight := 0.0
@@ -43,4 +45,7 @@ func set_item(item: ItemData, weight := 0.0) -> void:
 	var radius := maxf(bounds.size.length() * 0.5, 0.01)  # every size of a fish fills the slot the same
 	_camera.size = radius * 2.2
 	_camera.far = radius * 8.0  # models in big units (e.g. the goggles) sit far away
-	_camera.look_at_from_position(bounds.get_center() + Vector3(1.0, 0.8, 1.0).normalized() * radius * 4.0, bounds.get_center())
+	var from := Vector3(0, 0, 1) if front_view else Vector3(1.0, 0.8, 1.0).normalized()
+	if front_view:
+		_camera.size = maxf(bounds.size.x, bounds.size.y) * 1.05  # fills the icon
+	_camera.look_at_from_position(bounds.get_center() + from * radius * 4.0, bounds.get_center())

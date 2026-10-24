@@ -7,6 +7,7 @@ signal died
 ## a child of that body, so it rides along with every roll and pitch of the boat.
 
 const GEAR_ICON := preload("res://scenes/inventory/slot.tscn")
+const TREASURE_COIN := preload("res://items/coin.tres")
 
 @export var speed := 4.0
 @export var jump_velocity := 4.5
@@ -89,8 +90,28 @@ var items: Array[ItemData] = []
 ## Weight (kg) of the item in each slot; 0 = no size.
 var weights: Array[float] = []
 var money := 0
+## The treasure counter at the top right: a gold coin and "found / total".
+func _show_treasure(found: int, _total: int) -> void:
+	var icon: Node = $HUD/Treasure/Icon
+	if icon._item == null:
+		icon.normal_style = StyleBoxEmpty.new()
+		icon.get_node("Frame").custom_minimum_size = Vector2(52, 52)
+		icon.get_node("Number").hide()
+		icon.set_selected(false)
+		icon.set_item(TREASURE_COIN)
+	var total := WorldEvents.treasure_total()
+	($HUD/Treasure/Count as Label).text = "%d / %d" % [found, total]
+	if found >= total and total > 0 and _total_shown < total:
+		var message: Label = $HUD/Message
+		message.text = "All the gold is found! Take the boat out through the canal"
+		message.visible = true
+		get_tree().create_timer(5.0).timeout.connect(func() -> void: message.visible = false)
+	_total_shown = found
+
+
 ## Gear being worn (goggles, flippers): kept for good, also through death.
 var worn: Array[ItemData] = []
+var _total_shown := 0  # treasure found when last shown (the 'all found' message shows once)
 var selected_slot := 0
 var health := 0.0
 ## True while swimming (not walking on land or a deck); read by the SharkZone.
@@ -136,6 +157,8 @@ var _drown_timer := 0.0
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_show_treasure.call_deferred(WorldEvents.treasure_found, 0)  # once the world (and its chests) is in
+	WorldEvents.treasure_changed.connect(_show_treasure)
 	_base_fov = _camera.fov
 	health = max_health
 	_health_bar.max_value = max_health

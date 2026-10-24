@@ -81,6 +81,14 @@ func run(scene_tree: SceneTree) -> void:
 	var chest: Chest = main.get_node("Chests/DeepChest")
 	_check("chest opened by the client", await _wait_for(func() -> bool: return chest.opened, 20.0))
 	_check("the boat stays locked", main.get_node("Boat").locked)
+	# Treasure: we open a treasure chest and pick up its coin; the client's counter follows.
+	var treasure: Chest = main.get_node("DiveSpots/Spot1/Chest")
+	treasure.open()
+	await tree.create_timer(1.5).timeout
+	for n in main.get_children():
+		if n is WorldItem and n.has_meta(&"treasure"):
+			items.request_pickup(n)
+	_check("treasure coin counted here", tree.root.get_node("WorldEvents").treasure_found == 1)
 	# Money is per player: the client's sale pays the client, not us.
 	await _wait_for(func() -> bool: return tree.root.multiplayer.get_peers().is_empty(), 60.0)
 	_check("host money untouched by the client's sale", me.money == 0)

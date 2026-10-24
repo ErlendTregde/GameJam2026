@@ -1,6 +1,6 @@
 extends RefCounted
-## Dive spots around the map: a buoy on the surface and a chest of gold coins on the sea floor below
-## it. The deeper the spot, the more coins. Corals and fish around each; no boss near them. A
+## Dive spots around the map: a buoy on the surface and a treasure chest of gold coins on the sea
+## floor below it. The deeper the spot, the more coins. Corals and fish around each; no boss near them. A
 ## super rare pink fish lives at the deepest one.
 
 var tree: SceneTree
@@ -25,7 +25,7 @@ func run(scene_tree: SceneTree) -> void:
 		assert(Vector2(buoy.global_position.x, buoy.global_position.z).distance_to(at) < 4.0, "%s: the buoy marks the chest" % spot.name)
 		var floor_y := terrain.get_floor_height(at.x, at.y)
 		assert(absf(chest.global_position.y - floor_y) < 0.4, "%s: the chest is on the sea floor" % spot.name)
-		assert(chest.cost == 0 and chest.reset_time > 0.0, "%s: free, and it fills up again" % spot.name)
+		assert(chest.cost == 0 and chest.treasure, "%s: free, and its coins are the treasure" % spot.name)
 		var coins := chest.loot.always.count(coin)
 		assert(coins > 0 and chest.loot.always.size() == coins, "%s: a chest of coins" % spot.name)
 		var depth := ocean.sea_level - floor_y

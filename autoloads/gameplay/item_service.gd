@@ -125,6 +125,8 @@ func _host_pickup(uid: int, peer_id: int) -> void:
 		return
 	var path := item.item.resource_path
 	var weight := item.weight
+	if item.has_meta(&"treasure"):
+		WorldEvents.treasure_picked_up()
 	remove(item)
 	if peer_id == P2P.local_peer_id():
 		_grant(path, weight)

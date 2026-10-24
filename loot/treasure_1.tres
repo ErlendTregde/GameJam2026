@@ -6,5 +6,5 @@
 
 [resource]
 script = ExtResource("1_loot")
-always = Array[ExtResource("2_itemdata")]([ExtResource("item_coin"), ExtResource("item_coin"), ExtResource("item_coin"), ExtResource("item_coin"), ExtResource("item_coin"), ExtResource("item_coin"), ExtResource("item_coin"), ExtResource("item_coin")])
+always = Array[ExtResource("2_itemdata")]([ExtResource("item_coin")])
 picks = Vector2i(0, 0)

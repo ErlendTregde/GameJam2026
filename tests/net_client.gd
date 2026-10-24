@@ -111,6 +111,9 @@ func run(scene_tree: SceneTree) -> void:
 	_check("chest opens for us", await _wait_for(func() -> bool: return chest.opened, 10.0))
 	# The boat stays locked (for now).
 	_check("the boat stays locked", main.get_node("Boat").locked)
+	var events: Node = tree.root.get_node("WorldEvents")
+	_check("the host's treasure coin counts for us too", await _wait_for(func() -> bool: return events.treasure_found == 1, 20.0))
+	_check("our counter shows it", me.get_node("HUD/Treasure/Count").text == "1 / 10")
 	# Sell a fish at the table: our money, not the host's.
 	var table: SellScale = main.find_child("SellScale", true, false)
 	items.spawn(fish_data, 2.0, table.get_node("Tray").global_position + Vector3.UP * 0.3)

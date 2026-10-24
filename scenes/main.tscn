@@ -45,10 +45,10 @@
 [ext_resource type="PackedScene" path="res://scenes/fish/red_snapper.tscn" id="l2_red_snapper"]
 [ext_resource type="PackedScene" path="res://scenes/lighthouse.tscn" id="lighthouse"]
 [ext_resource type="Resource" path="res://loot/deep.tres" id="loot_deep"]
-[ext_resource type="Resource" path="res://loot/dive_3.tres" id="loot_dive_3"]
-[ext_resource type="Resource" path="res://loot/dive_5.tres" id="loot_dive_5"]
-[ext_resource type="Resource" path="res://loot/dive_8.tres" id="loot_dive_8"]
-[ext_resource type="Resource" path="res://loot/dive_12.tres" id="loot_dive_12"]
+[ext_resource type="Resource" path="res://loot/treasure_1.tres" id="loot_treasure_1"]
+[ext_resource type="Resource" path="res://loot/treasure_2.tres" id="loot_treasure_2"]
+[ext_resource type="Resource" path="res://loot/treasure_3.tres" id="loot_treasure_3"]
+[ext_resource type="Resource" path="res://loot/treasure_4.tres" id="loot_treasure_4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu/pause_menu.tscn" id="net_pause"]
 [ext_resource type="Script" uid="uid://pvx8v2dv6uxm" path="res://scripts/players/player_spawner.gd" id="net_spawner"]
 [ext_resource type="Script" uid="uid://dm3tdm7sx5mi7" path="res://scripts/world.gd" id="net_world"]
@@ -730,7 +730,7 @@ freeze = true
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 158.8, 0.5, -150.8)
 ocean = NodePath("../Ocean")
 locked = true
-locked_text = "The boat isn't ready yet"
+locked_text = "Find all the gold coins to take the boat"
 
 [node name="Player" parent="." unique_id=1345830165 node_paths=PackedStringArray("ocean", "world_environment", "sun", "respawn_point") instance=ExtResource("5_player")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.6, 19)
@@ -787,8 +787,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 0, 50)
 [node name="Chest" parent="DiveSpots/Spot1" unique_id=1324962338 instance=ExtResource("23_chest")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12, 0)
 tier = 2
-loot = ExtResource("loot_dive_3")
-reset_time = 300.0
+loot = ExtResource("loot_treasure_1")
+treasure = true
 
 [node name="Buoy" parent="DiveSpots/Spot1" unique_id=1902696926 node_paths=PackedStringArray("ocean") instance=ExtResource("buoy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0)
@@ -800,8 +800,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -110, 0, 40)
 [node name="Chest" parent="DiveSpots/Spot2" unique_id=2117887082 instance=ExtResource("23_chest")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -22, 0)
 tier = 2
-loot = ExtResource("loot_dive_5")
-reset_time = 300.0
+loot = ExtResource("loot_treasure_2")
+treasure = true
 
 [node name="Buoy" parent="DiveSpots/Spot2" unique_id=1364859221 node_paths=PackedStringArray("ocean") instance=ExtResource("buoy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0)
@@ -813,8 +813,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 0, -190)
 [node name="Chest" parent="DiveSpots/Spot3" unique_id=2059978739 instance=ExtResource("23_chest")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -32, 0)
 tier = 2
-loot = ExtResource("loot_dive_8")
-reset_time = 300.0
+loot = ExtResource("loot_treasure_3")
+treasure = true
 
 [node name="Buoy" parent="DiveSpots/Spot3" unique_id=1408575745 node_paths=PackedStringArray("ocean") instance=ExtResource("buoy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0)
@@ -826,8 +826,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -150, 0, -150)
 [node name="Chest" parent="DiveSpots/Spot4" unique_id=1745012949 instance=ExtResource("23_chest")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -42, 0)
 tier = 2
-loot = ExtResource("loot_dive_12")
-reset_time = 300.0
+loot = ExtResource("loot_treasure_4")
+treasure = true
 
 [node name="Buoy" parent="DiveSpots/Spot4" unique_id=328835625 node_paths=PackedStringArray("ocean") instance=ExtResource("buoy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0)

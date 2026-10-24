@@ -26,6 +26,8 @@ const KIT := {
 ## > 0 makes it a gamble chest: opening costs this much, and it closes again after reset_time.
 @export var cost := 0
 @export var reset_time := 0.0
+## Its loot is the treasure: each item counts toward the gold that unlocks the boat (WorldEvents).
+@export var treasure := false
 
 var opened := false
 
@@ -69,7 +71,9 @@ func open() -> void:
 	var rng := RandomNumberGenerator.new()
 	for item in loot.roll(rng) if loot else []:
 		var sideways := global_basis.x * rng.randf_range(-1.2, 1.2)
-		ItemService.spawn(item, 0.0, _spawn.global_position, global_basis.z * toss.x + Vector3.UP * toss.y + sideways)
+		var spawned := ItemService.spawn(item, 0.0, _spawn.global_position, global_basis.z * toss.x + Vector3.UP * toss.y + sideways)
+		if treasure and spawned:
+			spawned.set_meta(&"treasure", true)  # counted when first picked up (on the host)
 		await get_tree().create_timer(item_interval).timeout
 	if reset_time > 0.0:
 		await get_tree().create_timer(reset_time).timeout

@@ -1,13 +1,18 @@
 extends Node
-## Shared world events: chests, beaten bosses and the boat. Host-authoritative like the other
+## Shared world events: chests, beaten bosses, the treasure and the boat. Host-authoritative like the other
 ## services: clients ask, the host decides and tells everyone. Nodes are addressed by their path
 ## under the world, which is the same on every peer.
 
 const BOAT_SEND_INTERVAL := 1.0 / 20.0
 
+## Treasure coins found so far (whole team), and the total; all found unlocks the boat.
+signal treasure_changed(found: int, total: int)
+var treasure_found := 0
+
 var _boat_timer := 0.0
 
 func _ready() -> void:
+	WorldService.world_left.connect(func() -> void: treasure_found = 0)  # a new game starts with none
 	# A driver who leaves the game lets go of the helm.
 	P2P.player_left_signal.connect(func(peer_id: int, _steam_id: int) -> void:
 		if not P2P.is_host() or not WorldService.in_world():
@@ -141,6 +146,38 @@ func _client_boat_state(path: NodePath, xform: Transform3D, velocity: Vector3) -
 		boat.follow(xform, velocity)
 
 # ---------------------------------------------------------------------------
+# Treasure: the gold in the treasure chests. Finding it all unlocks the boat (the way out).
+# ---------------------------------------------------------------------------
+
+## How many treasure items there are: everything the treasure chests always drop.
+func treasure_total() -> int:
+	var total := 0
+	if WorldService.in_world():
+		for chest: Chest in WorldService.world.find_children("*", "Chest", true, false):
+			if chest.treasure and chest.loot:
+				total += chest.loot.always.size()
+	return total
+
+
+## Host: a treasure coin was picked up for the first time.
+func treasure_picked_up() -> void:
+	_set_treasure(treasure_found + 1)
+	if P2P.is_online():
+		_client_treasure.rpc(treasure_found)
+
+@rpc("authority", "reliable")
+func _client_treasure(found: int) -> void:
+	_set_treasure(found)
+
+func _set_treasure(found: int) -> void:
+	treasure_found = found
+	var total := treasure_total()
+	treasure_changed.emit(found, total)
+	if found >= total and total > 0:
+		for boat: Boat in get_tree().get_nodes_in_group(&"boats"):
+			boat.locked = false
+
+# ---------------------------------------------------------------------------
 # Late join
 # ---------------------------------------------------------------------------
 
@@ -156,10 +193,11 @@ func send_state_to(peer_id: int) -> void:
 	var boats := []
 	for boat: Boat in get_tree().get_nodes_in_group(&"boats"):
 		boats.append([_path(boat), boat.driver, boat.global_transform])
-	_client_state.rpc_id(peer_id, chests, zones, boats)
+	_client_state.rpc_id(peer_id, chests, zones, boats, treasure_found)
 
 @rpc("authority", "reliable")
-func _client_state(chests: Array, zones: Array, boats: Array) -> void:
+func _client_state(chests: Array, zones: Array, boats: Array, found: int) -> void:
+	_set_treasure(found)
 	for path: NodePath in chests:
 		var chest := _node(path) as Chest
 		if chest:

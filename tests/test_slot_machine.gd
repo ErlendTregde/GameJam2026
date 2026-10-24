@@ -1,7 +1,7 @@
 extends RefCounted
 ## The slot machine on island 3: pay to spin, the reels spin and stop one after another, and
 ## matching symbols on the middle row (from the left) drop those items out of the machine: rocks,
-## coconuts, coins and weapons. More of a kind drops more; the valuable ones are rarer on the reels.
+## coconuts, oysters and weapons. More of a kind drops more; the valuable ones are rarer on the reels.
 ## You can't spin again while it spins.
 
 var tree: SceneTree
@@ -35,7 +35,8 @@ func run(scene_tree: SceneTree) -> void:
 	assert(at.length() < big.radius, "it stands on island 3")
 	# The prizes: rocks, coconuts, coins and weapons; the valuable ones are rarer on the reels.
 	var names := machine.prizes.map(func(i: ItemData) -> String: return i.name)
-	for want in ["Rock", "Coconut", "Coin", "Spear", "Speargun", "Trident"]:
+	for want in ["Rock", "Coconut", "Oyster", "Spear", "Speargun", "Trident"]:
+		assert(not names.has("Coin"), "no gold coins from the slot machine: they are the treasure")
 		assert(names.has(want), "%s can be won" % want)
 	var how_often := func(k: int) -> int: return machine.strip.count(k)
 	for a in machine.prizes.size():
@@ -54,18 +55,18 @@ func run(scene_tree: SceneTree) -> void:
 	await _wait_done(machine)
 	assert(machine.middle_symbols().size() == 4, "four reels")
 	assert(p.money == 100 - machine.cost, "no money paid out, only items")
-	# A reel strip of only coins: four coins land and coins come pouring out.
+	# A reel strip of only oysters: four land and oysters come pouring out.
 	var strip := PackedInt32Array()
 	strip.resize(machine.strip.size())
-	strip.fill(names.find("Coin"))
+	strip.fill(names.find("Oyster"))
 	machine.strip = strip
 	var before := _dropped(main, machine.global_position).size()
 	machine.interact(p)
 	await _wait_done(machine)
-	var coin: ItemData = machine.prizes[names.find("Coin")]
-	var line := [names.find("Coin"), names.find("Coin"), names.find("Coin"), names.find("Coin")]
-	assert(machine.middle_symbols() == line, "four coins on the pay line")
+	var coin: ItemData = machine.prizes[names.find("Oyster")]
+	var line := [names.find("Oyster"), names.find("Oyster"), names.find("Oyster"), names.find("Oyster")]
+	assert(machine.middle_symbols() == line, "four oysters on the pay line")
 	var now := _dropped(main, machine.global_position)
-	assert(now.size() - before == machine.prize(line).size() and now.count(coin) >= machine.prize(line).size(), "the coins dropped out of the machine")
+	assert(now.size() - before == machine.prize(line).size() and now.count(coin) >= machine.prize(line).size(), "the oysters dropped out of the machine")
 	print("PASS test_slot_machine")
 	tree.quit()

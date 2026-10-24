@@ -7,7 +7,7 @@
 [ext_resource type="Script" path="res://scripts/inventory/item_data.gd" id="5_item"]
 [ext_resource type="Resource" path="res://items/rock.tres" id="6_rock"]
 [ext_resource type="Resource" path="res://items/coconut.tres" id="7_coconut"]
-[ext_resource type="Resource" path="res://items/coin.tres" id="8_coin"]
+[ext_resource type="Resource" path="res://items/oyster.tres" id="8_oyster"]
 [ext_resource type="Resource" path="res://items/spear.tres" id="9_spear"]
 [ext_resource type="Resource" path="res://items/speargun.tres" id="10_speargun"]
 [ext_resource type="Resource" path="res://items/trident.tres" id="11_trident"]
@@ -23,7 +23,7 @@ shader_parameter/icons = ExtResource("4_icons")
 collision_layer = 17
 collision_mask = 0
 script = ExtResource("1_slot")
-prizes = Array[ExtResource("5_item")]([ExtResource("6_rock"), ExtResource("7_coconut"), ExtResource("8_coin"), ExtResource("9_spear"), ExtResource("10_speargun"), ExtResource("11_trident")])
+prizes = Array[ExtResource("5_item")]([ExtResource("6_rock"), ExtResource("7_coconut"), ExtResource("8_oyster"), ExtResource("9_spear"), ExtResource("10_speargun"), ExtResource("11_trident")])
 
 [node name="Model" parent="." instance=ExtResource("2_model")]
 

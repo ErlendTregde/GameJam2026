@@ -738,7 +738,6 @@ ocean = NodePath("../Ocean")
 world_environment = NodePath("../WorldEnvironment")
 underwater_environment = SubResource("Underwater")
 sun = NodePath("../Sun")
-starting_items = Array[ExtResource("item_data_script")]([ExtResource("shop_speargun")])
 respawn_point = NodePath("../Spawn")
 
 [node name="SharkZone" type="Node" parent="." unique_id=1073233949 node_paths=PackedStringArray("player", "ocean", "terrain", "patrol", "boss_bar", "message")]

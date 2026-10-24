@@ -96,8 +96,6 @@ const OTHER := [
 		"url": "https://github.com/TokisanGames/Terrain3D", "changes": "The sea floor, islands and mountains, with our own ground shader."},
 	{"title": "GodotSteam", "author": "Gramps & contributors", "license": "MIT",
 		"url": "https://github.com/GodotSteam/GodotSteam", "changes": "Steam lobbies, invites and voice."},
-	{"title": "MultiplayerTemplate", "author": "Modbit Studios", "license": "see repository",
-		"url": "https://github.com/Modbit-Studios/MultiplayerTemplate", "changes": "The starting point for our multiplayer (Steam rooms, peers, voice)."},
 ]
 
 const LICENSE_COLORS := {"CC BY 4.0": Color(0.55, 0.85, 0.55), "CC BY-NC 4.0": Color(1.0, 0.75, 0.4)}

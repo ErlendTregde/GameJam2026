@@ -17,3 +17,6 @@ extends Marker3D
 @export var shape_seed := 0
 ## A stone island: rock instead of sand and grass (one per Terrain), no palms or grass on it.
 @export var rocky := false
+## How grassy it is: 1 = full grass on the hill, lower = mostly sand with patches of grass (one
+## sandy island per Terrain).
+@export_range(0.0, 1.0) var grass := 1.0

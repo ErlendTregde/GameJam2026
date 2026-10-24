@@ -74,6 +74,7 @@
 [ext_resource type="Resource" path="res://items/spear.tres" id="shop_spear"]
 [ext_resource type="Resource" path="res://items/speargun.tres" id="shop_speargun"]
 [ext_resource type="PackedScene" path="res://scenes/slot_machine.tscn" id="slot_machine"]
+[ext_resource type="PackedScene" path="res://assets/umbrella/beach_umbrella_asset.glb" id="umbrella"]
 [ext_resource type="PackedScene" path="res://scenes/statue.tscn" id="statue"]
 [ext_resource type="Terrain3DMaterial" uid="uid://dqbscle1ittiv" path="res://shaders/terrain3d_material.tres" id="t3d_material"]
 
@@ -261,6 +262,7 @@ height = 3.5
 roughness = 0.35
 depth_scale = 2.0
 shape_seed = 3
+grass = 0.15
 
 [node name="BigIsland" type="Marker3D" parent="Terrain" unique_id=1158074324]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, -130)
@@ -305,6 +307,7 @@ random_seed = 5
 cast_shadows = false
 visible_distance = 70.0
 rocky_islands = 1
+thin_by_grass = true
 min_height = 2.6
 min_flatness = 0.8
 scale_range = Vector2(0.9, 1.6)
@@ -864,19 +867,8 @@ display_size = 0.35
 [node name="ShopBoard2" parent="Shop" unique_id=788817988 instance=ExtResource("shop_board")]
 transform = Transform3D(0.42, 0, 0.91, 0, 1, 0, -0.91, 0, 0.42, -130.996, 4.35, -59.7285)
 
-[node name="Spear" parent="Shop/ShopBoard2" unique_id=1738175500 instance=ExtResource("shop_item")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 1.3, 0.12)
-item = ExtResource("shop_spear")
-price = 40
-display_size = 1.4
-model_rotation = Vector3(0, 0, -12)
-
-[node name="Speargun" parent="Shop/ShopBoard2" unique_id=661886549 instance=ExtResource("shop_item")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.72, 0.12)
-item = ExtResource("shop_speargun")
-price = 60
-display_size = 0.9
-model_rotation = Vector3(0, 90, 0)
+[node name="Umbrella" parent="Shop/ShopBoard2" instance=ExtResource("umbrella")]
+transform = Transform3D(0.016, 0, 0.0014, 0, 0.016, 0, -0.0014, 0, 0.016, 3.6, 0.35, -0.7)
 
 [node name="Bottle" parent="Shop/ShopBoard2" unique_id=727151275 instance=ExtResource("shop_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.25, 0.12)

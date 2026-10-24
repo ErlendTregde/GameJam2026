@@ -59,6 +59,11 @@ group_uniforms rock;
 uniform vec3 rock_color : source_color = vec3(0.52, 0.5, 0.48);
 uniform float rock_height = 4.0;
 uniform float rock_max_flatness = 0.75;
+group_uniforms sandy_island;
+// The sandy island (set by the Terrain from an IslandShape with grass < 1): grass only in patches.
+uniform vec2 sandy_center = vec2(0.0);
+uniform float sandy_radius = 0.0;
+uniform float sandy_grass = 1.0;
 group_uniforms stone_island;
 // The stone island (set by the Terrain from its rocky IslandShape): rock all over, no sand or grass.
 uniform vec2 stone_center = vec2(0.0);
@@ -245,6 +250,8 @@ void fragment() {
 	vec3 sand = mix(sand_color, wet_sand_color, wet) * (0.9 + 0.2 * fine);
 	float grass = smoothstep(grass_height - grass_blend, grass_height + grass_blend, v_vertex.y + (n - 0.5) * 2.0);
 	grass *= smoothstep(grass_min_flatness - 0.1, grass_min_flatness + 0.05, w_normal.y);
+	float sandy = (1.0 - smoothstep(sandy_radius, sandy_radius + 6.0, distance(v_vertex.xz, sandy_center))) * step(0.001, sandy_radius);
+	grass *= mix(1.0, smoothstep(0.95 - sandy_grass, 1.05 - sandy_grass, n), sandy);  // patches where the noise is high
 	vec3 green = mix(grass_dark_color, grass_color, smoothstep(0.3, 0.7, n)) * (0.9 + 0.2 * fine);
 	float rock = smoothstep(rock_max_flatness + 0.05, rock_max_flatness - 0.1, w_normal.y) * smoothstep(rock_height - 1.0, rock_height + 1.0, v_vertex.y);
 	vec3 rocky = rock_color * (0.85 + 0.3 * fine);

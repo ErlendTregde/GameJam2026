@@ -30,6 +30,8 @@ extends Node3D
 enum Rocky { ANY, SKIP, ONLY }
 ## Which islands: all, all but the stone (rocky) ones, or only the stone ones.
 @export var rocky_islands := Rocky.ANY
+## Fewer on islands with less grass (IslandShape.grass), e.g. for the grass itself.
+@export var thin_by_grass := false
 ## Set: places around this node instead (radius around_radius, e.g. the crater), not the islands;
 ## if it has children, around each of them (e.g. every dive spot).
 @export var around: Node3D
@@ -93,7 +95,7 @@ func build() -> void:
 		placed.resize(kinds)
 		for i in placed.size():
 			placed[i] = []
-		for k in count:
+		for k in int(count * (island.grass if thin_by_grass and island is IslandShape else 1.0)):
 			var r: float = radius * sqrt(lerpf(area.x * area.x, area.y * area.y, rng.randf()))
 			var a := rng.randf() * TAU
 			var x: float = island.position.x + cos(a) * r

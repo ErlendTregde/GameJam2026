@@ -68,6 +68,10 @@ func _ready() -> void:
 			if island.rocky:  # the ground shader paints it stone
 				terrain3d.material.set_shader_param("stone_center", Vector2(island.position.x, island.position.z))
 				terrain3d.material.set_shader_param("stone_radius", island.radius)
+			if island.grass < 1.0:  # ...and less grass on the sandy island
+				terrain3d.material.set_shader_param("sandy_center", Vector2(island.position.x, island.position.z))
+				terrain3d.material.set_shader_param("sandy_radius", island.radius)
+				terrain3d.material.set_shader_param("sandy_grass", island.grass)
 		var mouse_view := terrain3d.get_node_or_null("MouseViewport") as SubViewport
 		if mouse_view and not Engine.is_editor_hint():
 			# Only for picking the ground under the mouse while sculpting; in game its 2x2 view errors with our glow.

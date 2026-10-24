@@ -22,6 +22,7 @@ func run(scene_tree: SceneTree) -> void:
 	var lighthouse: Node3D = main.get_node("Lighthouse")
 	assert(near.call(lighthouse, big, 0.0), "the lighthouse is on island 3")
 	assert(not lighthouse.find_child("Cylinder_000", true, false).visible, "without the blue base")
+	assert(lighthouse.scene_file_path.ends_with("lighthouse.tscn"), "its own scene, so an editor save can't bring the base back")
 	var tower_foot := lighthouse.global_position.y + 0.4 * lighthouse.scale.y  # the tower starts 0.4 up in the model, above the hidden base
 	assert(tower_foot < terrain.get_floor_height(lighthouse.global_position.x, lighthouse.global_position.z) + 0.6, "standing on the ground, not floating")
 	for island: IslandShape in terrain.find_children("*", "IslandShape", false):

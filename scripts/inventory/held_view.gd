@@ -134,8 +134,13 @@ func _set_model(item: ItemData) -> void:
 		_spear_rest = _spear.position
 	_holder.add_child(model)
 	var bounds := ItemData.model_bounds(model)
-	# Bigger fish are held bigger, but less than they grow in the water, so they don't fill the view.
-	var s := item.held_size / maxf(bounds.get_longest_axis_size(), 0.01) * pow(item.size_scale(_weight), 0.6)
+	var s := item.held_size / maxf(bounds.get_longest_axis_size(), 0.01)
+	var push := Vector3.ZERO
+	if item.weight_range != Vector2.ZERO:
+		# A catch (fish, crab) is held at its real size, the same as swimming or dropped; a big
+		# one is held further out along the same line of sight, so it doesn't fill the view.
+		s = model.get_meta(&"world_scale", 1.0) * item.size_scale(_weight)
+		push = Vector3(-0.05, -0.2, -1.0).normalized() * maxf(bounds.get_longest_axis_size() * s / 0.63 - rest_position.length(), 0.0)  # out toward the lower middle: at most ~half the view wide
 	model.scale = Vector3.ONE * s
 	if item.hold_style == ItemData.HoldStyle.POLEARM:
 		# Shaft (model +Y) along the holder's -Z, gripped `grip` of the way up from the butt.
@@ -143,7 +148,7 @@ func _set_model(item: ItemData) -> void:
 		model.position = Vector3(0, 0, -(0.5 - item.grip) * item.held_size) - model.basis * bounds.get_center()
 	else:
 		model.rotation_degrees = item.held_rotation
-		model.position = item.held_offset - model.basis * bounds.get_center()
+		model.position = item.held_offset + push - model.basis * bounds.get_center()
 
 
 ## Plays one melee attack.

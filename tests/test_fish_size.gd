@@ -49,5 +49,21 @@ func run(scene_tree: SceneTree) -> void:
 	await tree.process_frame
 	assert(_held_size(p) > small_hand * 2.0, "big fish is bigger in the hand (%.2f vs %.2f)" % [_held_size(p), small_hand])
 	assert(absf(_slot_size(p, small) - _slot_size(p, big)) < 0.01, "the hotbar shows every fish the same size")
+	# The same size everywhere: a fish (or crab) in the hand is as big as when it swims or lies dropped.
+	for kind: String in ["yellow_fish", "red_snapper", "crab"]:
+		var it: ItemData = load("res://items/%s.tres" % kind)
+		var w := lerpf(it.weight_range.x, it.weight_range.y, 0.6)
+		var dropped: WorldItem = tree.root.get_node("ItemService").spawn(it, w, Vector3(0, 6, 17))
+		await tree.process_frame
+		var real: float = ItemData.model_bounds(dropped.get_node("Model")).get_longest_axis_size() * dropped.get_node("Model").global_transform.basis.get_scale().x
+		p.items.fill(null)
+		p.weights.fill(0.0)
+		p.give(it, w)
+		p._select(p.items.find(it))
+		await tree.process_frame
+		var holder: Node3D = p.get_node("HUD/HeldView/SubViewport/Camera3D/Holder")
+		var held: Node3D = holder.get_child(holder.get_child_count() - 1)
+		var in_hand := ItemData.model_bounds(held).get_longest_axis_size() * held.scale.x
+		assert(absf(in_hand - real) < real * 0.05, "%s: as big in the hand as dropped (%.2f vs %.2f m)" % [kind, in_hand, real])
 	print("PASS test_fish_size")
 	tree.quit()

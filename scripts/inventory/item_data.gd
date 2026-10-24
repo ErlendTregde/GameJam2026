@@ -93,6 +93,7 @@ func make_model() -> Node3D:
 	var model := whole.get_node("Model") as Node3D
 	whole.remove_child(model)
 	whole.free()
+	model.set_meta(&"world_scale", model.scale.x)  # its size in the world, before it is re-framed
 	model.transform = Transform3D.IDENTITY
 	return model
 

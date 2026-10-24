@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/lighthouse/lighthouse.glb" id="1_model"]
+
+[sub_resource type="CylinderShape3D" id="Shape"]
+height = 4.0
+radius = 0.8
+
+[node name="Lighthouse" type="Node3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Cylinder_000" parent="Model/Sketchfab_model/6ea747e8ec8b44eb8d320cb1eaaf7e7b_fbx/RootNode" index="2"]
+visible = false
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
+shape = SubResource("Shape")
+
+[editable path="Model"]

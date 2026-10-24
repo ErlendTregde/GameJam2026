@@ -10,7 +10,7 @@ Coco the coconut, buy better gear (a speargun, goggles, flippers) and dive deepe
 fish are rarer and the chests hold more gold. Watch out for the sharks, and play solo or
 together with friends over Steam.
 
-![At Coco's shop](docs/screenshots/shop.jpg)
+![At Coco's shop](docs/screenshots/shop_view.jpg)
 
 ![Diving with the speargun](docs/screenshots/dive.jpg)
 

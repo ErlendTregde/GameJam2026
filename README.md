@@ -10,13 +10,11 @@ Coco the coconut, buy better gear (a speargun, goggles, flippers) and dive deepe
 fish are rarer and the chests hold more gold. Watch out for the sharks, and play solo or
 together with friends over Steam.
 
-![Island 1](docs/screenshots/island.jpg)
+![At Coco's shop](docs/screenshots/shop.jpg)
 
-![A dive spot](docs/screenshots/reef.jpg)
+![Diving with the speargun](docs/screenshots/dive.jpg)
 
-![The crater](docs/screenshots/crater.jpg)
-
-![Island 3 and the lighthouse](docs/screenshots/lighthouse.jpg)
+![The slot machine on island 3](docs/screenshots/slot.jpg)
 
 ## How to play
 
